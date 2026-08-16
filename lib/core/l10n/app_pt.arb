@@ -1,0 +1,63 @@
+{
+    "@@locale": "pt",
+    "quotes": "Cotações",
+    "@quotes": {
+        "description": "Tradução da palavra 'Cotações' para a tela de cotações"
+    },
+    "settings": "Configurações",
+    "@settings": {
+        "description": "Tradução da palavra 'Configurações' para a tela de configurações"
+    },
+    "darkMode": "Modo Escuro",
+    "@darkMode": {
+        "description": "Tradução de 'Modo Escuro' para a configuração de tema"
+    },
+    "fontSize": "Tamanho de Fonte",
+    "@fontSize": {
+        "description": "Tradução de 'Tamanho de Fonte' para a configuração de fonte"
+    },
+    "favorites": "Favoritos",
+    "@favorites": {
+        "description": "Tradução da palavra 'Favoritos' para a tela de favoritos"
+    },
+    "filterBySymbol": "Filtrar por Símbolo",
+    "@filterBySymbol": {
+        "description": "Tradução de 'Filtrar por Símbolo' para o campo de filtro"
+    },
+    "language": "Idioma",
+    "@language": {
+        "description": "Tradução da palavra 'Idioma' para a configuração de idioma"
+    },
+    "lastPrice": "Último Preço",
+    "@lastPrice": {
+        "description": "Tradução de 'Último Preço' para a tela de detalhes"
+    },
+    "priceChange24h": "Variação 24h",
+    "@priceChange24h": {
+        "description": "Tradução de 'Variação 24h' para a tela de detalhes"
+    },
+    "absoluteChange": "Variação Absoluta",
+    "@absoluteChange": {
+        "description": "Tradução de 'Variação Absoluta' para a tela de detalhes"
+    },
+    "high24h": "Máxima 24h",
+    "@high24h": {
+        "description": "Tradução de 'Máxima 24h' para a tela de detalhes"
+    },
+    "low24h": "Mínima 24h",
+    "@low24h": {
+        "description": "Tradução de 'Mínima 24h' para a tela de detalhes"
+    },
+    "baseVolume": "Volume Base",
+    "@baseVolume": {
+        "description": "Tradução de 'Volume Base' para a tela de detalhes"
+    },
+    "quoteVolume": "Volume Quote",
+    "@quoteVolume": {
+        "description": "Tradução de 'Volume Quote' para a tela de detalhes"
+    },
+    "appearance": "Aparência",
+    "@appearance": {
+        "description": "Tradução de 'Aparência' para a tela de preferências"
+    }
+}

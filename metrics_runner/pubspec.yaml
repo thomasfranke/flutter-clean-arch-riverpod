@@ -1,0 +1,7 @@
+name: flutter_clean_arch_riverpod
+
+environment:
+  sdk: ^3.11.4
+
+dev_dependencies:
+  dart_code_linter: ^1.0.0

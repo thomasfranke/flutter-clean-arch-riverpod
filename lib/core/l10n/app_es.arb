@@ -1,0 +1,63 @@
+{
+    "@@locale": "es",
+    "quotes": "Cotizaciones",
+    "@quotes": {
+        "description": "Traducción de 'Cotizaciones' para la pantalla de cotizaciones"
+    },
+    "settings": "Configuración",
+    "@settings": {
+        "description": "Traducción de 'Configuración' para la pantalla de configuración"
+    },
+    "darkMode": "Modo Oscuro",
+    "@darkMode": {
+        "description": "Traducción de 'Modo Oscuro' para la configuración de tema"
+    },
+    "fontSize": "Tamaño de Fuente",
+    "@fontSize": {
+        "description": "Traducción de 'Tamaño de Fuente' para la configuración de fuente"
+    },
+    "favorites": "Favoritos",
+    "@favorites": {
+        "description": "Traducción de 'Favoritos' para la pantalla de favoritos"
+    },
+    "filterBySymbol": "Filtrar por Símbolo",
+    "@filterBySymbol": {
+        "description": "Traducción de 'Filtrar por Símbolo' para el campo de filtro"
+    },
+    "language": "Idioma",
+    "@language": {
+        "description": "Traducción de 'Idioma' para la configuración de idioma"
+    },
+    "lastPrice": "Último Precio",
+    "@lastPrice": {
+        "description": "Traducción de 'Último Precio' para la pantalla de detalles"
+    },
+    "priceChange24h": "Variación 24h",
+    "@priceChange24h": {
+        "description": "Traducción de 'Variación 24h' para la pantalla de detalles"
+    },
+    "absoluteChange": "Variación Absoluta",
+    "@absoluteChange": {
+        "description": "Traducción de 'Variación Absoluta' para la pantalla de detalles"
+    },
+    "high24h": "Máximo 24h",
+    "@high24h": {
+        "description": "Traducción de 'Máximo 24h' para la pantalla de detalles"
+    },
+    "low24h": "Mínimo 24h",
+    "@low24h": {
+        "description": "Traducción de 'Mínimo 24h' para la pantalla de detalles"
+    },
+    "baseVolume": "Volumen Base",
+    "@baseVolume": {
+        "description": "Traducción de 'Volumen Base' para la pantalla de detalles"
+    },
+    "quoteVolume": "Volumen Quote",
+    "@quoteVolume": {
+        "description": "Traducción de 'Volumen Quote' para la pantalla de detalles"
+    },
+    "appearance": "Apariencia",
+    "@appearance": {
+        "description": "Traducción de 'Apariencia' para la pantalla de preferencias"
+    }
+}

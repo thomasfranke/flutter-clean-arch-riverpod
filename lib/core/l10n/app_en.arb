@@ -1,0 +1,63 @@
+{
+    "@@locale": "en",
+    "quotes": "Quotes",
+    "@quotes": {
+        "description": "Translation of the word 'Quotes' for the quotes screen"
+    },
+    "settings": "Settings",
+    "@settings": {
+        "description": "Translation of the word 'Settings' for the settings screen"
+    },
+    "darkMode": "Dark Mode",
+    "@darkMode": {
+        "description": "Translation of the word 'Dark Mode' for the dark mode setting"
+    },
+    "fontSize": "Font Size",
+    "@fontSize": {
+        "description": "Translation of the word 'Font Size' for the font size setting"
+    },
+    "favorites": "Favorites",
+    "@favorites": {
+        "description": "Translation of the word 'Favorites' for the favorites screen"
+    },
+    "filterBySymbol": "Filter by symbol...",
+    "@filterBySymbol": {
+        "description": "Translation of the phrase 'Filter by Symbol' for the filter input"
+    },
+    "language": "Language",
+    "@language": {
+        "description": "Translation of the word 'Language' for the language setting"
+    },
+    "lastPrice": "Last Price",
+    "@lastPrice": {
+        "description": "Translation of 'Last Price' for the detail screen"
+    },
+    "priceChange24h": "Price Change 24h",
+    "@priceChange24h": {
+        "description": "Translation of 'Price Change 24h' for the detail screen"
+    },
+    "absoluteChange": "Absolute Change",
+    "@absoluteChange": {
+        "description": "Translation of 'Absolute Change' for the detail screen"
+    },
+    "high24h": "High 24h",
+    "@high24h": {
+        "description": "Translation of 'High 24h' for the detail screen"
+    },
+    "low24h": "Low 24h",
+    "@low24h": {
+        "description": "Translation of 'Low 24h' for the detail screen"
+    },
+    "baseVolume": "Base Volume",
+    "@baseVolume": {
+        "description": "Translation of 'Base Volume' for the detail screen"
+    },
+    "quoteVolume": "Quote Volume",
+    "@quoteVolume": {
+        "description": "Translation of 'Quote Volume' for the detail screen"
+    },
+    "appearance": "Appearance",
+    "@appearance": {
+        "description": "Translation of 'Appearance' for the preferences screen"
+    }
+}
