@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/l10n/generated/app_localizations.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/kline_entity.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/klines/kline_notifier.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/klines/kline_state.dart';
@@ -30,7 +31,7 @@ class KlineChart extends ConsumerWidget {
         _IntervalSelector(
           current: notifier.currentInterval,
           onSelected: (final String interval) =>
-              notifier.switchInterval(symbol: symbol, interval: interval),
+              notifier.switchInterval(interval: interval),
         ),
         const SizedBox(height: 12),
         SizedBox(
@@ -87,8 +88,11 @@ class _Chart extends StatelessWidget {
   @override
   Widget build(final BuildContext context) {
     if (klines.isEmpty) {
-      return const Center(
-        child: Text('Sem dados', style: TextStyle(color: Colors.grey)),
+      return Center(
+        child: Text(
+          AppLocalizations.of(context).noData,
+          style: const TextStyle(color: Colors.grey),
+        ),
       );
     }
 

@@ -57,4 +57,19 @@ class FavoritesDatasource {
       Right<Failure, List<String>>.new,
     );
   }
+
+  /// Atomically toggles a symbol's favorite status in storage, returning
+  /// either a [Failure] or the updated list of symbol strings.
+  Future<Either<Failure, List<String>>> toggleFavorite(
+    final String symbol,
+  ) async {
+    final Either<StorageFailure, List<String>> result = await storage
+        .toggleInList(key: _favoritesKey, value: symbol);
+
+    return result.fold(
+      (final StorageFailure failure) =>
+          Left<Failure, List<String>>(failure.toDomainFailure()),
+      Right<Failure, List<String>>.new,
+    );
+  }
 }

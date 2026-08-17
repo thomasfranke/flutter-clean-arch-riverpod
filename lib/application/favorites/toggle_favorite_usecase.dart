@@ -5,8 +5,9 @@ import 'package:flutter_clean_arch_riverpod/domain/repositories/favorites_reposi
 
 /// Use case for toggling a cryptocurrency as favorite.
 ///
-/// Fetches the current favorites list, then adds or removes the given symbol
-/// based on whether it is already a favorite.
+/// Atomically adds or removes the given symbol based on its favorite status
+/// at the time the operation runs, avoiding a check-then-act race between
+/// concurrent toggles of the same symbol.
 class ToggleFavoriteUseCase {
   /// Creates a [ToggleFavoriteUseCase] with the required [FavoritesRepository].
   const ToggleFavoriteUseCase({required this.repository});
@@ -16,20 +17,6 @@ class ToggleFavoriteUseCase {
 
   /// Executes the use case, returning either a [Failure] or the updated list
   /// of [FavoriteEntity] entities.
-  Future<Either<Failure, List<FavoriteEntity>>> call(
-    final String symbol,
-  ) async {
-    final Either<Failure, List<FavoriteEntity>> result = await repository
-        .getFavorites();
-
-    return result.fold(Left.new, (final List<FavoriteEntity> favorites) {
-      final bool isFavorite = favorites.any(
-        (final FavoriteEntity f) => f.symbol == symbol,
-      );
-
-      return isFavorite
-          ? repository.removeFavorite(symbol)
-          : repository.addFavorite(symbol);
-    });
-  }
+  Future<Either<Failure, List<FavoriteEntity>>> call(final String symbol) =>
+      repository.toggleFavorite(symbol);
 }

@@ -45,9 +45,14 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  integration_test:
+    sdk: flutter
   flutter_lints: ^6.0.0
   build_runner: ^2.13.1
   json_serializable: ^6.13.0
+  # Used only in tests, to install a SharedPreferencesStorePlatform double
+  # that can be made to fail, for covering SharedPreferencesImpl's error paths.
+  shared_preferences_platform_interface: ^2.4.2
 
 flutter:
   generate: true

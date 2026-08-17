@@ -21,16 +21,40 @@ class KlineDTO {
   /// Binance returns klines as positional arrays, not JSON objects:
   /// [openTime, open, high, low, close, volume, closeTime, quoteVolume,
   ///  numberOfTrades, takerBuyBase, takerBuyQuote, ignore]
+  ///
+  /// Missing elements or fields of an unexpected type fall back to safe
+  /// defaults instead of throwing, so a single malformed candle doesn't
+  /// abort parsing the whole response.
   factory KlineDTO.fromList(final List<dynamic> list) => KlineDTO(
-    openTime: list[0] as int,
-    open: list[1] as String,
-    high: list[2] as String,
-    low: list[3] as String,
-    close: list[4] as String,
-    volume: list[5] as String,
-    closeTime: list[6] as int,
-    numberOfTrades: list[8] as int,
+    openTime: _asInt(_at(list, 0)),
+    open: _asString(_at(list, 1)),
+    high: _asString(_at(list, 2)),
+    low: _asString(_at(list, 3)),
+    close: _asString(_at(list, 4)),
+    volume: _asString(_at(list, 5)),
+    closeTime: _asInt(_at(list, 6)),
+    numberOfTrades: _asInt(_at(list, 8)),
   );
+
+  /// Returns the element at [index], or `null` if [list] is too short.
+  static dynamic _at(final List<dynamic> list, final int index) =>
+      index < list.length ? list[index] : null;
+
+  /// Coerces [value] to an [int], defaulting to `0` when it isn't a valid
+  /// number.
+  static int _asInt(final dynamic value) => switch (value) {
+    final int v => v,
+    final num v => v.toInt(),
+    final String v => int.tryParse(v) ?? 0,
+    _ => 0,
+  };
+
+  /// Coerces [value] to a [String], defaulting to `'0'` when absent.
+  static String _asString(final dynamic value) => switch (value) {
+    final String v => v,
+    final num v => v.toString(),
+    _ => '0',
+  };
 
   /// The open time of the kline in milliseconds since epoch.
   final int openTime;

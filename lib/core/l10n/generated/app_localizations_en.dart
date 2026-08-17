@@ -52,4 +52,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get appearance => 'Appearance';
+
+  @override
+  String get priceHistory => 'Price History';
+
+  @override
+  String get noFavoritesYet => 'No favorites yet';
+
+  @override
+  String get noData => 'No data';
 }

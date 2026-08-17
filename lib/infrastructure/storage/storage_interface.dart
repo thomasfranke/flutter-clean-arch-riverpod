@@ -63,6 +63,13 @@ abstract class StorageInterface {
     required final String value,
   });
 
+  /// - Atomically add [value] to the list if absent, or remove it if
+  /// present, based on the list's state at the time the operation runs:
+  Future<Either<StorageFailure, List<String>>> toggleInList({
+    required final String key,
+    required final String value,
+  });
+
   /// --- Remove ---
   /// - Remove the value for the given key.
   Future<Either<StorageFailure, Unit>> remove({required final String key});

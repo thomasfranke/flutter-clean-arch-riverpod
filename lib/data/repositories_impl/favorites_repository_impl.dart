@@ -52,4 +52,17 @@ class FavoritesRepositoryImpl implements FavoritesRepository {
           symbols.map((final String s) => FavoriteEntity(symbol: s)).toList(),
     );
   }
+
+  @override
+  Future<Either<Failure, List<FavoriteEntity>>> toggleFavorite(
+    final String symbol,
+  ) async {
+    final Either<Failure, List<String>> result = await datasource
+        .toggleFavorite(symbol);
+
+    return result.map(
+      (final List<String> symbols) =>
+          symbols.map((final String s) => FavoriteEntity(symbol: s)).toList(),
+    );
+  }
 }

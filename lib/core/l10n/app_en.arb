@@ -59,5 +59,17 @@
     "appearance": "Appearance",
     "@appearance": {
         "description": "Translation of 'Appearance' for the preferences screen"
+    },
+    "priceHistory": "Price History",
+    "@priceHistory": {
+        "description": "Translation of 'Price History' for the detail screen"
+    },
+    "noFavoritesYet": "No favorites yet",
+    "@noFavoritesYet": {
+        "description": "Translation of 'No favorites yet' for the favorites tab empty state"
+    },
+    "noData": "No data",
+    "@noData": {
+        "description": "Translation of 'No data' for the kline chart empty state"
     }
 }

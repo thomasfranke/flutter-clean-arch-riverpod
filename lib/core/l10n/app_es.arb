@@ -59,5 +59,17 @@
     "appearance": "Apariencia",
     "@appearance": {
         "description": "Traducción de 'Apariencia' para la pantalla de preferencias"
+    },
+    "priceHistory": "Historial de Precio",
+    "@priceHistory": {
+        "description": "Traducción de 'Historial de Precio' para la pantalla de detalles"
+    },
+    "noFavoritesYet": "Aún no hay favoritos",
+    "@noFavoritesYet": {
+        "description": "Traducción de 'Aún no hay favoritos' para el estado vacío de la pestaña de favoritos"
+    },
+    "noData": "Sin datos",
+    "@noData": {
+        "description": "Traducción de 'Sin datos' para el estado vacío del gráfico de klines"
     }
 }

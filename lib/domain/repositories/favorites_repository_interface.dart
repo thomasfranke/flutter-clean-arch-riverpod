@@ -20,4 +20,11 @@ abstract interface class FavoritesRepository {
   Future<Either<Failure, List<FavoriteEntity>>> removeFavorite(
     final String symbol,
   );
+
+  /// Atomically toggles a cryptocurrency's favorite status by [symbol],
+  /// returning either a [Failure] or the updated list of [FavoriteEntity]
+  /// entities.
+  Future<Either<Failure, List<FavoriteEntity>>> toggleFavorite(
+    final String symbol,
+  );
 }

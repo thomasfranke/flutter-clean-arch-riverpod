@@ -30,20 +30,28 @@ class _QuotesTabState extends ConsumerState<QuotesTab> {
   }
 
   @override
+  void didUpdateWidget(final QuotesTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.quotes != widget.quotes) {
+      setState(_applyFilter);
+    }
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
   }
 
-  void _onFilterChanged() {
+  void _onFilterChanged() => setState(_applyFilter);
+
+  void _applyFilter() {
     final String query = _controller.text.trim().toUpperCase();
-    setState(() {
-      _filtered = query.isEmpty
-          ? widget.quotes
-          : widget.quotes
-                .where((final CryptoQuoteEntity q) => q.symbol.contains(query))
-                .toList();
-    });
+    _filtered = query.isEmpty
+        ? widget.quotes
+        : widget.quotes
+              .where((final CryptoQuoteEntity q) => q.symbol.contains(query))
+              .toList();
   }
 
   @override

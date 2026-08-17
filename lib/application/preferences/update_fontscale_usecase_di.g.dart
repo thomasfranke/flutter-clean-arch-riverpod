@@ -59,4 +59,4 @@ final class UpdateFontScaleUseCaseProvider
 }
 
 String _$updateFontScaleUseCaseHash() =>
-    r'7b2abaa77e8f11eed3b84c500fe55d58ecabf159';
+    r'dfa71572b720479fab819ebc334c50abc31d3df0';

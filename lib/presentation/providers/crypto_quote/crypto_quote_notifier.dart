@@ -28,6 +28,9 @@ class CryptoQuoteNotifier extends _$CryptoQuoteNotifier {
     final Either<Failure, List<CryptoQuoteEntity>> result = await useCase
         .call();
 
+    if (!ref.mounted) {
+      return;
+    }
     state = result.fold(CryptoQuoteState.failure, CryptoQuoteState.success);
   }
 }

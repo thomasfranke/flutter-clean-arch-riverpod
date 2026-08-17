@@ -59,4 +59,4 @@ final class UpdateDarkModeUseCaseProvider
 }
 
 String _$updateDarkModeUseCaseHash() =>
-    r'05f82b8381ab22821ed08bc528007fff24e1fe33';
+    r'7ee162d89208e77b6c388d05efa2c01b8f7de0e0';

@@ -64,7 +64,7 @@ final class KlineNotifierProvider
   }
 }
 
-String _$klineNotifierHash() => r'faeccd53eb38d6e56097b1f2712ec277fd557e93';
+String _$klineNotifierHash() => r'9250b2b3ba01c4f1aaebec47605d52a233b48a9f';
 
 /// Notifier for managing the state of kline (candlestick) data for a given
 /// symbol, including fetching and interval switching.

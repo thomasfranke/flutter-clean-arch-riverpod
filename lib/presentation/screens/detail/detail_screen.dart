@@ -59,7 +59,7 @@ class CryptoQuoteDetailScreen extends ConsumerWidget {
           _RangeBar(quote: quote),
           const SizedBox(height: 24),
           _SectionCard(
-            title: 'Histórico de Preço',
+            title: AppLocalizations.of(context).priceHistory,
             children: <Widget>[KlineChart(symbol: quote.symbol)],
           ),
           const SizedBox(height: 16),

@@ -23,14 +23,14 @@ class PreferencesRepositoryImpl implements PreferencesRepository {
   }
 
   @override
-  Future<Either<Failure, Unit>> savePreferences(
-    final PreferencesEntity preferences,
-  ) async {
-    final PreferencesDAO dao = PreferencesDAO(
-      locale: preferences.locale,
-      darkMode: preferences.darkMode,
-      fontScale: preferences.fontScale,
-    );
-    return datasource.savePreferences(dao);
-  }
+  Future<Either<Failure, Unit>> saveLocale(final String locale) =>
+      datasource.saveLocale(locale);
+
+  @override
+  Future<Either<Failure, Unit>> saveDarkMode(final bool darkMode) =>
+      datasource.saveDarkMode(darkMode);
+
+  @override
+  Future<Either<Failure, Unit>> saveFontScale(final double fontScale) =>
+      datasource.saveFontScale(fontScale);
 }

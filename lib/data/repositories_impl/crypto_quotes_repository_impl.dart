@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_objects/crypto_quote_dto.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/crypto_quotes_datasource.dart';
@@ -22,18 +21,10 @@ class CryptoQuotesRepositoryImpl implements CryptoQuoteRepository {
     final Either<Failure, List<CryptoQuoteDTO>> result = await datasource
         .getQuotes();
 
-    return result.fold(Left.new, (final List<CryptoQuoteDTO> dtos) {
-      try {
-        final List<CryptoQuoteEntity> entities = dtos
-            .map((final CryptoQuoteDTO dto) => dto.toEntity())
-            .toList();
-        return Right<Failure, List<CryptoQuoteEntity>>(entities);
-      } on Object catch (e, st) {
-        debugPrint('Error: $e');
-        debugPrintStack(stackTrace: st);
-        return const Left<Failure, List<CryptoQuoteEntity>>(Failure.parse());
-      }
-    });
+    return result.map(
+      (final List<CryptoQuoteDTO> dtos) =>
+          dtos.map((final CryptoQuoteDTO dto) => dto.toEntity()).toList(),
+    );
   }
 
   @override
@@ -44,14 +35,6 @@ class CryptoQuotesRepositoryImpl implements CryptoQuoteRepository {
       symbol,
     );
 
-    return result.fold(Left.new, (final CryptoQuoteDTO dto) {
-      try {
-        return Right<Failure, CryptoQuoteEntity>(dto.toEntity());
-      } on Object catch (e, st) {
-        debugPrint('Error: $e');
-        debugPrintStack(stackTrace: st);
-        return const Left<Failure, CryptoQuoteEntity>(Failure.parse());
-      }
-    });
+    return result.map((final CryptoQuoteDTO dto) => dto.toEntity());
   }
 }

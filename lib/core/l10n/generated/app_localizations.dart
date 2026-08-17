@@ -189,6 +189,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Appearance'**
   String get appearance;
+
+  /// Translation of 'Price History' for the detail screen
+  ///
+  /// In en, this message translates to:
+  /// **'Price History'**
+  String get priceHistory;
+
+  /// Translation of 'No favorites yet' for the favorites tab empty state
+  ///
+  /// In en, this message translates to:
+  /// **'No favorites yet'**
+  String get noFavoritesYet;
+
+  /// Translation of 'No data' for the kline chart empty state
+  ///
+  /// In en, this message translates to:
+  /// **'No data'**
+  String get noData;
 }
 
 class _AppLocalizationsDelegate

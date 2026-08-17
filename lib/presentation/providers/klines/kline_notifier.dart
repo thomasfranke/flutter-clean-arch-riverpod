@@ -18,15 +18,13 @@ class KlineNotifier extends _$KlineNotifier {
 
   @override
   KlineState build(final String symbol) {
-    unawaited(loadKlines(symbol: symbol, interval: _interval));
+    unawaited(loadKlines(interval: _interval));
     return const KlineState.loading();
   }
 
-  /// Loads klines for the given [symbol] and [interval].
-  Future<void> loadKlines({
-    required final String symbol,
-    required final String interval,
-  }) async {
+  /// Loads klines for [symbol] (the family argument this notifier is scoped
+  /// to) at the given [interval].
+  Future<void> loadKlines({required final String interval}) async {
     state = const KlineState.loading();
     _interval = interval;
 
@@ -36,14 +34,15 @@ class KlineNotifier extends _$KlineNotifier {
       interval: interval,
     );
 
+    if (!ref.mounted) {
+      return;
+    }
     state = result.fold(KlineState.failure, KlineState.success);
   }
 
   /// Switches to a new [interval] and reloads the klines.
-  Future<void> switchInterval({
-    required final String symbol,
-    required final String interval,
-  }) => loadKlines(symbol: symbol, interval: interval);
+  Future<void> switchInterval({required final String interval}) =>
+      loadKlines(interval: interval);
 
   /// The currently selected interval.
   String get currentInterval => _interval;

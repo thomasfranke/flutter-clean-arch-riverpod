@@ -53,4 +53,4 @@ final class KlineDatasourceProvider
   }
 }
 
-String _$klineDatasourceHash() => r'67a69ba12b132f164d6c8552fdf93450843074e1';
+String _$klineDatasourceHash() => r'9fadb25828824fc0928b678733f53aa354168721';

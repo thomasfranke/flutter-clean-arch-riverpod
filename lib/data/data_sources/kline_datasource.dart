@@ -1,20 +1,21 @@
+import 'dart:developer';
+
 import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_objects/kline_dto.dart';
-import 'package:flutter_clean_arch_riverpod/infrastructure/api_client/api_client_failure.dart';
-import 'package:flutter_clean_arch_riverpod/infrastructure/api_client/api_client_interface.dart';
-import 'package:flutter_clean_arch_riverpod/infrastructure/api_client/models/api_route.dart';
-import 'package:flutter_clean_arch_riverpod/infrastructure/api_client/models/http_methods.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_failure.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_interface.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/api_route.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/http_client_response.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/http_methods.dart';
 
 /// Datasource for fetching kline (candlestick) data from the Binance API.
 class KlineDatasource {
-  /// Creates a [KlineDatasource] with the required [ApiClientInterface].
-  const KlineDatasource({required this.apiClient});
+  /// Creates a [KlineDatasource] with the required [HttpClientInterface].
+  const KlineDatasource({required this.httpClient});
 
   /// The API client used to perform HTTP requests.
-  final ApiClientInterface apiClient;
+  final HttpClientInterface httpClient;
 
   /// Fetches klines for the given [symbol] and [interval] from the Binance
   /// API, returning either a [Failure] or a list of [KlineDTO].
@@ -23,8 +24,8 @@ class KlineDatasource {
     required final String interval,
     final int limit = 24,
   }) async {
-    final Either<ApiClientFailure, Response<dynamic>> result = await apiClient
-        .request(
+    final Either<HttpClientFailure, HttpClientResponse<dynamic>> result =
+        await httpClient.request(
           apiRoute: const ApiRoute('/api/v3/klines', HttpMethod.get),
           queryParameters: <String, dynamic>{
             'symbol': symbol,
@@ -34,9 +35,9 @@ class KlineDatasource {
         );
 
     return result.fold(
-      (final ApiClientFailure failure) =>
+      (final HttpClientFailure failure) =>
           Left<Failure, List<KlineDTO>>(failure.toDomainFailure()),
-      (final Response<dynamic> response) {
+      (final HttpClientResponse<dynamic> response) {
         try {
           final List<KlineDTO> klines = (response.data as List<dynamic>)
               .map<KlineDTO>(
@@ -45,8 +46,7 @@ class KlineDatasource {
               .toList();
           return Right<Failure, List<KlineDTO>>(klines);
         } on Object catch (e, st) {
-          debugPrint('Error: $e');
-          debugPrintStack(stackTrace: st);
+          log('Error: $e', name: 'KlineDatasource', error: e, stackTrace: st);
           return const Left<Failure, List<KlineDTO>>(Failure.parse());
         }
       },

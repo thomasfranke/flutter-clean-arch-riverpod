@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/l10n/generated/app_localizations.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/crypto_quote_entity.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/favorite_entity.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/crypto_quote/crypto_quote_notifier.dart';
@@ -29,11 +30,15 @@ class FavoritesTab extends ConsumerWidget {
         child: Text(failure.toString()),
       ),
       FavoritesStateSuccess(:final List<FavoriteEntity> favorites) =>
-        _buildList(ref, favorites),
+        _buildList(context, ref, favorites),
     };
   }
 
-  Widget _buildList(final WidgetRef ref, final List<FavoriteEntity> favorites) {
+  Widget _buildList(
+    final BuildContext context,
+    final WidgetRef ref,
+    final List<FavoriteEntity> favorites,
+  ) {
     final List<CryptoQuoteEntity> favoriteQuotes = quotes
         .where(
           (final CryptoQuoteEntity q) =>
@@ -42,13 +47,16 @@ class FavoritesTab extends ConsumerWidget {
         .toList();
 
     if (favoriteQuotes.isEmpty) {
-      return const Center(
+      return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Icon(Icons.star_outline, size: 48, color: Colors.grey),
-            SizedBox(height: 16),
-            Text('Nenhum favorito ainda', style: TextStyle(color: Colors.grey)),
+            const Icon(Icons.star_outline, size: 48, color: Colors.grey),
+            const SizedBox(height: 16),
+            Text(
+              AppLocalizations.of(context).noFavoritesYet,
+              style: const TextStyle(color: Colors.grey),
+            ),
           ],
         ),
       );

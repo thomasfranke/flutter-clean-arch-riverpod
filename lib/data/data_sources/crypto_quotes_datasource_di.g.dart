@@ -59,4 +59,4 @@ final class CryptoQuoteDatasourceProvider
 }
 
 String _$cryptoQuoteDatasourceHash() =>
-    r'dc37dbd0d45ca3cecc48975ad6d67707d0ae2bab';
+    r'583ffa321680cf5bb5052b294f7fb23a63f1d965';

@@ -52,4 +52,13 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get appearance => 'Aparência';
+
+  @override
+  String get priceHistory => 'Histórico de Preço';
+
+  @override
+  String get noFavoritesYet => 'Nenhum favorito ainda';
+
+  @override
+  String get noData => 'Sem dados';
 }

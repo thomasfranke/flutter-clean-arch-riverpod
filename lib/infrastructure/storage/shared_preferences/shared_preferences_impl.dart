@@ -1,5 +1,6 @@
+import 'dart:developer';
+
 import 'package:dartz/dartz.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/storage/storage_failure.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/storage/storage_interface.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,10 +12,28 @@ class SharedPreferencesImpl implements StorageInterface {
   SharedPreferencesImpl(this._prefs);
   final SharedPreferences _prefs;
 
+  /// Per-key write queues, used to serialize read-modify-write list
+  /// operations (add/remove/toggle) so concurrent calls for the same key
+  /// don't race on stale reads.
+  final Map<String, Future<void>> _listLocks = <String, Future<void>>{};
+
   /// Static method to create the instance asynchronously.
   static Future<SharedPreferencesImpl> create() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return SharedPreferencesImpl(prefs);
+  }
+
+  /// Runs [action] after any pending operation queued for [key] completes,
+  /// ensuring read-modify-write list operations for the same key never
+  /// interleave.
+  Future<T> _synchronized<T>(
+    final String key,
+    final Future<T> Function() action,
+  ) {
+    final Future<void> previous = _listLocks[key] ?? Future<void>.value();
+    final Future<T> result = previous.then((final _) => action());
+    _listLocks[key] = result.then((final _) {}, onError: (final _) {});
+    return result;
   }
 
   /// --- Setters ---p
@@ -27,8 +46,7 @@ class SharedPreferencesImpl implements StorageInterface {
       await _prefs.setString(key, value);
       return right(unit);
     } on Object catch (e, st) {
-      debugPrint('Error: $e');
-      debugPrintStack(stackTrace: st);
+      log('Error: $e', name: 'SharedPreferencesImpl', error: e, stackTrace: st);
       return left(const StorageFailure.write());
     }
   }
@@ -42,8 +60,7 @@ class SharedPreferencesImpl implements StorageInterface {
       await _prefs.setBool(key, value);
       return right(unit);
     } on Object catch (e, st) {
-      debugPrint('Error: $e');
-      debugPrintStack(stackTrace: st);
+      log('Error: $e', name: 'SharedPreferencesImpl', error: e, stackTrace: st);
       return left(const StorageFailure.write());
     }
   }
@@ -57,8 +74,7 @@ class SharedPreferencesImpl implements StorageInterface {
       await _prefs.setInt(key, value);
       return right(unit);
     } on Object catch (e, st) {
-      debugPrint('Error: $e');
-      debugPrintStack(stackTrace: st);
+      log('Error: $e', name: 'SharedPreferencesImpl', error: e, stackTrace: st);
       return left(const StorageFailure.write());
     }
   }
@@ -72,8 +88,7 @@ class SharedPreferencesImpl implements StorageInterface {
       await _prefs.setDouble(key, value);
       return right(unit);
     } on Object catch (e, st) {
-      debugPrint('Error: $e');
-      debugPrintStack(stackTrace: st);
+      log('Error: $e', name: 'SharedPreferencesImpl', error: e, stackTrace: st);
       return left(const StorageFailure.write());
     }
   }
@@ -85,8 +100,7 @@ class SharedPreferencesImpl implements StorageInterface {
       final String? value = _prefs.getString(key);
       return right(value);
     } on Object catch (e, st) {
-      debugPrint('Error: $e');
-      debugPrintStack(stackTrace: st);
+      log('Error: $e', name: 'SharedPreferencesImpl', error: e, stackTrace: st);
       return left(const StorageFailure.read());
     }
   }
@@ -97,8 +111,7 @@ class SharedPreferencesImpl implements StorageInterface {
       final bool? value = _prefs.getBool(key);
       return right(value);
     } on Object catch (e, st) {
-      debugPrint('Error: $e');
-      debugPrintStack(stackTrace: st);
+      log('Error: $e', name: 'SharedPreferencesImpl', error: e, stackTrace: st);
       return left(const StorageFailure.read());
     }
   }
@@ -109,8 +122,7 @@ class SharedPreferencesImpl implements StorageInterface {
       final int? value = _prefs.getInt(key);
       return right(value);
     } on Object catch (e, st) {
-      debugPrint('Error: $e');
-      debugPrintStack(stackTrace: st);
+      log('Error: $e', name: 'SharedPreferencesImpl', error: e, stackTrace: st);
       return left(const StorageFailure.read());
     }
   }
@@ -121,8 +133,7 @@ class SharedPreferencesImpl implements StorageInterface {
       final double? value = _prefs.getDouble(key);
       return right(value);
     } on Object catch (e, st) {
-      debugPrint('Error: $e');
-      debugPrintStack(stackTrace: st);
+      log('Error: $e', name: 'SharedPreferencesImpl', error: e, stackTrace: st);
       return left(const StorageFailure.read());
     }
   }
@@ -137,8 +148,7 @@ class SharedPreferencesImpl implements StorageInterface {
       await _prefs.setStringList(key, value);
       return right(value);
     } on Object catch (e, st) {
-      debugPrint('Error: $e');
-      debugPrintStack(stackTrace: st);
+      log('Error: $e', name: 'SharedPreferencesImpl', error: e, stackTrace: st);
       return left(const StorageFailure.write());
     }
   }
@@ -149,8 +159,7 @@ class SharedPreferencesImpl implements StorageInterface {
       final List<String> value = _prefs.getStringList(key) ?? <String>[];
       return right(value);
     } on Object catch (e, st) {
-      debugPrint('Error: $e');
-      debugPrintStack(stackTrace: st);
+      log('Error: $e', name: 'SharedPreferencesImpl', error: e, stackTrace: st);
       return left(const StorageFailure.read());
     }
   }
@@ -159,7 +168,7 @@ class SharedPreferencesImpl implements StorageInterface {
   Future<Either<StorageFailure, List<String>>> addToList({
     required final String key,
     required final String value,
-  }) async {
+  }) => _synchronized(key, () async {
     try {
       final List<String> currentList = List<String>.from(
         _prefs.getStringList(key) ?? <String>[],
@@ -172,17 +181,16 @@ class SharedPreferencesImpl implements StorageInterface {
 
       return right(currentList);
     } on Object catch (e, st) {
-      debugPrint('Error: $e');
-      debugPrintStack(stackTrace: st);
+      log('Error: $e', name: 'SharedPreferencesImpl', error: e, stackTrace: st);
       return left(const StorageFailure.write());
     }
-  }
+  });
 
   @override
   Future<Either<StorageFailure, List<String>>> removeFromList({
     required final String key,
     required final String value,
-  }) async {
+  }) => _synchronized(key, () async {
     try {
       final List<String> currentList = List<String>.from(
         _prefs.getStringList(key) ?? <String>[],
@@ -191,11 +199,34 @@ class SharedPreferencesImpl implements StorageInterface {
       await _prefs.setStringList(key, currentList);
       return right(currentList);
     } on Object catch (e, st) {
-      debugPrint('Error: $e');
-      debugPrintStack(stackTrace: st);
+      log('Error: $e', name: 'SharedPreferencesImpl', error: e, stackTrace: st);
       return left(const StorageFailure.write());
     }
-  }
+  });
+
+  @override
+  Future<Either<StorageFailure, List<String>>> toggleInList({
+    required final String key,
+    required final String value,
+  }) => _synchronized(key, () async {
+    try {
+      final List<String> currentList = List<String>.from(
+        _prefs.getStringList(key) ?? <String>[],
+      );
+
+      if (currentList.contains(value)) {
+        currentList.remove(value);
+      } else {
+        currentList.add(value);
+      }
+
+      await _prefs.setStringList(key, currentList);
+      return right(currentList);
+    } on Object catch (e, st) {
+      log('Error: $e', name: 'SharedPreferencesImpl', error: e, stackTrace: st);
+      return left(const StorageFailure.write());
+    }
+  });
 
   /// --- Remove ---
   @override
@@ -206,8 +237,7 @@ class SharedPreferencesImpl implements StorageInterface {
       await _prefs.remove(key);
       return right(unit);
     } on Object catch (e, st) {
-      debugPrint('Error: $e');
-      debugPrintStack(stackTrace: st);
+      log('Error: $e', name: 'SharedPreferencesImpl', error: e, stackTrace: st);
       return left(const StorageFailure.remove());
     }
   }
@@ -218,8 +248,7 @@ class SharedPreferencesImpl implements StorageInterface {
       await _prefs.clear();
       return right(unit);
     } on Object catch (e, st) {
-      debugPrint('Error: $e');
-      debugPrintStack(stackTrace: st);
+      log('Error: $e', name: 'SharedPreferencesImpl', error: e, stackTrace: st);
       return left(const StorageFailure.clear());
     }
   }

@@ -59,4 +59,4 @@ final class UpdateLocaleUseCaseProvider
 }
 
 String _$updateLocaleUseCaseHash() =>
-    r'39f4e48ad06dcfb24feeb6df6ab0c7c1a8fdb0cd';
+    r'61f6842d1499fc3a014608ff530f9ee08a802ef5';

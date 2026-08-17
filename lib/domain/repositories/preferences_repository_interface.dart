@@ -10,7 +10,15 @@ abstract interface class PreferencesRepository {
   /// [PreferencesEntity] entity.
   Future<Either<Failure, PreferencesEntity>> getPreferences();
 
-  /// Saves the given [preferences], returning either a [Failure] or a
+  /// Saves only the locale preference, returning either a [Failure] or a
   /// [Unit] to indicate success.
-  Future<Either<Failure, Unit>> savePreferences(PreferencesEntity preferences);
+  Future<Either<Failure, Unit>> saveLocale(String locale);
+
+  /// Saves only the dark mode preference, returning either a [Failure] or a
+  /// [Unit] to indicate success.
+  Future<Either<Failure, Unit>> saveDarkMode(bool darkMode);
+
+  /// Saves only the font scale preference, returning either a [Failure] or a
+  /// [Unit] to indicate success.
+  Future<Either<Failure, Unit>> saveFontScale(double fontScale);
 }

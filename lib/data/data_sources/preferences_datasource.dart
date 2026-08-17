@@ -1,7 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_objects/preferences_dao.dart';
-import 'package:flutter_clean_arch_riverpod/domain/entities/preferences_entity.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/storage/storage_failure.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/storage/storage_interface.dart';
 
@@ -22,10 +21,7 @@ class PreferencesDatasource {
 
     if (localeResult.isLeft()) {
       return Left<Failure, PreferencesDAO>(
-        localeResult.fold(
-          (StorageFailure failure) => failure.toDomainFailure(),
-          (_) => const Failure.storage(),
-        ),
+        (localeResult as Left<StorageFailure, String?>).value.toDomainFailure(),
       );
     }
 
@@ -35,10 +31,7 @@ class PreferencesDatasource {
 
     if (darkModeResult.isLeft()) {
       return Left<Failure, PreferencesDAO>(
-        darkModeResult.fold(
-          (StorageFailure failure) => failure.toDomainFailure(),
-          (_) => const Failure.storage(),
-        ),
+        (darkModeResult as Left<StorageFailure, bool?>).value.toDomainFailure(),
       );
     }
 
@@ -48,10 +41,8 @@ class PreferencesDatasource {
 
     if (fontScaleResult.isLeft()) {
       return Left<Failure, PreferencesDAO>(
-        fontScaleResult.fold(
-          (StorageFailure failure) => failure.toDomainFailure(),
-          (_) => const Failure.storage(),
-        ),
+        (fontScaleResult as Left<StorageFailure, double?>).value
+            .toDomainFailure(),
       );
     }
 
@@ -64,35 +55,36 @@ class PreferencesDatasource {
     );
   }
 
-  /// Saves user preferences to storage using the provided
-  /// [PreferencesDAO].
-  Future<Either<Failure, Unit>> savePreferences(
-    final PreferencesDAO dao,
-  ) async {
-    final List<Either<StorageFailure, Unit>> results =
-        await Future.wait(<Future<Either<StorageFailure, Unit>>>[
-          storage.setString(
-            key: 'pref_locale',
-            value: dao.locale ?? PreferencesEntity.defaults().locale,
-          ),
-          storage.setBool(
-            key: 'pref_dark_mode',
-            value: dao.darkMode ?? PreferencesEntity.defaults().darkMode,
-          ),
-          storage.setDouble(
-            key: 'pref_font_scale',
-            value: dao.fontScale ?? PreferencesEntity.defaults().fontScale,
-          ),
-        ]);
+  /// Saves only the locale preference to storage.
+  Future<Either<Failure, Unit>> saveLocale(final String locale) async {
+    final Either<StorageFailure, Unit> result = await storage.setString(
+      key: 'pref_locale',
+      value: locale,
+    );
+    return result.leftMap(
+      (final StorageFailure failure) => failure.toDomainFailure(),
+    );
+  }
 
-    final Left<StorageFailure, Unit>? failure = results
-        .whereType<Left<StorageFailure, Unit>>()
-        .firstOrNull;
+  /// Saves only the dark mode preference to storage.
+  Future<Either<Failure, Unit>> saveDarkMode(final bool darkMode) async {
+    final Either<StorageFailure, Unit> result = await storage.setBool(
+      key: 'pref_dark_mode',
+      value: darkMode,
+    );
+    return result.leftMap(
+      (final StorageFailure failure) => failure.toDomainFailure(),
+    );
+  }
 
-    if (failure != null) {
-      return Left<Failure, Unit>(failure.value.toDomainFailure());
-    }
-
-    return const Right<Failure, Unit>(unit);
+  /// Saves only the font scale preference to storage.
+  Future<Either<Failure, Unit>> saveFontScale(final double fontScale) async {
+    final Either<StorageFailure, Unit> result = await storage.setDouble(
+      key: 'pref_font_scale',
+      value: fontScale,
+    );
+    return result.leftMap(
+      (final StorageFailure failure) => failure.toDomainFailure(),
+    );
   }
 }

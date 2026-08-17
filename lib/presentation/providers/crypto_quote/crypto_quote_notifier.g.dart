@@ -48,7 +48,7 @@ final class CryptoQuoteNotifierProvider
 }
 
 String _$cryptoQuoteNotifierHash() =>
-    r'e5a6c8f6a88f781d123908fe51433908f92dc2ce';
+    r'69bf45f70edc77a18d8f99c24a9fbb639ea89639';
 
 /// Notifier for managing the state of crypto quotes, including fetching and
 /// error handling.
