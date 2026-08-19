@@ -1,74 +1,12 @@
 # Flutter: Clean Arch + Riverpod
 
-A simple Flutter app built to demonstrate **Clean Architecture** in practice, using **Riverpod** for state management/DI and **AutoRoute** for navigation. It's a small crypto quotes app — intentionally simple so the architecture, not the feature set, stays the focus.
+A simple Flutter app built to demonstrate **Clean Architecture** in practice, using **Riverpod** for state management/DI and **AutoRoute** for navigation. It's a small crypto quotes app. Intentionally simple so the architecture, not the feature set, stays the focus.
 
 <p align="center">
   <img src="docs/demo.gif" alt="Demo: switching to dark mode and English, browsing and filtering live quotes, opening a detail chart, and favoriting a symbol" width="300">
 </p>
 
-<sub>Screen recording of the E2E suite (`integration_test/app_test.dart`) driving the real app against the live Binance API on an Android emulator — no mockups, no hand-held demo.</sub>
-
-## Features
-
-- Live crypto quotes list with pull-to-refresh and symbol filtering
-- Quote detail screen with a candlestick (kline) chart
-- Favorite/unfavorite quotes, with a dedicated favorites tab
-- User preferences: dark mode, font scale, and locale
-- Internationalization (English, Spanish, Portuguese)
-
-## Screens
-
-| Quotes list | Detail & chart | Favorites | Settings |
-|:---:|:---:|:---:|:---:|
-| <img src="docs/screens/quotes.png" width="190" alt="Live crypto quotes list with symbol filter"> | <img src="docs/screens/detail.png" width="190" alt="Quote detail with price history chart and interval selector"> | <img src="docs/screens/favorites.png" width="190" alt="Favorites tab"> | <img src="docs/screens/preferences.png" width="190" alt="Settings: dark mode, font scale and language"> |
-
-## Getting Started
-
-### Prerequisites
-
-- [FVM](https://fvm.app/) (Flutter Version Management) — used to pin the exact Flutter version this project targets.
-
-### 1. Configure the Flutter environment
-
-```bash
-make fvm
-```
-
-This installs FVM (if needed) and pins the Flutter SDK to the version this project expects (see `.fvmrc`), so your local `flutter` matches what CI/other contributors use.
-
-### 2. Generate code and install dependencies
-
-```bash
-make runner
-```
-
-Runs `build_runner build` (generates `.freezed.dart`/`.g.dart`/`.gr.dart` files), then `flutter clean` + `flutter pub get`.
-
-```bash
-make l10n
-```
-
-Generates the localization classes (`AppLocalizations` and friends) from the `.arb` files.
-
-Run both once after cloning, and again whenever generated code needs to be rebuilt from scratch. If generated files get into a broken state, `make runner-hard` deletes all of them first before regenerating.
-
-### 3. Run the app
-
-```bash
-flutter run
-```
-
-### 4. Run the tests
-
-```bash
-make flutter-test              # test/ — unit + widget + integration, with an HTML coverage report
-make flutter-test-unit         # test/unit only — every class in isolation
-make flutter-test-widget       # test/widget only — screens and widgets, mocked
-make flutter-test-integration  # test/integration only — real cross-layer flows
-make flutter-test-e2e          # integration_test/ — the real app on a device/emulator
-```
-
-The first four run on the host Dart VM and open the generated HTML coverage report (`coverage/html/**/index.html`) when they finish. `make flutter-test-e2e` needs a connected device or emulator and produces no coverage. See [Four Test Levels, 100% Coverage](#four-test-levels-100-coverage) for what each level actually covers.
+<sub>Screen recording of the E2E suite (`integration_test/app_test.dart`) driving the real app against the live Binance API on an Android emulator. No mockups, no hand-held demo.</sub>
 
 ## Architecture at a Glance
 
@@ -85,13 +23,12 @@ flowchart TB
     application --> domain
     data --> domain
     data --> infrastructure
-    application -.->|DI wiring only| data
 ```
 
-Arrows point from the dependent to the dependency, so they all run toward `domain` — the center of the app. Two details the plain rule doesn't capture:
+Arrows point from the dependent to the dependency, so they all run toward `domain` — the center of the app. Two details the plain rule doesn't capture (and that the diagram, kept to real architectural dependencies, leaves out):
 
 - **`data` depends on `infrastructure`**, because the contracts (`HttpClientInterface`, `StorageInterface`) live in `infrastructure/` rather than in an inner layer. A strict reading of the Dependency Rule would invert this; the tradeoff is discussed under [Architecture](#architecture).
-- **`application` reaches `data`** in its `*_di.dart` files only — the composition root, never the use cases themselves.
+- **`application` reaches `data`** in its `*_di.dart` files only — the composition root, never the use cases themselves. This wiring is a Riverpod implementation detail, not a layer dependency, so it's omitted from the graph above.
 
 `core/` is left out of the graph on purpose: every layer imports it, so drawing it adds five arrows that say nothing about the dependency order. See [Why `core/` has no layer](#why-core-has-no-layer).
 
@@ -99,7 +36,7 @@ Arrows point from the dependent to the dependency, so they all run toward `domai
 
 This project follows **Clean Architecture** with **DDD (Domain-Driven Design)** influences.
 
-The two are not complementary halves of one model — they're competing vocabularies that each cover the whole app. Evans' layered architecture (DDD, 2003, ch. 4) names four layers: User Interface, Application, Domain, Infrastructure. Uncle Bob's Clean Architecture names four concentric rings: Entities, Use Cases, Interface Adapters, Frameworks & Drivers. In a codebase this size they land on the same partition, so this project uses one set of folders and both sets of names map onto it:
+The two are not complementary halves of one model — they're competing vocabularies that each cover the whole app. Evans' layered architecture names four layers: User Interface, Application, Domain, Infrastructure. Uncle Bob's Clean Architecture names four concentric rings: Entities, Use Cases, Interface Adapters, Frameworks & Drivers. In a codebase this size they land on the same partition, so this project uses one set of folders and both sets of names map onto it:
 
 | Folder | Responsibility | DDD layer | Clean Arch ring |
 |---|---|---|---|
@@ -111,16 +48,6 @@ The two are not complementary halves of one model — they're competing vocabula
 | `core/` | Cross-cutting utilities (config, failures, l10n, theme, routing) | — | — |
 
 One deviation worth naming: **splitting the outer ring into `data/` and `infrastructure/` is this project's own choice**, not something either author prescribes. In both models, repository implementations and the Dio wrapper belong to the same layer. The split — repository impls near the domain, raw SDK wrappers pushed one step further out — is a convention from the Flutter/Android community, and it's what keeps `data/` free of any direct `dio` or `shared_preferences` import.
-
-That split comes with a tradeoff the diagram above makes visible: `HttpClientInterface` and `StorageInterface` live in `infrastructure/`, so `data/` imports the outer folder to reach them. Textbook dependency inversion would move those contracts inward — `data/` would declare what it needs and `infrastructure/` would implement it, the same way `domain/` declares its repository contracts. The current arrangement keeps each external concern (contract, implementation, failure type) in one folder, at the cost of one outward-pointing dependency.
-
-### Why `core/` has no layer
-
-`core/` is a root folder like the other five, but it isn't a layer — hence the dashes above. It has no single position in the dependency order because its contents sit at different altitudes: `failures/` is domain vocabulary, `l10n/` and `theme/` and `routes/` are presentation concerns, `constants/` is config. Every layer may import from it, and that's the whole contract. Giving it a row in the DDD or Clean Arch columns would imply a place in the dependency chain that it doesn't have.
-
-### Dependency injection
-
-DI (via Riverpod) is not a layer either — each `*_di.dart` file lives next to the implementation it wires up (e.g. `favorites_repository_impl_di.dart` sits beside `favorites_repository_impl.dart`). This makes `application/*_di.dart` the composition root for `data/`: those files import concrete repository implementations, which is the one place a use case's folder reaches outward. The use cases themselves depend only on `domain/` contracts.
 
 ---
 
@@ -204,12 +131,69 @@ Only `presentation/providers` uses Riverpod for actual UI state — each feature
 
 Routing is centralized in `core/routes/auto_route.dart`, where a single `AppRouter extends RootStackRouter` declares every screen as an `AutoRoute` entry. Screens themselves are unaware of routing — `auto_route_generator` reads `@RoutePage()` annotations on the screens in `presentation/screens` and generates the matching `*Route` classes in `auto_route.gr.dart`. The router is itself exposed through Riverpod (`routes_di.dart`):
 
+AutoRoute was chosen because it enforces strong typing on route parameters, leaning on one of Dart's strongest properties to save a lot of headaches in larger applications.
+
 ```dart
 @riverpod
 AppRouter appRouter(final Ref ref) => AppRouter();
 ```
 
 `main.dart` watches `appRouterProvider` and feeds `appRouter.config()` into `MaterialApp.router`, keeping navigation state Riverpod-managed alongside everything else.
+
+## Features
+
+- Live crypto quotes list with pull-to-refresh and symbol filtering
+- Quote detail screen with a candlestick (kline) chart
+- Favorite/unfavorite quotes, with a dedicated favorites tab
+- User preferences: dark mode, font scale, and locale
+- Internationalization (English, Spanish, Portuguese)
+
+## Screens
+
+| Quotes list | Detail & chart | Favorites | Settings |
+|:---:|:---:|:---:|:---:|
+| <img src="docs/screens/quotes.png" width="190" alt="Live crypto quotes list with symbol filter"> | <img src="docs/screens/detail.png" width="190" alt="Quote detail with price history chart and interval selector"> | <img src="docs/screens/favorites.png" width="190" alt="Favorites tab"> | <img src="docs/screens/preferences.png" width="190" alt="Settings: dark mode, font scale and language"> |
+
+## Getting Started
+
+### Prerequisites
+
+- [FVM](https://fvm.app/) (Flutter Version Management) — used to pin the exact Flutter version this project targets.
+
+### 1. Configure the Flutter environment
+
+```bash
+make fvm
+```
+
+This installs FVM (if needed) and pins the Flutter SDK to the version this project expects (see `.fvmrc`), so your local `flutter` matches what CI/other contributors use.
+
+### 2. Run the app
+
+```bash
+flutter run
+```
+
+Generated code (`.freezed.dart`/`.g.dart`/`.gr.dart`, l10n's `generated/`) is committed to the repo, so this works right after `flutter pub get` — no code generation needed to get started. If you change anything those files are generated from (entities, `@riverpod` providers, routes, `.arb` strings), regenerate with:
+
+```bash
+make runner   # build_runner build, then flutter clean + flutter pub get
+make l10n     # regenerates AppLocalizations from the .arb files
+```
+
+`make runner-hard` deletes all generated files first if they get into a broken state.
+
+### 3. Run the tests
+
+```bash
+make flutter-test              # test/ — unit + widget + integration, with an HTML coverage report
+make flutter-test-unit         # test/unit only — every class in isolation
+make flutter-test-widget       # test/widget only — screens and widgets, mocked
+make flutter-test-integration  # test/integration only — real cross-layer flows
+make flutter-test-e2e          # integration_test/ — the real app on a device/emulator
+```
+
+The first four run on the host Dart VM and open the generated HTML coverage report (`coverage/html/**/index.html`) when they finish. `make flutter-test-e2e` needs a connected device or emulator and produces no coverage. See [Four Test Levels, 100% Coverage](#four-test-levels-100-coverage) for what each level actually covers.
 
 ## Four Test Levels, 100% Coverage
 
@@ -245,8 +229,6 @@ make flutter-test-unit     # partial by design: no screens/widgets
 make flutter-test-widget   # partial by design: UI only
 ```
 
-Each target overwrites `coverage/lcov.info` and writes its HTML to its own subfolder, so a single-level run leaves a partial report behind — use `make flutter-test` for the number that matters. Integration tests add no new lines to the total; they re-cover code the other two already reach, along different paths.
-
 One note on what that 100% measures: `flutter test --coverage` only instruments files a test actually imports, so a file nothing imports is absent from the denominator rather than counted as zero. Every `lib/` file that has executable lines is in the report — including `main.dart` (24/24, via `test/widget/main_test.dart`) and `core/theme/app_theme.dart` (4/4). The 19 files still absent contain no executable code at all: repository interfaces, `freezed` entity/state declarations, and `static const` holders like `app_colors.dart` — imported by tests, but with nothing for lcov to count.
 
 ### Widget Tests
@@ -264,8 +246,6 @@ Widget tests need something unit tests don't: a runtime. `test/widget/test_helpe
 ### Integration Tests
 
 Integration tests wire up the **real** classes across layers (use case → repository → data source) and fake only the boundary the app has no control over: the network (`HttpClientInterface`) or local persistence (`SharedPreferences`'s platform channel). Each flow test builds its stack exactly the way the matching `*_di.dart` file wires it in the app. This catches bugs mocked unit tests structurally can't — a DTO that no longer matches what its repository expects will pass every unit test and fail here.
-
-Worth naming precisely: these are **narrow** integration tests (sometimes called *sociable* unit tests). They integrate the layers of *this codebase* with each other; they do not stand up real external infrastructure. Nothing here talks to Binance, and no data reaches disk — for that, see the E2E level. The one exception is `dio_retry_flow_test.dart`, which runs the real retry interceptor against a real local `HttpServer` with no fakes at all.
 
 | File | Tests | What it exercises |
 |---|---|---|
@@ -293,4 +273,3 @@ flutter test integration_test/app_test.dart -d emulator-5554 # a specific one
 ## License
 
 Released under the [MIT License](LICENSE).
-
