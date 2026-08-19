@@ -24,11 +24,9 @@ flowchart TB
     data <--> infrastructure
 ```
 
-## Architecture
+## Architecture: Clean Arch, DDD, Community standards, Google guidelines
 
-This project follows **Clean Architecture** with **DDD (Domain-Driven Design)** influences.
-
-The two are not complementary halves of one model — they're competing vocabularies that each cover the whole app. Evans' layered architecture names four layers: User Interface, Application, Domain, Infrastructure. Uncle Bob's Clean Architecture names four concentric rings: Entities, Use Cases, Interface Adapters, Frameworks & Drivers. In a codebase this size they land on the same partition, so this project uses one set of folders and both sets of names map onto it:
+No single source dictated this folder structure. It draws evenly from four references — Evans' DDD layers, Uncle Bob's Clean Architecture rings, Flutter/Android community conventions, and Google's own Flutter architecture guidelines — adapted and mixed to fit a small Flutter app rather than followed to the letter. DDD and Clean Architecture land on the same partition here, so both sets of names map onto one set of folders:
 
 | Folder | Responsibility | DDD layer | Clean Arch ring |
 |---|---|---|---|
@@ -39,7 +37,8 @@ The two are not complementary halves of one model — they're competing vocabula
 | `infrastructure/` | Raw external dependencies (Dio, SharedPreferences), reached only through contracts (`HttpClientInterface`, `StorageInterface`) so they can be swapped without touching repository logic | Infrastructure | Frameworks & Drivers |
 | `core/` | Cross-cutting utilities (config, failures, l10n, theme, routing) | — | — |
 
-One deviation worth naming: **splitting the outer ring into `data/` and `infrastructure/` is this project's own choice**, not something either author prescribes. In both models, repository implementations and the Dio wrapper belong to the same layer. The split — repository impls near the domain, raw SDK wrappers pushed one step further out — is a convention from the Flutter/Android community, and it's what keeps `data/` free of any direct `dio` or `shared_preferences` import.
+The one deviation worth naming: splitting the outer ring into `data/` and `infrastructure/` isn't something DDD or Clean Architecture prescribes on its own — it's the community-convention half of the mix, and it's what keeps `data/` free of any direct `dio` or `shared_preferences` import.
+
 
 ---
 
