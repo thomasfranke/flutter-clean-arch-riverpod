@@ -12,19 +12,17 @@ A simple Flutter app built to demonstrate **Clean Architecture** in practice, us
 
 ```mermaid
 flowchart TB
-    presentation["**presentation**\nUI & state"]
-    application["**application**\nuse case orchestration"]
     domain["**domain**\nentities & contracts"]
+    application["**application**\nuse case orchestration"]
     data["**data**\nrepository impls"]
+    presentation["**presentation**\nUI & state"]
     infrastructure["**infrastructure**\nexternal services"]
 
-    presentation --> application
-    application --> domain
-    domain --> data
-    data --> infrastructure
+    domain <--> application
+    domain <--> data
+    application <--> presentation
+    data <--> infrastructure
 ```
-
-`domain` sits at the center of the chain on purpose. `presentation → application → domain` reads as real import direction — each arrow points to what's imported. `domain → data → infrastructure` reads the opposite way: it's `data` that imports `domain` and `infrastructure`, not the other way around; those two arrows trace ring order outward from the core rather than import direction. See [Architecture](#architecture) for the actual import direction of every layer.
 
 ## Architecture
 
