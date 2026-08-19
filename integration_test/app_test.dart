@@ -12,10 +12,14 @@ import 'package:integration_test/integration_test.dart';
 ///
 /// Runs the real app against the public Binance data API (no mocks, no
 /// backend to stand up) and walks the full user journey: switch to dark mode
-/// right away (so the rest of the demo looks better), browse and filter
-/// quotes, favorite one from the list, open its detail screen and switch the
-/// chart interval, pull-to-refresh, unfavorite it from the Favorites tab,
-/// and finish by adjusting font scale and language in Preferences.
+/// and English right away (so the rest of the demo looks better and matches
+/// the language the docs are written in), browse and filter quotes, favorite
+/// one from the list, open its detail screen and switch the chart interval,
+/// pull-to-refresh, unfavorite it from the Favorites tab, and finish by
+/// adjusting font scale and language in Preferences.
+///
+/// The README's demo GIF and screenshots under `docs/` are frames of this
+/// script running, which is why it opens by setting those two preferences.
 ///
 /// Error/failure states are intentionally not covered here — they're already
 /// exercised by the mocked widget tests under test/widget/, which can force
@@ -33,7 +37,14 @@ void main() {
     await tester.pumpAndSettle();
 
     // --- 1. Home: the public quotes list loads over the network. ---
-    await _pumpUntilFound(tester, find.byType(QuoteTile));
+    // Generous timeout: `/api/v3/ticker/24hr` with no symbol returns every
+    // ticker Binance has — ~1.9MB of JSON — and deserializing that many DTOs
+    // on an emulator regularly takes longer than the default 30s.
+    await _pumpUntilFound(
+      tester,
+      find.byType(QuoteTile),
+      timeout: const Duration(seconds: 120),
+    );
 
     // --- 2. Switch to dark mode right away, purely so the rest of the demo
     // runs in dark mode. ---
@@ -43,13 +54,34 @@ void main() {
     await _settle(tester);
 
     await tester.tap(find.byType(SwitchListTile));
+    // Wait on the theme itself, not on the switch's value: the switch flips
+    // as soon as the tap is handled, while the brightness only changes once
+    // the preference round-trips through storage and rebuilds MyApp.
     await _pumpUntil(
       tester,
-      () => tester.widget<SwitchListTile>(find.byType(SwitchListTile)).value,
+      () =>
+          Theme.of(tester.element(find.byType(Scaffold).first)).brightness ==
+          Brightness.dark,
     );
     expect(
-      Theme.of(tester.element(find.byType(Scaffold).first)).brightness,
-      Brightness.dark,
+      tester.widget<SwitchListTile>(find.byType(SwitchListTile)).value,
+      isTrue,
+    );
+
+    // Switch to English for the same reason as dark mode: the rest of the
+    // demo (and the README screenshots recorded from it) then matches the
+    // language the docs are written in. The language names themselves are
+    // never translated, so these finders hold in any locale.
+    await tester.tap(find.text('English'));
+    await _pumpUntilFound(
+      tester,
+      find.descendant(
+        of: find.ancestor(
+          of: find.text('English'),
+          matching: find.byType(ListTile),
+        ),
+        matching: find.byIcon(Icons.check),
+      ),
     );
 
     await tester.tap(find.byIcon(Icons.arrow_back));
@@ -187,23 +219,25 @@ void main() {
           tester.widget<Slider>(find.byType(Slider)).value != initialFontScale,
     );
 
-    await tester.tap(find.text('English'));
-    await _pumpUntilFound(
-      tester,
-      find.descendant(
-        of: find.ancestor(
-          of: find.text('English'),
-          matching: find.byType(ListTile),
-        ),
-        matching: find.byIcon(Icons.check),
-      ),
-    );
+    // Switch away and back, so the demo shows the whole UI re-render in
+    // another language and still finishes in English.
     await tester.tap(find.text('Português'));
     await _pumpUntilFound(
       tester,
       find.descendant(
         of: find.ancestor(
           of: find.text('Português'),
+          matching: find.byType(ListTile),
+        ),
+        matching: find.byIcon(Icons.check),
+      ),
+    );
+    await tester.tap(find.text('English'));
+    await _pumpUntilFound(
+      tester,
+      find.descendant(
+        of: find.ancestor(
+          of: find.text('English'),
           matching: find.byType(ListTile),
         ),
         matching: find.byIcon(Icons.check),

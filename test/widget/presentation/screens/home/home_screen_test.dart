@@ -242,6 +242,39 @@ void main() {
       expect(find.byType(PreferencesScreen), findsOneWidget);
     });
 
+    testWidgets('closes the drawer before navigating away from it', (
+      final WidgetTester tester,
+    ) async {
+      when(() => cryptoQuoteRepository.getQuotes()).thenAnswer(
+        (_) async => const Right<Failure, List<CryptoQuoteEntity>>(
+          <CryptoQuoteEntity>[tQuote],
+        ),
+      );
+
+      await pumpRoutedApp(tester, overrides: overrides());
+      await tester.pump();
+      await tester.pump();
+
+      await tester.tap(find.byIcon(Icons.menu));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Settings'));
+      await tester.pumpAndSettle();
+
+      await tester.pageBack();
+      await tester.pumpAndSettle();
+
+      // Regression: pushing on top of an open drawer used to leave its
+      // ModalBarrier mounted, so coming back to the home screen left every
+      // tap on the quotes list being swallowed by an invisible scrim.
+      expect(find.byType(PreferencesScreen), findsNothing);
+      expect(find.byType(Drawer), findsNothing);
+
+      await tester.tap(find.text('BTCUSDT'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(CryptoQuoteDetailScreen), findsOneWidget);
+    });
+
     testWidgets(
       'tapping a favorite quote unfavorites it and it disappears from the tab',
       (final WidgetTester tester) async {

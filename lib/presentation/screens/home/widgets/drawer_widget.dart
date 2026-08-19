@@ -31,7 +31,14 @@ class AppDrawer extends StatelessWidget {
         ListTile(
           leading: const Icon(Icons.settings),
           title: Text(AppLocalizations.of(context).settings),
-          onTap: () async => context.router.push(const PreferencesRoute()),
+          onTap: () async {
+            // Close the drawer before navigating. Pushing on top of an open
+            // drawer leaves its ModalBarrier mounted underneath, and once the
+            // pushed route is popped that barrier swallows every tap on the
+            // home screen.
+            Scaffold.of(context).closeDrawer();
+            context.router.push(const PreferencesRoute());
+          },
         ),
       ],
     ),

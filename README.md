@@ -1,6 +1,12 @@
-# flutter_clean_arch_riverpod
+# Flutter: Clean Arch + Riverpod
 
 A simple Flutter app built to demonstrate **Clean Architecture** in practice, using **Riverpod** for state management/DI and **AutoRoute** for navigation. It's a small crypto quotes app — intentionally simple so the architecture, not the feature set, stays the focus.
+
+<p align="center">
+  <img src="docs/demo.gif" alt="Demo: switching to dark mode and English, browsing and filtering live quotes, opening a detail chart, and favoriting a symbol" width="300">
+</p>
+
+<sub>Screen recording of the E2E suite (`integration_test/app_test.dart`) driving the real app against the live Binance API on an Android emulator — no mockups, no hand-held demo.</sub>
 
 ## Features
 
@@ -9,6 +15,12 @@ A simple Flutter app built to demonstrate **Clean Architecture** in practice, us
 - Favorite/unfavorite quotes, with a dedicated favorites tab
 - User preferences: dark mode, font scale, and locale
 - Internationalization (English, Spanish, Portuguese)
+
+## Screens
+
+| Quotes list | Detail & chart | Favorites | Settings |
+|:---:|:---:|:---:|:---:|
+| <img src="docs/screens/quotes.png" width="190" alt="Live crypto quotes list with symbol filter"> | <img src="docs/screens/detail.png" width="190" alt="Quote detail with price history chart and interval selector"> | <img src="docs/screens/favorites.png" width="190" alt="Favorites tab"> | <img src="docs/screens/preferences.png" width="190" alt="Settings: dark mode, font scale and language"> |
 
 ## Getting Started
 
@@ -56,7 +68,7 @@ make flutter-test-integration  # test/integration only — real cross-layer flow
 make flutter-test-e2e          # integration_test/ — the real app on a device/emulator
 ```
 
-The first four run on the host Dart VM and open the generated HTML coverage report (`coverage/html/**/index.html`) when they finish. `make flutter-test-e2e` needs a connected device or emulator and produces no coverage. See [Tests](#tests) for what each level actually covers.
+The first four run on the host Dart VM and open the generated HTML coverage report (`coverage/html/**/index.html`) when they finish. `make flutter-test-e2e` needs a connected device or emulator and produces no coverage. See [Four Test Levels, 100% Coverage](#four-test-levels-100-coverage) for what each level actually covers.
 
 ## Architecture at a Glance
 
@@ -74,13 +86,6 @@ flowchart TB
     data --> domain
     data --> infrastructure
     application -.->|DI wiring only| data
-
-    core["**core**\nshared utilities"]
-    presentation -.-> core
-    application -.-> core
-    domain -.-> core
-    data -.-> core
-    infrastructure -.-> core
 ```
 
 Arrows point from the dependent to the dependency, so they all run toward `domain` — the center of the app. Two details the plain rule doesn't capture:
@@ -88,7 +93,7 @@ Arrows point from the dependent to the dependency, so they all run toward `domai
 - **`data` depends on `infrastructure`**, because the contracts (`HttpClientInterface`, `StorageInterface`) live in `infrastructure/` rather than in an inner layer. A strict reading of the Dependency Rule would invert this; the tradeoff is discussed under [Architecture](#architecture).
 - **`application` reaches `data`** in its `*_di.dart` files only — the composition root, never the use cases themselves.
 
-`core` is imported by everything, including `domain` (whose repository contracts return `Failure`). Details below.
+`core/` is left out of the graph on purpose: every layer imports it, so drawing it adds five arrows that say nothing about the dependency order. See [Why `core/` has no layer](#why-core-has-no-layer).
 
 ## Architecture
 
@@ -206,9 +211,9 @@ AppRouter appRouter(final Ref ref) => AppRouter();
 
 `main.dart` watches `appRouterProvider` and feeds `appRouter.config()` into `MaterialApp.router`, keeping navigation state Riverpod-managed alongside everything else.
 
-## Tests
+## Four Test Levels, 100% Coverage
 
-The suite is split into four levels, in three directories:
+281 tests across four levels, in three directories:
 
 | Level | Status | Scope | Run with |
 |---|---|---|---|
@@ -232,7 +237,7 @@ That table is the only hard boundary in the suite: `make flutter-test` (`flutter
 
 ### Coverage
 
-The **100% coverage** target is met by unit and widget tests **together**, not by either alone. They cover disjoint parts of `lib/`: `test/unit` reaches every layer including `presentation/providers` (the notifiers), but never the screens and widgets themselves — those are only executed when something renders them, which is exactly what `test/widget` does.
+`make flutter-test` reports **1449 of 1449 lines covered — 100.00%**, and that figure is met by unit and widget tests **together**, not by either alone. They cover disjoint parts of `lib/`: `test/unit` reaches every layer including `presentation/providers` (the notifiers), but never the screens and widgets themselves — those are only executed when something renders them, which is exactly what `test/widget` does.
 
 ```bash
 make flutter-test          # unit + widget + integration → the full coverage report
@@ -242,16 +247,19 @@ make flutter-test-widget   # partial by design: UI only
 
 Each target overwrites `coverage/lcov.info` and writes its HTML to its own subfolder, so a single-level run leaves a partial report behind — use `make flutter-test` for the number that matters. Integration tests add no new lines to the total; they re-cover code the other two already reach, along different paths.
 
+One note on what that 100% measures: `flutter test --coverage` only instruments files a test actually imports, so a file nothing imports is absent from the denominator rather than counted as zero. Every `lib/` file that has executable lines is in the report — including `main.dart` (24/24, via `test/widget/main_test.dart`) and `core/theme/app_theme.dart` (4/4). The 19 files still absent contain no executable code at all: repository interfaces, `freezed` entity/state declarations, and `static const` holders like `app_colors.dart` — imported by tests, but with nothing for lcov to count.
+
 ### Widget Tests
 
 Widget tests need something unit tests don't: a runtime. `test/widget/test_helpers.dart` exposes `pumpApp` (and `pumpRoutedApp`, for screens that drive `auto_route` navigation), which mount the widget under test inside a `ProviderScope` + `MaterialApp` with the app's localization delegates, so `WidgetTester` can pump frames, tap, drag and assert on what's actually painted. Repositories are still mocked and overridden through Riverpod, which is what makes loading and failure states cheap to force on demand.
 
 | File | Tests | What it exercises |
 |---|---|---|
-| `presentation/screens/home/home_screen_test.dart` | 12 | Quotes/favorites tabs, symbol filter, pull-to-refresh, drawer navigation, error states |
+| `presentation/screens/home/home_screen_test.dart` | 13 | Quotes/favorites tabs, symbol filter, pull-to-refresh, drawer navigation, error states |
 | `presentation/screens/detail/detail_screen_test.dart` | 7 | Price info, favorite toggle, kline chart loading/empty/error states, chart touch tooltip |
 | `presentation/screens/preferences/preferences_screen_test.dart` | 7 | Dark mode toggle, font scale slider, language selection, error state |
 | `core/l10n/generated/app_localizations_test.dart` | 12 | Every translation in en/es/pt, locale resolution, and the delegate's `load`/`isSupported` behaviour |
+| `main_test.dart` | 6 | The app root: preferences driving locale/theme/font scale, the default fallback while they load or fail, and `main()` booting with its real `SharedPreferences` override |
 
 ### Integration Tests
 
@@ -271,7 +279,9 @@ Worth naming precisely: these are **narrow** integration tests (sometimes called
 
 ### E2E Tests
 
-`integration_test/app_test.dart` is a single scripted journey through the real app: switch to dark mode, browse and filter quotes, open a detail screen and change its chart interval, favorite/unfavorite from both the list and the Favorites tab, pull-to-refresh, and change appearance and language preferences. No mocks and no local backend — it hits the public Binance data API directly.
+`integration_test/app_test.dart` is a single scripted journey through the real app: switch to dark mode and English, browse and filter quotes, open a detail screen and change its chart interval, favorite/unfavorite from both the list and the Favorites tab, pull-to-refresh, and change appearance and language preferences. No mocks and no local backend — it hits the public Binance data API directly.
+
+The demo GIF and the screenshots above are frames of this script running, which is why it sets those two preferences before anything else.
 
 Failure states are deliberately absent here; the widget tests already force those on demand, and this script only drives the real, reachable app.
 
@@ -279,4 +289,8 @@ Failure states are deliberately absent here; the widget tests already force thos
 make flutter-test-e2e                                        # all connected devices
 flutter test integration_test/app_test.dart -d emulator-5554 # a specific one
 ```
+
+## License
+
+Released under the [MIT License](LICENSE).
 
