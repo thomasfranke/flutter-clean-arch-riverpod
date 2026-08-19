@@ -13,24 +13,18 @@ A simple Flutter app built to demonstrate **Clean Architecture** in practice, us
 ```mermaid
 flowchart TB
     presentation["**presentation**\nUI & state"]
-    application["**application**\nuse cases"]
+    application["**application**\nuse case orchestration"]
     domain["**domain**\nentities & contracts"]
     data["**data**\nrepository impls"]
     infrastructure["**infrastructure**\nexternal services"]
 
     presentation --> application
-    presentation --> domain
     application --> domain
-    data --> domain
+    domain --> data
     data --> infrastructure
 ```
 
-Arrows point from the dependent to the dependency, so they all run toward `domain` — the center of the app. Two details the plain rule doesn't capture (and that the diagram, kept to real architectural dependencies, leaves out):
-
-- **`data` depends on `infrastructure`**, because the contracts (`HttpClientInterface`, `StorageInterface`) live in `infrastructure/` rather than in an inner layer. A strict reading of the Dependency Rule would invert this; the tradeoff is discussed under [Architecture](#architecture).
-- **`application` reaches `data`** in its `*_di.dart` files only — the composition root, never the use cases themselves. This wiring is a Riverpod implementation detail, not a layer dependency, so it's omitted from the graph above.
-
-`core/` is left out of the graph on purpose: every layer imports it, so drawing it adds five arrows that say nothing about the dependency order. See [Why `core/` has no layer](#why-core-has-no-layer).
+`domain` sits at the center of the chain on purpose. `presentation → application → domain` reads as real import direction — each arrow points to what's imported. `domain → data → infrastructure` reads the opposite way: it's `data` that imports `domain` and `infrastructure`, not the other way around; those two arrows trace ring order outward from the core rather than import direction. See [Architecture](#architecture) for the actual import direction of every layer.
 
 ## Architecture
 
