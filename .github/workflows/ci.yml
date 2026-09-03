@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+
+# One run per branch: a new push cancels the previous run of the same ref,
+# so CI does not keep burning a runner on a commit nobody will look at again.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build_and_test:
+    name: Build & Test Flutter App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          # Single source of truth for the Flutter version: `.fvmrc`, the same
+          # file used by local FVM and by `make fvm`.
+          flutter-version-file: .fvmrc
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze code (lint)
+        run: flutter analyze
+
+      - name: Verify formatting
+        run: dart format --set-exit-if-changed .
+
+      - name: Run Build Runner
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Check for changes in generated files
+        run: |
+          CHANGES=$(git status --porcelain | grep -E '\.freezed\.dart$|\.g\.dart$|\.gr\.dart$' || true)
+          if [ -n "$CHANGES" ]; then
+            echo "• Generated files have been modified. Commit required:"
+            echo "$CHANGES"
+            exit 1
+          else
+            echo "• All good, no changes in generated files."
+          fi
+
+      - name: Check for changes in generated l10n files
+        run: |
+          CHANGES=$(git status --porcelain \
+            | grep -E 'lib/core/l10n/.*\.arb$|lib/core/l10n/generated/.*\.dart$' || true)
+          if [ -n "$CHANGES" ]; then
+            echo "• l10n files have been modified. Commit required:"
+            echo "$CHANGES"
+            exit 1
+          else
+            echo "• All good, no changes in l10n files."
+          fi
+
+      - name: Validate l10n translations
+        run: |
+          flutter gen-l10n
+          # `untranslated-messages-file` in l10n.yaml points here. gen-l10n
+          # writes `{}` when nothing is missing, and omits the file entirely
+          # when there is no untranslated message at all.
+          if [ ! -s l10n_missing_translations.json ]; then
+            echo "All translations are complete."
+          elif grep -q '^{}$' l10n_missing_translations.json; then
+            echo "All translations are complete."
+          else
+            echo "Missing translations detected:"
+            cat l10n_missing_translations.json
+            exit 1
+          fi
+
+      - name: Run unit tests
+        run: flutter test test/unit

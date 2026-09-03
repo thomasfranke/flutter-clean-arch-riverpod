@@ -26,19 +26,16 @@ flowchart TB
 
 ## Architecture: Clean Arch, DDD, Community standards, Google guidelines
 
-No single source dictated this folder structure. It draws evenly from four references — Evans' DDD layers, Uncle Bob's Clean Architecture rings, Flutter/Android community conventions, and Google's own Flutter architecture guidelines — adapted and mixed to fit a small Flutter app rather than followed to the letter. DDD and Clean Architecture land on the same partition here, so both sets of names map onto one set of folders:
+Based on Evans' DDD layers, Uncle Bob's Clean Architecture rings, Flutter/Android community conventions, and Google's own Flutter architecture guidelines, all adapted and mixed to fit a Flutter app, creating an architecture that is robust, scalable, testable, and easy to maintain.
 
-| Folder | Responsibility | DDD layer | Clean Arch ring |
-|---|---|---|---|
-| `domain/` | Business rules, entities, and repository contracts | Domain | Entities |
-| `application/` | Rule orchestration — use cases | Application | Use Cases |
-| `presentation/` | UI and state management | User Interface | Interface Adapters |
-| `data/` | Repository implementations — persistence for the contracts declared in `domain/` | Infrastructure | Interface Adapters |
-| `infrastructure/` | Raw external dependencies (Dio, SharedPreferences), reached only through contracts (`HttpClientInterface`, `StorageInterface`) so they can be swapped without touching repository logic | Infrastructure | Frameworks & Drivers |
-| `core/` | Cross-cutting utilities (config, failures, l10n, theme, routing) | — | — |
-
-The one deviation worth naming: splitting the outer ring into `data/` and `infrastructure/` isn't something DDD or Clean Architecture prescribes on its own — it's the community-convention half of the mix, and it's what keeps `data/` free of any direct `dio` or `shared_preferences` import.
-
+| Folder | Responsibility |
+|---|---|
+| `domain/` | Business rules, entities, and repository contracts |
+| `application/` | Rule orchestration — use cases |
+| `presentation/` | UI and state management |
+| `data/` | Repository implementations — persistence for the contracts declared in `domain/` |
+| `infrastructure/` | Raw external dependencies (Dio, SharedPreferences), reached only through contracts (`HttpClientInterface`, `StorageInterface`) so they can be swapped without touching repository logic |
+| `core/` | Cross-cutting utilities (config, failures, l10n, theme, routing) |
 
 ---
 
@@ -84,10 +81,6 @@ The one deviation worth naming: splitting the outer ring into `data/` and `infra
     │   └── */*_state.dart                        ### Possible UI states
     ├── screens/                               ## Screens
     └── widgets/                               ## Reusable widgets
-
-# Every implementation file (data source, repository impl, use case,
-# notifier, infra client) is paired with a *_di.dart file that wires it
-# into Riverpod — there is no separate bootstrap/DI layer.
 ```
 
 ## Dependencies
@@ -105,34 +98,8 @@ The one deviation worth naming: splitting the outer ring into `data/` and `infra
 | [`mocktail`](https://pub.dev/packages/mocktail) | Mocking for unit tests |
 | `build_runner` (dev) | Code generation runner for Riverpod, AutoRoute, Freezed and json_serializable |
 
-### Riverpod
-
-Riverpod is the DI mechanism for the whole app, not just UI state. Every provider is generated from a `@riverpod`-annotated function, and every implementation file has a sibling `*_di.dart` that exposes it as a provider — use cases, repository implementations, data sources, and infrastructure clients included. Providers compose by `ref.watch`-ing the layer below them, so the dependency graph in [Architecture at a Glance](#architecture-at-a-glance) is wired together entirely through generated providers, e.g.:
-
-```dart
-// application/favorites/toggle_favorite_usecase_di.dart
-@riverpod
-ToggleFavoriteUseCase toggleFavoriteUseCase(final Ref ref) =>
-    ToggleFavoriteUseCase(repository: ref.watch(favoritesRepositoryProvider));
-```
-
-Only `presentation/providers` uses Riverpod for actual UI state — each feature has a `*_notifier.dart` (state logic, built on generated `Notifier`/`AsyncNotifier` classes) paired with a `*_state.dart` (a `freezed` union describing loading/success/failure states). `main.dart` overrides the root `storageProvider` with a pre-initialized `SharedPreferencesImpl` before the widget tree is built.
-
-### AutoRoute
-
-Routing is centralized in `core/routes/auto_route.dart`, where a single `AppRouter extends RootStackRouter` declares every screen as an `AutoRoute` entry. Screens themselves are unaware of routing — `auto_route_generator` reads `@RoutePage()` annotations on the screens in `presentation/screens` and generates the matching `*Route` classes in `auto_route.gr.dart`. The router is itself exposed through Riverpod (`routes_di.dart`):
-
-AutoRoute was chosen because it enforces strong typing on route parameters, leaning on one of Dart's strongest properties to save a lot of headaches in larger applications.
-
-```dart
-@riverpod
-AppRouter appRouter(final Ref ref) => AppRouter();
-```
-
-`main.dart` watches `appRouterProvider` and feeds `appRouter.config()` into `MaterialApp.router`, keeping navigation state Riverpod-managed alongside everything else.
 
 ## Features
-
 - Live crypto quotes list with pull-to-refresh and symbol filtering
 - Quote detail screen with a candlestick (kline) chart
 - Favorite/unfavorite quotes, with a dedicated favorites tab
@@ -147,32 +114,19 @@ AppRouter appRouter(final Ref ref) => AppRouter();
 
 ## Getting Started
 
-### Prerequisites
-
-- [FVM](https://fvm.app/) (Flutter Version Management) — used to pin the exact Flutter version this project targets.
-
 ### 1. Configure the Flutter environment
 
 ```bash
 make fvm
 ```
 
-This installs FVM (if needed) and pins the Flutter SDK to the version this project expects (see `.fvmrc`), so your local `flutter` matches what CI/other contributors use.
+This automation installs FVM (if needed) and pins the Flutter SDK to the version this project expects (see `.fvmrc`), so your local `flutter` matches what CI/other contributors use.
 
 ### 2. Run the app
 
 ```bash
 flutter run
 ```
-
-Generated code (`.freezed.dart`/`.g.dart`/`.gr.dart`, l10n's `generated/`) is committed to the repo, so this works right after `flutter pub get` — no code generation needed to get started. If you change anything those files are generated from (entities, `@riverpod` providers, routes, `.arb` strings), regenerate with:
-
-```bash
-make runner   # build_runner build, then flutter clean + flutter pub get
-make l10n     # regenerates AppLocalizations from the .arb files
-```
-
-`make runner-hard` deletes all generated files first if they get into a broken state.
 
 ### 3. Run the tests
 
@@ -184,11 +138,9 @@ make flutter-test-integration  # test/integration only — real cross-layer flow
 make flutter-test-e2e          # integration_test/ — the real app on a device/emulator
 ```
 
-The first four run on the host Dart VM and open the generated HTML coverage report (`coverage/html/**/index.html`) when they finish. `make flutter-test-e2e` needs a connected device or emulator and produces no coverage. See [Four Test Levels, 100% Coverage](#four-test-levels-100-coverage) for what each level actually covers.
-
 ## Four Test Levels, 100% Coverage
 
-281 tests across four levels, in three directories:
+Tests across four levels, in three directories. 100% coverage.
 
 | Level | Status | Scope | Run with |
 |---|---|---|---|
@@ -197,69 +149,9 @@ The first four run on the host Dart VM and open the generated HTML coverage repo
 | Integration | ✅ Implemented | Cross-layer flows with the **real** classes wired together (use case → repository → data source); only the true external boundary — network or platform channel — is faked | `make flutter-test-integration` |
 | E2E | ✅ Implemented | The real app, launched from `main.dart` on a device/emulator against the live Binance API, driven through the UI with the [`integration_test`](https://pub.dev/packages/integration_test) package | `make flutter-test-e2e` |
 
-### `flutter test` is the runner, not the level
-
-Unit, widget and integration tests all run through the same `flutter test` command, so it's tempting to conclude they're all "unit tests". They're not — `flutter test` describes **where** a test runs (host Dart VM, headless, no device), while unit/widget/integration describe **how much of the app is real**. The two are independent axes:
-
-|  | Runs where | Real app |
-|---|---|---|
-| `test/unit`, `test/widget`, `test/integration` | Host Dart VM, headless | No |
-| `integration_test/` | Device or emulator | Yes |
-
-That table is the only hard boundary in the suite: `make flutter-test` (`flutter test --coverage`) picks up everything under `test/` in one go, and the `-unit` / `-widget` / `-integration` targets are just path filters over that same run. `make flutter-test-e2e` is the one that leaves the machine — which is also why it's the only target without a coverage report.
-
-`test/unit` mirrors the `lib/` folder structure 1:1 — one `*_test.dart` per source file.
-
-### Coverage
-
-`make flutter-test` reports **1449 of 1449 lines covered — 100.00%**, and that figure is met by unit and widget tests **together**, not by either alone. They cover disjoint parts of `lib/`: `test/unit` reaches every layer including `presentation/providers` (the notifiers), but never the screens and widgets themselves — those are only executed when something renders them, which is exactly what `test/widget` does.
-
-```bash
-make flutter-test          # unit + widget + integration → the full coverage report
-make flutter-test-unit     # partial by design: no screens/widgets
-make flutter-test-widget   # partial by design: UI only
-```
-
-One note on what that 100% measures: `flutter test --coverage` only instruments files a test actually imports, so a file nothing imports is absent from the denominator rather than counted as zero. Every `lib/` file that has executable lines is in the report — including `main.dart` (24/24, via `test/widget/main_test.dart`) and `core/theme/app_theme.dart` (4/4). The 19 files still absent contain no executable code at all: repository interfaces, `freezed` entity/state declarations, and `static const` holders like `app_colors.dart` — imported by tests, but with nothing for lcov to count.
-
-### Widget Tests
-
-Widget tests need something unit tests don't: a runtime. `test/widget/test_helpers.dart` exposes `pumpApp` (and `pumpRoutedApp`, for screens that drive `auto_route` navigation), which mount the widget under test inside a `ProviderScope` + `MaterialApp` with the app's localization delegates, so `WidgetTester` can pump frames, tap, drag and assert on what's actually painted. Repositories are still mocked and overridden through Riverpod, which is what makes loading and failure states cheap to force on demand.
-
-| File | Tests | What it exercises |
-|---|---|---|
-| `presentation/screens/home/home_screen_test.dart` | 13 | Quotes/favorites tabs, symbol filter, pull-to-refresh, drawer navigation, error states |
-| `presentation/screens/detail/detail_screen_test.dart` | 7 | Price info, favorite toggle, kline chart loading/empty/error states, chart touch tooltip |
-| `presentation/screens/preferences/preferences_screen_test.dart` | 7 | Dark mode toggle, font scale slider, language selection, error state |
-| `core/l10n/generated/app_localizations_test.dart` | 12 | Every translation in en/es/pt, locale resolution, and the delegate's `load`/`isSupported` behaviour |
-| `main_test.dart` | 6 | The app root: preferences driving locale/theme/font scale, the default fallback while they load or fail, and `main()` booting with its real `SharedPreferences` override |
-
-### Integration Tests
-
-Integration tests wire up the **real** classes across layers (use case → repository → data source) and fake only the boundary the app has no control over: the network (`HttpClientInterface`) or local persistence (`SharedPreferences`'s platform channel). Each flow test builds its stack exactly the way the matching `*_di.dart` file wires it in the app. This catches bugs mocked unit tests structurally can't — a DTO that no longer matches what its repository expects will pass every unit test and fail here.
-
-| File | Tests | What it exercises |
-|---|---|---|
-| `favorites/favorites_flow_test.dart` | 5 | Toggle/get favorites through real storage |
-| `preferences/preferences_flow_test.dart` | 5 | Update/get preferences through real storage |
-| `quotes/crypto_quotes_flow_test.dart` | 5 | `GetQuotes`/`getQuote` through a fake `HttpClientInterface` |
-| `quotes/klines_flow_test.dart` | 4 | `GetKlines`, including Binance's positional response parsing |
-| `composite/composite_flows_test.dart` | 2 | Favorites and preferences not colliding on shared storage; the quotes → favorite-tap user journey |
-| `http_client/dio_retry_flow_test.dart` | 3 | The real retry interceptor against a local `HttpServer` — no fakes at all in this one |
-| `helpers/fake_http_client.dart` | — | Reusable programmable double of `HttpClientInterface`, used by the HTTP-backed flows above |
-
-### E2E Tests
-
-`integration_test/app_test.dart` is a single scripted journey through the real app: switch to dark mode and English, browse and filter quotes, open a detail screen and change its chart interval, favorite/unfavorite from both the list and the Favorites tab, pull-to-refresh, and change appearance and language preferences. No mocks and no local backend — it hits the public Binance data API directly.
-
-The demo GIF and the screenshots above are frames of this script running, which is why it sets those two preferences before anything else.
-
-Failure states are deliberately absent here; the widget tests already force those on demand, and this script only drives the real, reachable app.
-
-```bash
-make flutter-test-e2e                                        # all connected devices
-flutter test integration_test/app_test.dart -d emulator-5554 # a specific one
-```
+<p align="center">
+  <img src="docs/coverage.png" width="800">
+</p>
 
 ## License
 

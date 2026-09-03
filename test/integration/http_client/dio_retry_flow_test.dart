@@ -52,11 +52,8 @@ class _ScriptedServer {
     return scripted;
   }
 
-  Uri get baseUrl => Uri(
-    scheme: 'http',
-    host: _server.address.address,
-    port: _server.port,
-  );
+  Uri get baseUrl =>
+      Uri(scheme: 'http', host: _server.address.address, port: _server.port);
 
   Future<void> close() => _server.close(force: true);
 }
@@ -78,74 +75,62 @@ HttpClientInterface _buildRealClient(final _ScriptedServer server) {
 
 void main() {
   group('Dio retry interceptor integration flow (real HTTP, no fakes)', () {
-    test(
-      'a transient 5xx is retried and the eventual 200 is returned to the '
-      'caller',
-      () async {
-        final _ScriptedServer server = await _ScriptedServer.start(
-          <int>[500, 200],
-        );
-        addTearDown(server.close);
-        final HttpClientInterface client = _buildRealClient(server);
+    test('a transient 5xx is retried and the eventual 200 is returned to the '
+        'caller', () async {
+      final _ScriptedServer server = await _ScriptedServer.start(<int>[
+        500,
+        200,
+      ]);
+      addTearDown(server.close);
+      final HttpClientInterface client = _buildRealClient(server);
 
-        final Either<HttpClientFailure, HttpClientResponse<dynamic>> result =
-            await client.request(
-              apiRoute: const ApiRoute('/ping', HttpMethod.get),
-            );
+      final Either<HttpClientFailure, HttpClientResponse<dynamic>> result =
+          await client.request(
+            apiRoute: const ApiRoute('/ping', HttpMethod.get),
+          );
 
-        expect(result.isRight(), isTrue);
-        expect(server.requestCount, 2);
-      },
-    );
+      expect(result.isRight(), isTrue);
+      expect(server.requestCount, 2);
+    });
 
-    test(
-      'a persistent 5xx exhausts retries (1 initial + 2 retries) and '
-      'surfaces as Failure.apiServer',
-      () async {
-        final _ScriptedServer server = await _ScriptedServer.start(
-          <int>[500, 500, 500],
-        );
-        addTearDown(server.close);
-        final HttpClientInterface client = _buildRealClient(server);
+    test('a persistent 5xx exhausts retries (1 initial + 2 retries) and '
+        'surfaces as Failure.apiServer', () async {
+      final _ScriptedServer server = await _ScriptedServer.start(<int>[
+        500,
+        500,
+        500,
+      ]);
+      addTearDown(server.close);
+      final HttpClientInterface client = _buildRealClient(server);
 
-        final Either<HttpClientFailure, HttpClientResponse<dynamic>> result =
-            await client.request(
-              apiRoute: const ApiRoute('/ping', HttpMethod.get),
-            );
+      final Either<HttpClientFailure, HttpClientResponse<dynamic>> result =
+          await client.request(
+            apiRoute: const ApiRoute('/ping', HttpMethod.get),
+          );
 
-        expect(
-          result.leftMap((final HttpClientFailure f) => f.toDomainFailure()),
-          const Left<Failure, HttpClientResponse<dynamic>>(
-            Failure.apiServer(),
-          ),
-        );
-        expect(server.requestCount, 3);
-      },
-    );
+      expect(
+        result.leftMap((final HttpClientFailure f) => f.toDomainFailure()),
+        const Left<Failure, HttpClientResponse<dynamic>>(Failure.apiServer()),
+      );
+      expect(server.requestCount, 3);
+    });
 
-    test(
-      'a 4xx is not retried at all and surfaces as Failure.apiClient after '
-      'a single request',
-      () async {
-        final _ScriptedServer server = await _ScriptedServer.start(
-          <int>[404],
-        );
-        addTearDown(server.close);
-        final HttpClientInterface client = _buildRealClient(server);
+    test('a 4xx is not retried at all and surfaces as Failure.apiClient after '
+        'a single request', () async {
+      final _ScriptedServer server = await _ScriptedServer.start(<int>[404]);
+      addTearDown(server.close);
+      final HttpClientInterface client = _buildRealClient(server);
 
-        final Either<HttpClientFailure, HttpClientResponse<dynamic>> result =
-            await client.request(
-              apiRoute: const ApiRoute('/ping', HttpMethod.get),
-            );
+      final Either<HttpClientFailure, HttpClientResponse<dynamic>> result =
+          await client.request(
+            apiRoute: const ApiRoute('/ping', HttpMethod.get),
+          );
 
-        expect(
-          result.leftMap((final HttpClientFailure f) => f.toDomainFailure()),
-          const Left<Failure, HttpClientResponse<dynamic>>(
-            Failure.apiClient(),
-          ),
-        );
-        expect(server.requestCount, 1);
-      },
-    );
+      expect(
+        result.leftMap((final HttpClientFailure f) => f.toDomainFailure()),
+        const Left<Failure, HttpClientResponse<dynamic>>(Failure.apiClient()),
+      );
+      expect(server.requestCount, 1);
+    });
   });
 }
