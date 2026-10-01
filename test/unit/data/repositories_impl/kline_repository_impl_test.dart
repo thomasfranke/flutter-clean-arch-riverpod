@@ -4,6 +4,7 @@ import 'package:flutter_clean_arch_riverpod/data/data_objects/kline_dto.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/kline_datasource.dart';
 import 'package:flutter_clean_arch_riverpod/data/repositories_impl/kline_repository_impl.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/kline_entity.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_failure.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -35,7 +36,7 @@ void main() {
       when(
         () => datasource.getKlines(symbol: 'BTCUSDT', interval: '1h'),
       ).thenAnswer(
-        (_) async => Right<Failure, List<KlineDTO>>(<KlineDTO>[tDto]),
+        (_) async => Right<HttpClientFailure, List<KlineDTO>>(<KlineDTO>[tDto]),
       );
 
       final Either<Failure, List<Kline>> result = await sut.getKlines(
@@ -49,11 +50,14 @@ void main() {
       expect(klines.first.numberOfTrades, 1234);
     });
 
-    test('should propagate Failure when the datasource fails', () async {
+    test('should translate the infrastructure failure into a domain '
+        'Failure', () async {
       when(
         () => datasource.getKlines(symbol: 'BTCUSDT', interval: '1h'),
       ).thenAnswer(
-        (_) async => const Left<Failure, List<KlineDTO>>(Failure.apiServer()),
+        (_) async => const Left<HttpClientFailure, List<KlineDTO>>(
+          HttpClientFailure.server(errorMessage: 'boom'),
+        ),
       );
 
       final Either<Failure, List<Kline>> result = await sut.getKlines(
@@ -61,7 +65,10 @@ void main() {
         interval: '1h',
       );
 
-      expect(result, const Left<Failure, List<Kline>>(Failure.apiServer()));
+      expect(
+        result,
+        const Left<Failure, List<Kline>>(Failure.apiServer('boom')),
+      );
     });
   });
 }

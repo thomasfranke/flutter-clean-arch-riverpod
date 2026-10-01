@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/favorites_datasource.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/storage/storage_failure.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/storage/storage_interface.dart';
@@ -23,19 +22,25 @@ void main() {
         const Right<StorageFailure, List<String>>(<String>['BTCUSDT']),
       );
 
-      final Either<Failure, List<String>> result = sut.getFavorites();
+      final Either<StorageFailure, List<String>> result = sut.getFavorites();
 
-      expect(result, const Right<Failure, List<String>>(<String>['BTCUSDT']));
+      expect(
+        result,
+        const Right<StorageFailure, List<String>>(<String>['BTCUSDT']),
+      );
     });
 
-    test('should propagate StorageFailure as a domain Failure', () {
+    test('should hand the StorageFailure back untranslated', () {
       when(() => storage.getList(key: 'favorites')).thenReturn(
         const Left<StorageFailure, List<String>>(StorageFailure.read()),
       );
 
-      final Either<Failure, List<String>> result = sut.getFavorites();
+      final Either<StorageFailure, List<String>> result = sut.getFavorites();
 
-      expect(result, const Left<Failure, List<String>>(Failure.storage()));
+      expect(
+        result,
+        const Left<StorageFailure, List<String>>(StorageFailure.read()),
+      );
     });
   });
 
@@ -50,18 +55,20 @@ void main() {
               const Right<StorageFailure, List<String>>(<String>['BTCUSDT']),
         );
 
-        final Either<Failure, List<String>> result = await sut.addFavorite(
-          'BTCUSDT',
-        );
+        final Either<StorageFailure, List<String>> result = await sut
+            .addFavorite('BTCUSDT');
 
-        expect(result, const Right<Failure, List<String>>(<String>['BTCUSDT']));
+        expect(
+          result,
+          const Right<StorageFailure, List<String>>(<String>['BTCUSDT']),
+        );
         verify(
           () => storage.addToList(key: 'favorites', value: 'BTCUSDT'),
         ).called(1);
       },
     );
 
-    test('should propagate StorageFailure as a domain Failure', () async {
+    test('should hand the StorageFailure back untranslated', () async {
       when(
         () => storage.addToList(key: 'favorites', value: 'BTCUSDT'),
       ).thenAnswer(
@@ -69,11 +76,14 @@ void main() {
             const Left<StorageFailure, List<String>>(StorageFailure.write()),
       );
 
-      final Either<Failure, List<String>> result = await sut.addFavorite(
+      final Either<StorageFailure, List<String>> result = await sut.addFavorite(
         'BTCUSDT',
       );
 
-      expect(result, const Left<Failure, List<String>>(Failure.storage()));
+      expect(
+        result,
+        const Left<StorageFailure, List<String>>(StorageFailure.write()),
+      );
     });
   });
 
@@ -87,18 +97,17 @@ void main() {
           (_) async => const Right<StorageFailure, List<String>>(<String>[]),
         );
 
-        final Either<Failure, List<String>> result = await sut.removeFavorite(
-          'BTCUSDT',
-        );
+        final Either<StorageFailure, List<String>> result = await sut
+            .removeFavorite('BTCUSDT');
 
-        expect(result, const Right<Failure, List<String>>(<String>[]));
+        expect(result, const Right<StorageFailure, List<String>>(<String>[]));
         verify(
           () => storage.removeFromList(key: 'favorites', value: 'BTCUSDT'),
         ).called(1);
       },
     );
 
-    test('should propagate StorageFailure as a domain Failure', () async {
+    test('should hand the StorageFailure back untranslated', () async {
       when(
         () => storage.removeFromList(key: 'favorites', value: 'BTCUSDT'),
       ).thenAnswer(
@@ -106,11 +115,13 @@ void main() {
             const Left<StorageFailure, List<String>>(StorageFailure.write()),
       );
 
-      final Either<Failure, List<String>> result = await sut.removeFavorite(
-        'BTCUSDT',
-      );
+      final Either<StorageFailure, List<String>> result = await sut
+          .removeFavorite('BTCUSDT');
 
-      expect(result, const Left<Failure, List<String>>(Failure.storage()));
+      expect(
+        result,
+        const Left<StorageFailure, List<String>>(StorageFailure.write()),
+      );
     });
   });
 
@@ -125,18 +136,20 @@ void main() {
               const Right<StorageFailure, List<String>>(<String>['BTCUSDT']),
         );
 
-        final Either<Failure, List<String>> result = await sut.toggleFavorite(
-          'BTCUSDT',
-        );
+        final Either<StorageFailure, List<String>> result = await sut
+            .toggleFavorite('BTCUSDT');
 
-        expect(result, const Right<Failure, List<String>>(<String>['BTCUSDT']));
+        expect(
+          result,
+          const Right<StorageFailure, List<String>>(<String>['BTCUSDT']),
+        );
         verify(
           () => storage.toggleInList(key: 'favorites', value: 'BTCUSDT'),
         ).called(1);
       },
     );
 
-    test('should propagate StorageFailure as a domain Failure', () async {
+    test('should hand the StorageFailure back untranslated', () async {
       when(
         () => storage.toggleInList(key: 'favorites', value: 'BTCUSDT'),
       ).thenAnswer(
@@ -144,11 +157,13 @@ void main() {
             const Left<StorageFailure, List<String>>(StorageFailure.write()),
       );
 
-      final Either<Failure, List<String>> result = await sut.toggleFavorite(
-        'BTCUSDT',
-      );
+      final Either<StorageFailure, List<String>> result = await sut
+          .toggleFavorite('BTCUSDT');
 
-      expect(result, const Left<Failure, List<String>>(Failure.storage()));
+      expect(
+        result,
+        const Left<StorageFailure, List<String>>(StorageFailure.write()),
+      );
     });
   });
 }

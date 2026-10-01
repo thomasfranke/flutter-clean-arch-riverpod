@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/storage/storage_failure.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/storage/storage_interface.dart';
 
@@ -7,6 +6,10 @@ import 'package:flutter_clean_arch_riverpod/infrastructure/storage/storage_inter
 const String _favoritesKey = 'favorites';
 
 /// Datasource for managing favorite cryptocurrencies using [StorageInterface].
+///
+/// It owns the storage key and nothing else. The [StorageFailure] it returns
+/// reaches the repository untranslated, which is where it becomes a domain
+/// failure.
 class FavoritesDatasource {
   /// Creates a [FavoritesDatasource] with the required [StorageInterface].
   const FavoritesDatasource({required this.storage});
@@ -15,61 +18,25 @@ class FavoritesDatasource {
   final StorageInterface storage;
 
   /// Retrieves the list of favorite symbols from storage, returning either a
-  /// [Failure] or a list of symbol strings.
-  Either<Failure, List<String>> getFavorites() {
-    final Either<StorageFailure, List<String>> result = storage.getList(
-      key: _favoritesKey,
-    );
-
-    return result.fold(
-      (final StorageFailure failure) =>
-          Left<Failure, List<String>>(failure.toDomainFailure()),
-      Right<Failure, List<String>>.new,
-    );
-  }
+  /// [StorageFailure] or a list of symbol strings.
+  Either<StorageFailure, List<String>> getFavorites() =>
+      storage.getList(key: _favoritesKey);
 
   /// Adds a symbol to the favorites list in storage, returning either a
-  /// [Failure] or the updated list of symbol strings.
-  Future<Either<Failure, List<String>>> addFavorite(final String symbol) async {
-    final Either<StorageFailure, List<String>> result = await storage.addToList(
-      key: _favoritesKey,
-      value: symbol,
-    );
-
-    return result.fold(
-      (final StorageFailure failure) =>
-          Left<Failure, List<String>>(failure.toDomainFailure()),
-      Right<Failure, List<String>>.new,
-    );
-  }
+  /// [StorageFailure] or the updated list of symbol strings.
+  Future<Either<StorageFailure, List<String>>> addFavorite(
+    final String symbol,
+  ) => storage.addToList(key: _favoritesKey, value: symbol);
 
   /// Removes a symbol from the favorites list in storage, returning either a
-  /// [Failure] or the updated list of symbol strings.
-  Future<Either<Failure, List<String>>> removeFavorite(
+  /// [StorageFailure] or the updated list of symbol strings.
+  Future<Either<StorageFailure, List<String>>> removeFavorite(
     final String symbol,
-  ) async {
-    final Either<StorageFailure, List<String>> result = await storage
-        .removeFromList(key: _favoritesKey, value: symbol);
-
-    return result.fold(
-      (final StorageFailure failure) =>
-          Left<Failure, List<String>>(failure.toDomainFailure()),
-      Right<Failure, List<String>>.new,
-    );
-  }
+  ) => storage.removeFromList(key: _favoritesKey, value: symbol);
 
   /// Atomically toggles a symbol's favorite status in storage, returning
-  /// either a [Failure] or the updated list of symbol strings.
-  Future<Either<Failure, List<String>>> toggleFavorite(
+  /// either a [StorageFailure] or the updated list of symbol strings.
+  Future<Either<StorageFailure, List<String>>> toggleFavorite(
     final String symbol,
-  ) async {
-    final Either<StorageFailure, List<String>> result = await storage
-        .toggleInList(key: _favoritesKey, value: symbol);
-
-    return result.fold(
-      (final StorageFailure failure) =>
-          Left<Failure, List<String>>(failure.toDomainFailure()),
-      Right<Failure, List<String>>.new,
-    );
-  }
+  ) => storage.toggleInList(key: _favoritesKey, value: symbol);
 }

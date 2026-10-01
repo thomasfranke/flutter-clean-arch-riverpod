@@ -4,6 +4,7 @@ import 'package:flutter_clean_arch_riverpod/data/data_objects/crypto_quote_dto.d
 import 'package:flutter_clean_arch_riverpod/data/data_sources/crypto_quotes_datasource.dart';
 import 'package:flutter_clean_arch_riverpod/data/repositories_impl/crypto_quotes_repository_impl.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/crypto_quote_entity.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_failure.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -46,8 +47,9 @@ void main() {
   group('getQuotes', () {
     test('should convert the list of DTOs into domain entities', () async {
       when(() => datasource.getQuotes()).thenAnswer(
-        (_) async =>
-            const Right<Failure, List<CryptoQuoteDTO>>(<CryptoQuoteDTO>[tDto]),
+        (_) async => const Right<HttpClientFailure, List<CryptoQuoteDTO>>(
+          <CryptoQuoteDTO>[tDto],
+        ),
       );
 
       final Either<Failure, List<CryptoQuoteEntity>> result = await sut
@@ -62,10 +64,12 @@ void main() {
       expect(entities.first.lastPrice, 60000.0);
     });
 
-    test('should propagate Failure when the datasource fails', () async {
+    test('should translate the infrastructure failure into a domain '
+        'Failure', () async {
       when(() => datasource.getQuotes()).thenAnswer(
-        (_) async =>
-            const Left<Failure, List<CryptoQuoteDTO>>(Failure.apiNetwork()),
+        (_) async => const Left<HttpClientFailure, List<CryptoQuoteDTO>>(
+          HttpClientFailure.network(),
+        ),
       );
 
       final Either<Failure, List<CryptoQuoteEntity>> result = await sut
@@ -76,13 +80,31 @@ void main() {
         const Left<Failure, List<CryptoQuoteEntity>>(Failure.apiNetwork()),
       );
     });
+
+    test('should carry the technical message across the boundary', () async {
+      when(() => datasource.getQuotes()).thenAnswer(
+        (_) async => const Left<HttpClientFailure, List<CryptoQuoteDTO>>(
+          HttpClientFailure.server(errorMessage: 'upstream exploded'),
+        ),
+      );
+
+      final Either<Failure, List<CryptoQuoteEntity>> result = await sut
+          .getQuotes();
+
+      expect(
+        result,
+        const Left<Failure, List<CryptoQuoteEntity>>(
+          Failure.apiServer('upstream exploded'),
+        ),
+      );
+    });
   });
 
   group('getQuote', () {
     test('should convert the DTO into a domain entity', () async {
-      when(
-        () => datasource.getQuote('BTCUSDT'),
-      ).thenAnswer((_) async => const Right<Failure, CryptoQuoteDTO>(tDto));
+      when(() => datasource.getQuote('BTCUSDT')).thenAnswer(
+        (_) async => const Right<HttpClientFailure, CryptoQuoteDTO>(tDto),
+      );
 
       final Either<Failure, CryptoQuoteEntity> result = await sut.getQuote(
         'BTCUSDT',
@@ -95,16 +117,35 @@ void main() {
       );
     });
 
-    test('should propagate Failure when the datasource fails', () async {
+    test('should translate a not-found into Failure.apiNotFound', () async {
       when(() => datasource.getQuote('BTCUSDT')).thenAnswer(
-        (_) async => const Left<Failure, CryptoQuoteDTO>(Failure.storage()),
+        (_) async => const Left<HttpClientFailure, CryptoQuoteDTO>(
+          HttpClientFailure.notFound(),
+        ),
       );
 
       final Either<Failure, CryptoQuoteEntity> result = await sut.getQuote(
         'BTCUSDT',
       );
 
-      expect(result, const Left<Failure, CryptoQuoteEntity>(Failure.storage()));
+      expect(
+        result,
+        const Left<Failure, CryptoQuoteEntity>(Failure.apiNotFound()),
+      );
+    });
+
+    test('should translate a parse failure into Failure.parse', () async {
+      when(() => datasource.getQuote('BTCUSDT')).thenAnswer(
+        (_) async => const Left<HttpClientFailure, CryptoQuoteDTO>(
+          HttpClientFailure.parse(),
+        ),
+      );
+
+      final Either<Failure, CryptoQuoteEntity> result = await sut.getQuote(
+        'BTCUSDT',
+      );
+
+      expect(result, const Left<Failure, CryptoQuoteEntity>(Failure.parse()));
     });
   });
 }

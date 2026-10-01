@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_objects/crypto_quote_dto.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/crypto_quotes_datasource.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_failure.dart';
@@ -62,7 +61,7 @@ void main() {
         ),
       );
 
-      final Either<Failure, List<CryptoQuoteDTO>> result = await sut
+      final Either<HttpClientFailure, List<CryptoQuoteDTO>> result = await sut
           .getQuotes();
 
       expect(result.isRight(), isTrue);
@@ -73,26 +72,27 @@ void main() {
       expect(dtos.first.symbol, 'BTCUSDT');
     });
 
-    test(
-      'should propagate the HttpClient failure as a domain Failure',
-      () async {
-        when(
-          () => httpClient.request(apiRoute: any(named: 'apiRoute')),
-        ).thenAnswer(
-          (_) async =>
-              const Left<HttpClientFailure, HttpClientResponse<dynamic>>(
-                HttpClientFailure.network(),
-              ),
-        );
+    test('should hand the HttpClient failure back untranslated', () async {
+      when(
+        () => httpClient.request(apiRoute: any(named: 'apiRoute')),
+      ).thenAnswer(
+        (_) async => const Left<HttpClientFailure, HttpClientResponse<dynamic>>(
+          HttpClientFailure.network(),
+        ),
+      );
 
-        final Either<Failure, List<CryptoQuoteDTO>> result = await sut
-            .getQuotes();
+      final Either<HttpClientFailure, List<CryptoQuoteDTO>> result = await sut
+          .getQuotes();
 
-        expect(result.isLeft(), isTrue);
-      },
-    );
+      expect(
+        result,
+        const Left<HttpClientFailure, List<CryptoQuoteDTO>>(
+          HttpClientFailure.network(),
+        ),
+      );
+    });
 
-    test('should return Failure.parse when the payload does not have the '
+    test('should report a parse failure when the payload does not have the '
         'expected format', () async {
       when(
         () => httpClient.request(apiRoute: any(named: 'apiRoute')),
@@ -106,12 +106,14 @@ void main() {
             ),
       );
 
-      final Either<Failure, List<CryptoQuoteDTO>> result = await sut
+      final Either<HttpClientFailure, List<CryptoQuoteDTO>> result = await sut
           .getQuotes();
 
       expect(
         result,
-        const Left<Failure, List<CryptoQuoteDTO>>(Failure.parse()),
+        const Left<HttpClientFailure, List<CryptoQuoteDTO>>(
+          HttpClientFailure.parse(),
+        ),
       );
     });
   });
@@ -129,9 +131,8 @@ void main() {
         ),
       );
 
-      final Either<Failure, CryptoQuoteDTO> result = await sut.getQuote(
-        'BTCUSDT',
-      );
+      final Either<HttpClientFailure, CryptoQuoteDTO> result = await sut
+          .getQuote('BTCUSDT');
 
       expect(result.isRight(), isTrue);
       expect(
@@ -140,31 +141,8 @@ void main() {
       );
     });
 
-    test('should return Failure.parse when the payload is not a Map', () async {
-      when(
-        () => httpClient.request(
-          apiRoute: any(named: 'apiRoute'),
-          queryParameters: any(named: 'queryParameters'),
-        ),
-      ).thenAnswer(
-        (_) async =>
-            const Right<HttpClientFailure, HttpClientResponse<dynamic>>(
-              HttpClientResponse<dynamic>(
-                data: <dynamic>['not', 'a', 'map'],
-                statusCode: 200,
-              ),
-            ),
-      );
-
-      final Either<Failure, CryptoQuoteDTO> result = await sut.getQuote(
-        'BTCUSDT',
-      );
-
-      expect(result, const Left<Failure, CryptoQuoteDTO>(Failure.parse()));
-    });
-
     test(
-      'should propagate the HttpClient failure as a domain Failure',
+      'should report a parse failure when the payload is not a Map',
       () async {
         when(
           () => httpClient.request(
@@ -173,17 +151,47 @@ void main() {
           ),
         ).thenAnswer(
           (_) async =>
-              const Left<HttpClientFailure, HttpClientResponse<dynamic>>(
-                HttpClientFailure.notFound(),
+              const Right<HttpClientFailure, HttpClientResponse<dynamic>>(
+                HttpClientResponse<dynamic>(
+                  data: <dynamic>['not', 'a', 'map'],
+                  statusCode: 200,
+                ),
               ),
         );
 
-        final Either<Failure, CryptoQuoteDTO> result = await sut.getQuote(
-          'BTCUSDT',
-        );
+        final Either<HttpClientFailure, CryptoQuoteDTO> result = await sut
+            .getQuote('BTCUSDT');
 
-        expect(result.isLeft(), isTrue);
+        expect(
+          result,
+          const Left<HttpClientFailure, CryptoQuoteDTO>(
+            HttpClientFailure.parse(),
+          ),
+        );
       },
     );
+
+    test('should hand the HttpClient failure back untranslated', () async {
+      when(
+        () => httpClient.request(
+          apiRoute: any(named: 'apiRoute'),
+          queryParameters: any(named: 'queryParameters'),
+        ),
+      ).thenAnswer(
+        (_) async => const Left<HttpClientFailure, HttpClientResponse<dynamic>>(
+          HttpClientFailure.notFound(),
+        ),
+      );
+
+      final Either<HttpClientFailure, CryptoQuoteDTO> result = await sut
+          .getQuote('BTCUSDT');
+
+      expect(
+        result,
+        const Left<HttpClientFailure, CryptoQuoteDTO>(
+          HttpClientFailure.notFound(),
+        ),
+      );
+    });
   });
 }

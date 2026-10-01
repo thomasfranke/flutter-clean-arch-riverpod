@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_objects/kline_dto.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/kline_datasource.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_failure.dart';
@@ -56,10 +55,8 @@ void main() {
         ),
       );
 
-      final Either<Failure, List<KlineDTO>> result = await sut.getKlines(
-        symbol: 'BTCUSDT',
-        interval: '1h',
-      );
+      final Either<HttpClientFailure, List<KlineDTO>> result = await sut
+          .getKlines(symbol: 'BTCUSDT', interval: '1h');
 
       expect(result.isRight(), isTrue);
       final List<KlineDTO> klines = result.getOrElse(() => <KlineDTO>[]);
@@ -67,32 +64,31 @@ void main() {
       expect(klines.first.numberOfTrades, 1234);
     });
 
+    test('should hand the HttpClient failure back untranslated', () async {
+      when(
+        () => httpClient.request(
+          apiRoute: any(named: 'apiRoute'),
+          queryParameters: any(named: 'queryParameters'),
+        ),
+      ).thenAnswer(
+        (_) async => const Left<HttpClientFailure, HttpClientResponse<dynamic>>(
+          HttpClientFailure.server(),
+        ),
+      );
+
+      final Either<HttpClientFailure, List<KlineDTO>> result = await sut
+          .getKlines(symbol: 'BTCUSDT', interval: '1h');
+
+      expect(
+        result,
+        const Left<HttpClientFailure, List<KlineDTO>>(
+          HttpClientFailure.server(),
+        ),
+      );
+    });
+
     test(
-      'should propagate the HttpClient failure as a domain Failure',
-      () async {
-        when(
-          () => httpClient.request(
-            apiRoute: any(named: 'apiRoute'),
-            queryParameters: any(named: 'queryParameters'),
-          ),
-        ).thenAnswer(
-          (_) async =>
-              const Left<HttpClientFailure, HttpClientResponse<dynamic>>(
-                HttpClientFailure.server(),
-              ),
-        );
-
-        final Either<Failure, List<KlineDTO>> result = await sut.getKlines(
-          symbol: 'BTCUSDT',
-          interval: '1h',
-        );
-
-        expect(result.isLeft(), isTrue);
-      },
-    );
-
-    test(
-      'should return Failure.parse when the payload is not a list',
+      'should report a parse failure when the payload is not a list',
       () async {
         when(
           () => httpClient.request(
@@ -109,12 +105,15 @@ void main() {
               ),
         );
 
-        final Either<Failure, List<KlineDTO>> result = await sut.getKlines(
-          symbol: 'BTCUSDT',
-          interval: '1h',
-        );
+        final Either<HttpClientFailure, List<KlineDTO>> result = await sut
+            .getKlines(symbol: 'BTCUSDT', interval: '1h');
 
-        expect(result, const Left<Failure, List<KlineDTO>>(Failure.parse()));
+        expect(
+          result,
+          const Left<HttpClientFailure, List<KlineDTO>>(
+            HttpClientFailure.parse(),
+          ),
+        );
       },
     );
   });

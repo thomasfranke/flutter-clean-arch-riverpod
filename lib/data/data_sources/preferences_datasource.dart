@@ -1,10 +1,13 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_objects/preferences_dao.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/storage/storage_failure.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/storage/storage_interface.dart';
 
 /// A datasource for managing user preferences using shared preferences.
+///
+/// It resolves data and nothing else: it knows the three keys and how they
+/// compose into a [PreferencesDAO]. The [StorageFailure] it returns is
+/// translated by the repository, not here.
 class PreferencesDatasource {
   /// Creates a [PreferencesDatasource] instance.
   const PreferencesDatasource({required this.storage});
@@ -14,14 +17,17 @@ class PreferencesDatasource {
 
   /// Retrieves user preferences from storage and returns a
   /// [PreferencesDAO] wrapped in an [Either] for error handling.
-  Either<Failure, PreferencesDAO> getPreferences() {
+  ///
+  /// The first key that fails decides the result: a half-read preferences
+  /// record is not a record, so there is nothing useful to return.
+  Either<StorageFailure, PreferencesDAO> getPreferences() {
     final Either<StorageFailure, String?> localeResult = storage.getString(
       key: 'pref_locale',
     );
 
     if (localeResult.isLeft()) {
-      return Left<Failure, PreferencesDAO>(
-        (localeResult as Left<StorageFailure, String?>).value.toDomainFailure(),
+      return Left<StorageFailure, PreferencesDAO>(
+        (localeResult as Left<StorageFailure, String?>).value,
       );
     }
 
@@ -30,8 +36,8 @@ class PreferencesDatasource {
     );
 
     if (darkModeResult.isLeft()) {
-      return Left<Failure, PreferencesDAO>(
-        (darkModeResult as Left<StorageFailure, bool?>).value.toDomainFailure(),
+      return Left<StorageFailure, PreferencesDAO>(
+        (darkModeResult as Left<StorageFailure, bool?>).value,
       );
     }
 
@@ -40,13 +46,12 @@ class PreferencesDatasource {
     );
 
     if (fontScaleResult.isLeft()) {
-      return Left<Failure, PreferencesDAO>(
-        (fontScaleResult as Left<StorageFailure, double?>).value
-            .toDomainFailure(),
+      return Left<StorageFailure, PreferencesDAO>(
+        (fontScaleResult as Left<StorageFailure, double?>).value,
       );
     }
 
-    return Right<Failure, PreferencesDAO>(
+    return Right<StorageFailure, PreferencesDAO>(
       PreferencesDAO(
         locale: localeResult.fold((_) => null, (String? value) => value),
         darkMode: darkModeResult.fold((_) => null, (bool? value) => value),
@@ -56,35 +61,14 @@ class PreferencesDatasource {
   }
 
   /// Saves only the locale preference to storage.
-  Future<Either<Failure, Unit>> saveLocale(final String locale) async {
-    final Either<StorageFailure, Unit> result = await storage.setString(
-      key: 'pref_locale',
-      value: locale,
-    );
-    return result.leftMap(
-      (final StorageFailure failure) => failure.toDomainFailure(),
-    );
-  }
+  Future<Either<StorageFailure, Unit>> saveLocale(final String locale) =>
+      storage.setString(key: 'pref_locale', value: locale);
 
   /// Saves only the dark mode preference to storage.
-  Future<Either<Failure, Unit>> saveDarkMode(final bool darkMode) async {
-    final Either<StorageFailure, Unit> result = await storage.setBool(
-      key: 'pref_dark_mode',
-      value: darkMode,
-    );
-    return result.leftMap(
-      (final StorageFailure failure) => failure.toDomainFailure(),
-    );
-  }
+  Future<Either<StorageFailure, Unit>> saveDarkMode(final bool darkMode) =>
+      storage.setBool(key: 'pref_dark_mode', value: darkMode);
 
   /// Saves only the font scale preference to storage.
-  Future<Either<Failure, Unit>> saveFontScale(final double fontScale) async {
-    final Either<StorageFailure, Unit> result = await storage.setDouble(
-      key: 'pref_font_scale',
-      value: fontScale,
-    );
-    return result.leftMap(
-      (final StorageFailure failure) => failure.toDomainFailure(),
-    );
-  }
+  Future<Either<StorageFailure, Unit>> saveFontScale(final double fontScale) =>
+      storage.setDouble(key: 'pref_font_scale', value: fontScale);
 }

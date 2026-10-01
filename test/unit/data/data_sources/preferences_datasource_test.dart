@@ -1,5 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_objects/preferences_dao.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/preferences_datasource.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/storage/storage_failure.dart';
@@ -36,7 +35,8 @@ void main() {
       () {
         stubHappyPath();
 
-        final Either<Failure, PreferencesDAO> result = sut.getPreferences();
+        final Either<StorageFailure, PreferencesDAO> result = sut
+            .getPreferences();
 
         expect(result.isRight(), isTrue);
         final PreferencesDAO dao = result.getOrElse(
@@ -48,20 +48,24 @@ void main() {
       },
     );
 
-    test('should return Failure immediately when reading the locale fails, '
+    test('should stop at the first failing key when the locale fails, '
         'without checking darkMode/fontScale', () {
       when(
         () => storage.getString(key: 'pref_locale'),
       ).thenReturn(const Left<StorageFailure, String?>(StorageFailure.read()));
 
-      final Either<Failure, PreferencesDAO> result = sut.getPreferences();
+      final Either<StorageFailure, PreferencesDAO> result = sut
+          .getPreferences();
 
-      expect(result, const Left<Failure, PreferencesDAO>(Failure.storage()));
+      expect(
+        result,
+        const Left<StorageFailure, PreferencesDAO>(StorageFailure.read()),
+      );
       verifyNever(() => storage.getBool(key: 'pref_dark_mode'));
       verifyNever(() => storage.getDouble(key: 'pref_font_scale'));
     });
 
-    test('should return Failure immediately when reading darkMode fails, '
+    test('should stop at the first failing key when darkMode fails, '
         'without checking fontScale', () {
       when(
         () => storage.getString(key: 'pref_locale'),
@@ -70,13 +74,17 @@ void main() {
         () => storage.getBool(key: 'pref_dark_mode'),
       ).thenReturn(const Left<StorageFailure, bool?>(StorageFailure.read()));
 
-      final Either<Failure, PreferencesDAO> result = sut.getPreferences();
+      final Either<StorageFailure, PreferencesDAO> result = sut
+          .getPreferences();
 
-      expect(result, const Left<Failure, PreferencesDAO>(Failure.storage()));
+      expect(
+        result,
+        const Left<StorageFailure, PreferencesDAO>(StorageFailure.read()),
+      );
       verifyNever(() => storage.getDouble(key: 'pref_font_scale'));
     });
 
-    test('should return Failure when reading fontScale fails', () {
+    test('should report the storage failure when reading fontScale fails', () {
       when(
         () => storage.getString(key: 'pref_locale'),
       ).thenReturn(const Right<StorageFailure, String?>('en'));
@@ -87,9 +95,13 @@ void main() {
         () => storage.getDouble(key: 'pref_font_scale'),
       ).thenReturn(const Left<StorageFailure, double?>(StorageFailure.read()));
 
-      final Either<Failure, PreferencesDAO> result = sut.getPreferences();
+      final Either<StorageFailure, PreferencesDAO> result = sut
+          .getPreferences();
 
-      expect(result, const Left<Failure, PreferencesDAO>(Failure.storage()));
+      expect(
+        result,
+        const Left<StorageFailure, PreferencesDAO>(StorageFailure.read()),
+      );
     });
   });
 
@@ -99,22 +111,22 @@ void main() {
         () => storage.setString(key: 'pref_locale', value: 'es'),
       ).thenAnswer((_) async => const Right<StorageFailure, Unit>(unit));
 
-      final Either<Failure, Unit> result = await sut.saveLocale('es');
+      final Either<StorageFailure, Unit> result = await sut.saveLocale('es');
 
-      expect(result, const Right<Failure, Unit>(unit));
+      expect(result, const Right<StorageFailure, Unit>(unit));
       verify(
         () => storage.setString(key: 'pref_locale', value: 'es'),
       ).called(1);
     });
 
-    test('should propagate StorageFailure as a domain Failure', () async {
+    test('should hand the StorageFailure back untranslated', () async {
       when(() => storage.setString(key: 'pref_locale', value: 'es')).thenAnswer(
         (_) async => const Left<StorageFailure, Unit>(StorageFailure.write()),
       );
 
-      final Either<Failure, Unit> result = await sut.saveLocale('es');
+      final Either<StorageFailure, Unit> result = await sut.saveLocale('es');
 
-      expect(result, const Left<Failure, Unit>(Failure.storage()));
+      expect(result, const Left<StorageFailure, Unit>(StorageFailure.write()));
     });
   });
 
@@ -124,24 +136,24 @@ void main() {
         () => storage.setBool(key: 'pref_dark_mode', value: true),
       ).thenAnswer((_) async => const Right<StorageFailure, Unit>(unit));
 
-      final Either<Failure, Unit> result = await sut.saveDarkMode(true);
+      final Either<StorageFailure, Unit> result = await sut.saveDarkMode(true);
 
-      expect(result, const Right<Failure, Unit>(unit));
+      expect(result, const Right<StorageFailure, Unit>(unit));
       verify(
         () => storage.setBool(key: 'pref_dark_mode', value: true),
       ).called(1);
     });
 
-    test('should propagate StorageFailure as a domain Failure', () async {
+    test('should hand the StorageFailure back untranslated', () async {
       when(
         () => storage.setBool(key: 'pref_dark_mode', value: true),
       ).thenAnswer(
         (_) async => const Left<StorageFailure, Unit>(StorageFailure.write()),
       );
 
-      final Either<Failure, Unit> result = await sut.saveDarkMode(true);
+      final Either<StorageFailure, Unit> result = await sut.saveDarkMode(true);
 
-      expect(result, const Left<Failure, Unit>(Failure.storage()));
+      expect(result, const Left<StorageFailure, Unit>(StorageFailure.write()));
     });
   });
 
@@ -151,24 +163,24 @@ void main() {
         () => storage.setDouble(key: 'pref_font_scale', value: 1.2),
       ).thenAnswer((_) async => const Right<StorageFailure, Unit>(unit));
 
-      final Either<Failure, Unit> result = await sut.saveFontScale(1.2);
+      final Either<StorageFailure, Unit> result = await sut.saveFontScale(1.2);
 
-      expect(result, const Right<Failure, Unit>(unit));
+      expect(result, const Right<StorageFailure, Unit>(unit));
       verify(
         () => storage.setDouble(key: 'pref_font_scale', value: 1.2),
       ).called(1);
     });
 
-    test('should propagate StorageFailure as a domain Failure', () async {
+    test('should hand the StorageFailure back untranslated', () async {
       when(
         () => storage.setDouble(key: 'pref_font_scale', value: 1.2),
       ).thenAnswer(
         (_) async => const Left<StorageFailure, Unit>(StorageFailure.write()),
       );
 
-      final Either<Failure, Unit> result = await sut.saveFontScale(1.2);
+      final Either<StorageFailure, Unit> result = await sut.saveFontScale(1.2);
 
-      expect(result, const Left<Failure, Unit>(Failure.storage()));
+      expect(result, const Left<StorageFailure, Unit>(StorageFailure.write()));
     });
   });
 }
