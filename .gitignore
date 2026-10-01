@@ -49,3 +49,13 @@ app.*.map.json
 
 # FVM Version Cache
 .fvm/
+
+# What an end-to-end run leaves behind: a frame per step, the video they are
+# joined into, and the full output. Megabytes per run, and evidence of one run
+# on one machine — `arch e2e clean` removes them.
+.e2e-evidence/
+
+# The record of what each scenario did last: when, against which version of
+# the app, and how long it took. Kept out of the folder above because
+# `arch e2e clean` throws that away and nothing rebuilds this.
+.e2e-results.json
