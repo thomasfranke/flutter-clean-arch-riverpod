@@ -1,0 +1,88 @@
+# The CLI's own analyzer config.
+#
+# `tool/` sits inside the package, so the analyzer would otherwise apply the
+# root `analysis_options.yaml` to it. Three of the rules there describe
+# application code and this is not application code:
+#
+#   always_use_package_imports — the CLI imports nothing but `dart:*` and its
+#     own files, on purpose: a tool that resolves the package, pins the SDK
+#     and reports what is missing cannot require any of that to have happened
+#     before it runs. Package imports would resolve today and make it a lie.
+#     So the rule is inverted.
+#   always_specify_types — the CLI leans on inference throughout. The app made
+#     the opposite choice; a gate that demanded this one here would never be
+#     turned on, and a gate nobody turns on catches nothing.
+#   always_put_control_body_on_new_line, cascade_invocations — the same, at a
+#     smaller scale. Both are style; neither is what analysing this code is
+#     for.
+#
+# Everything substantive is kept: the strict language modes, and the lints
+# that catch a mistake rather than a preference.
+
+analyzer:
+  language:
+    strict-casts: true
+    strict-inference: true
+    strict-raw-types: true
+
+  errors:
+    # A TODO is a note to a human, not a reason to fail the build.
+    todo: ignore
+
+linter:
+  rules:
+    always_declare_return_types: true
+    always_put_control_body_on_new_line: false
+    always_put_required_named_parameters_first: true
+    always_specify_types: false
+    always_use_package_imports: false
+    avoid_catches_without_on_clauses: true
+    # Ansi, Layout and Status are namespaces of constants, which is how this
+    # CLI groups its glyphs and escape sequences. There is no instance of one
+    # to want.
+    avoid_classes_with_only_static_members: false
+    avoid_dynamic_calls: true
+    avoid_implementing_value_types: true
+    avoid_redundant_argument_values: true
+    avoid_setters_without_getters: true
+    avoid_slow_async_io: true
+    avoid_types_on_closure_parameters: false
+    cancel_subscriptions: true
+    cascade_invocations: false
+    cast_nullable_to_non_nullable: true
+    close_sinks: true
+    comment_references: true
+    directives_ordering: true
+    discarded_futures: true
+    document_ignores: true
+    leading_newlines_in_multiline_strings: true
+    lines_longer_than_80_chars: true
+    no_literal_bool_comparisons: true
+    noop_primitive_operations: true
+    omit_local_variable_types: false
+    omit_obvious_local_variable_types: false
+    only_throw_errors: true
+    prefer_const_constructors: true
+    prefer_const_declarations: true
+    prefer_const_literals_to_create_immutables: true
+    prefer_double_quotes: false
+    prefer_expression_function_bodies: true
+    prefer_final_in_for_each: true
+    prefer_final_locals: true
+    prefer_int_literals: true
+    prefer_relative_imports: true
+    prefer_single_quotes: true
+    prefer_void_to_null: true
+    public_member_api_docs: true
+    require_trailing_commas: true
+    throw_in_finally: true
+    unawaited_futures: true
+    unnecessary_await_in_return: true
+    unnecessary_breaks: true
+    unnecessary_final: false
+    unnecessary_lambdas: true
+    unnecessary_parenthesis: true
+    use_named_constants: true
+    use_raw_strings: true
+    use_setters_to_change_properties: true
+    use_super_parameters: true

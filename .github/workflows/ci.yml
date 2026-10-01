@@ -10,6 +10,15 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Every step below is one call into `tool/arch.dart`, the same CLI a person
+# runs locally — `make verify` runs this list, in this order, on a laptop.
+# The steps are kept separate rather than folded into one `verify` call so
+# that GitHub's UI names the one that failed; the logic is still in one place,
+# and there is no second implementation of the gate to drift.
+#
+# The CLI notices it is here (CI=true) and prints plain, appended lines
+# instead of repainting a dashboard — see tool/src/tty.dart.
+
 jobs:
   build_and_test:
     name: Build & Test Flutter App
@@ -23,60 +32,33 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           # Single source of truth for the Flutter version: `.fvmrc`, the same
-          # file used by local FVM and by `make fvm`.
+          # file local FVM and `make fvm` read.
           flutter-version-file: .fvmrc
           cache: true
 
       - name: Install dependencies
-        run: flutter pub get
-
-      - name: Analyze code (lint)
-        run: flutter analyze
+        run: make setup
 
       - name: Verify formatting
-        run: dart format --set-exit-if-changed .
+        run: make format
 
-      - name: Run Build Runner
-        run: dart run build_runner build --delete-conflicting-outputs
+      - name: Analyze code (lint)
+        run: make analyze
 
-      - name: Check for changes in generated files
-        run: |
-          CHANGES=$(git status --porcelain | grep -E '\.freezed\.dart$|\.g\.dart$|\.gr\.dart$' || true)
-          if [ -n "$CHANGES" ]; then
-            echo "• Generated files have been modified. Commit required:"
-            echo "$CHANGES"
-            exit 1
-          else
-            echo "• All good, no changes in generated files."
-          fi
+      # Regenerates every generated file from scratch — build_runner's four
+      # suffixes and the localizations — and fails if the result differs from
+      # what is committed. That covers three checks the workflow used to spell
+      # out by hand: generated files out of date, ARB files edited without a
+      # regenerate, and a message left untranslated in some locale.
+      - name: Codegen gate
+        run: dart run tool/arch.dart codegen-gate
 
-      - name: Check for changes in generated l10n files
-        run: |
-          CHANGES=$(git status --porcelain \
-            | grep -E 'lib/core/l10n/.*\.arb$|lib/core/l10n/generated/.*\.dart$' || true)
-          if [ -n "$CHANGES" ]; then
-            echo "• l10n files have been modified. Commit required:"
-            echo "$CHANGES"
-            exit 1
-          else
-            echo "• All good, no changes in l10n files."
-          fi
+      # The whole suite: the architecture assertions and the CLI's own tests
+      # first, then the unit tests layer by layer, then widget and
+      # integration. Coverage rides along with it, which is what the gate
+      # below reads.
+      - name: Run tests
+        run: make flutter-test
 
-      - name: Validate l10n translations
-        run: |
-          flutter gen-l10n
-          # `untranslated-messages-file` in l10n.yaml points here. gen-l10n
-          # writes `{}` when nothing is missing, and omits the file entirely
-          # when there is no untranslated message at all.
-          if [ ! -s l10n_missing_translations.json ]; then
-            echo "All translations are complete."
-          elif grep -q '^{}$' l10n_missing_translations.json; then
-            echo "All translations are complete."
-          else
-            echo "Missing translations detected:"
-            cat l10n_missing_translations.json
-            exit 1
-          fi
-
-      - name: Run unit tests
-        run: flutter test test/unit
+      - name: Coverage gate
+        run: make coverage-gate
