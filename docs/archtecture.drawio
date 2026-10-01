@@ -1,0 +1,472 @@
+<mxfile host="app.diagrams.net">
+    <diagram id="fcar-layers" name="Layers">
+        <mxGraphModel dx="926" dy="257" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="1169" math="0" shadow="0">
+            <root>
+                <mxCell id="0" />
+                <mxCell id="1" parent="0" />
+                <mxCell id="title" value="Flutter Clean Arch + Riverpod" style="text;html=1;fontFamily=Helvetica;fontSize=30;fontStyle=1;fontColor=#204d7d;align=left;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="22" width="700" height="40" as="geometry" />
+                </mxCell>
+                <mxCell id="subtitle" value="The six layers, and what crosses each boundary" style="text;html=1;fontFamily=Helvetica;fontSize=13;fontColor=#6b7280;align=left;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="64" width="700" height="24" as="geometry" />
+                </mxCell>
+                <mxCell id="n3" value="&lt;b style=&quot;font-size:16px&quot;&gt;Domain&lt;/b&gt;&lt;div style=&quot;font-size:11px;font-weight:400;color:#41618a&quot;&gt;The business core. Imports nothing but core.&lt;/div&gt;" style="rounded=1;absoluteArcSize=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=top;align=center;fillColor=#dfeaf6;strokeColor=#204d7d;strokeWidth=2.5;fontColor=#173a60;spacingLeft=14;spacingRight=14;spacingTop=16;" parent="1" vertex="1">
+                    <mxGeometry x="320" y="100" width="280" height="360" as="geometry" />
+                </mxCell>
+                <mxCell id="n3a" value="&lt;b style=&quot;font-size:16px&quot;&gt;Entities · 4&lt;/b&gt;&lt;div style=&quot;font-size:10.5px;font-weight:400;color:#6b7280&quot;&gt;&lt;br&gt;CryptoQuoteEntity · Kline · FavoriteEntity · PreferencesEntity. Immutable (freezed), with the defaults and the arithmetic the app reasons about.&lt;/div&gt;" style="rounded=1;absoluteArcSize=1;arcSize=8;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=middle;align=center;fillColor=#FFFFFF;strokeColor=#a9c0da;strokeWidth=1.5;fontColor=#204d7d;spacingLeft=12;spacingRight=12;" parent="n3" vertex="1">
+                    <mxGeometry x="16" y="82" width="248" height="120" as="geometry" />
+                </mxCell>
+                <mxCell id="n3b" value="&lt;b style=&quot;font-size:16px&quot;&gt;Repository contracts · 4&lt;/b&gt;&lt;div style=&quot;font-size:10.5px;font-weight:400;color:#6b7280&quot;&gt;&lt;br&gt;The interfaces Data implements. Every method returns &lt;i&gt;Either&amp;lt;Failure, T&amp;gt;&lt;/i&gt; — never an exception, never a DTO.&lt;/div&gt;" style="rounded=1;absoluteArcSize=1;arcSize=8;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=middle;align=center;fillColor=#FFFFFF;strokeColor=#a9c0da;strokeWidth=1.5;fontColor=#204d7d;spacingLeft=12;spacingRight=12;" parent="n3" vertex="1">
+                    <mxGeometry x="16" y="222" width="248" height="118" as="geometry" />
+                </mxCell>
+                <mxCell id="n2" value="&lt;b style=&quot;font-size:19px&quot;&gt;Application&lt;/b&gt;&lt;div style=&quot;font-size:13.5px;font-weight:400;color:#6b7280&quot;&gt;&lt;br&gt;Orchestration. Eight use cases, one operation each: a use case composes a domain contract and hands back an entity or a Failure. No Flutter.&lt;/div&gt;" style="rounded=1;absoluteArcSize=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=middle;spacingLeft=12;spacingRight=12;align=center;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=2;fontColor=#204d7d;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="229" width="210" height="152" as="geometry" />
+                </mxCell>
+                <mxCell id="n1" value="&lt;b style=&quot;font-size:16px&quot;&gt;Presentation&lt;/b&gt;&lt;div style=&quot;font-size:11px;font-weight:400;color:#6b7280&quot;&gt;What the user sees and touches. Holds no business rule.&lt;/div&gt;" style="rounded=1;absoluteArcSize=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=top;align=center;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=2;fontColor=#204d7d;spacingLeft=14;spacingRight=14;spacingTop=16;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="429" width="210" height="482" as="geometry" />
+                </mxCell>
+                <mxCell id="n1a" value="&lt;b style=&quot;font-size:16px&quot;&gt;Screens · Widgets&lt;/b&gt;&lt;div style=&quot;font-size:10.5px;font-weight:400;color:#6b7280&quot;&gt;&lt;br&gt;3 screens, 2 tabs, 4 widgets. AutoRoute navigates; fl_chart draws the candles.&lt;/div&gt;" style="rounded=1;absoluteArcSize=1;arcSize=8;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=top;align=center;fillColor=#eef3f9;strokeColor=#a9c0da;strokeWidth=1.5;fontColor=#204d7d;spacingTop=8;spacingLeft=12;spacingRight=12;" parent="n1" vertex="1">
+                    <mxGeometry x="16" y="82" width="178" height="100" as="geometry" />
+                </mxCell>
+                <mxCell id="n1b" value="&lt;b style=&quot;font-size:13px&quot;&gt;Riverpod&lt;/b&gt;&lt;div style=&quot;font-size:10.5px;font-weight:400;color:#6b7280&quot;&gt;Screen state, and the way in to a use case.&lt;/div&gt;" style="rounded=1;absoluteArcSize=1;arcSize=8;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=top;align=center;fillColor=#eef3f9;strokeColor=#a9c0da;strokeWidth=1.5;fontColor=#204d7d;spacingLeft=12;spacingRight=12;spacingTop=16;" parent="n1" vertex="1">
+                    <mxGeometry x="16" y="198" width="178" height="264" as="geometry" />
+                </mxCell>
+                <mxCell id="n1b2" value="&lt;b style=&quot;font-size:12px&quot;&gt;State · 4&lt;/b&gt;&lt;div style=&quot;font-size:10px;font-weight:400;color:#6b7280&quot;&gt;&lt;br&gt;A sealed freezed union: initial · loading · success · failure. The screen switches on it.&lt;/div&gt;" style="rounded=1;absoluteArcSize=1;arcSize=8;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=middle;align=center;fillColor=#FFFFFF;strokeColor=#c3d2e4;strokeWidth=1.5;fontColor=#204d7d;spacingLeft=10;spacingRight=10;" parent="n1b" vertex="1">
+                    <mxGeometry x="16" y="72" width="146" height="96" as="geometry" />
+                </mxCell>
+                <mxCell id="n1b3" value="&lt;b style=&quot;font-size:12px&quot;&gt;Notifier · 4&lt;/b&gt;&lt;div style=&quot;font-size:10px;font-weight:400;color:#6b7280&quot;&gt;&lt;br&gt;Reads the use case provider and publishes the next state.&lt;/div&gt;" style="rounded=1;absoluteArcSize=1;arcSize=8;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=middle;align=center;fillColor=#FFFFFF;strokeColor=#c3d2e4;strokeWidth=1.5;fontColor=#204d7d;spacingLeft=10;spacingRight=10;" parent="n1b" vertex="1">
+                    <mxGeometry x="16" y="180" width="146" height="68" as="geometry" />
+                </mxCell>
+                <mxCell id="n4" value="&lt;b style=&quot;font-size:16px&quot;&gt;Data&lt;/b&gt;&lt;div style=&quot;font-size:11px;font-weight:400;color:#6b7280&quot;&gt;Implements the contracts Domain declares.&lt;/div&gt;" style="rounded=1;absoluteArcSize=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=top;align=center;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=2;fontColor=#204d7d;spacingLeft=14;spacingRight=14;spacingTop=16;" parent="1" vertex="1">
+                    <mxGeometry x="690" y="231" width="470" height="322" as="geometry" />
+                </mxCell>
+                <mxCell id="n4a" value="&lt;b style=&quot;font-size:16px&quot;&gt;Repository impls · 4&lt;/b&gt;&lt;div style=&quot;font-size:10.5px;font-weight:400;color:#6b7280&quot;&gt;&lt;br&gt;Map a DTO/DAO to an entity, and an infra failure to a domain &lt;i&gt;Failure&lt;/i&gt;. The boundary, both ways.&lt;/div&gt;" style="rounded=1;absoluteArcSize=1;arcSize=8;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=middle;align=center;fillColor=#eef3f9;strokeColor=#a9c0da;strokeWidth=1.5;fontColor=#204d7d;spacingLeft=12;spacingRight=12;" parent="n4" vertex="1">
+                    <mxGeometry x="16" y="68" width="189" height="98" as="geometry" />
+                </mxCell>
+                <mxCell id="n4h" value="&lt;b style=&quot;font-size:16px&quot;&gt;DTO · DAO · 3&lt;/b&gt;&lt;div style=&quot;font-size:10.5px;font-weight:400;color:#6b7280&quot;&gt;&lt;br&gt;CryptoQuoteDTO · KlineDTO · PreferencesDAO. A &lt;i&gt;toEntity()&lt;/i&gt; extension does the mapping — no hydrator class.&lt;/div&gt;" style="rounded=1;absoluteArcSize=1;arcSize=8;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=middle;align=center;fillColor=#eef3f9;strokeColor=#a9c0da;strokeWidth=1.5;fontColor=#204d7d;spacingLeft=12;spacingRight=12;" parent="n4" vertex="1">
+                    <mxGeometry x="265" y="68" width="189" height="98" as="geometry" />
+                </mxCell>
+                <mxCell id="n4b" value="&lt;b style=&quot;font-size:16px&quot;&gt;Datasources · 4&lt;/b&gt;&lt;div style=&quot;font-size:10.5px;font-weight:400;color:#6b7280&quot;&gt;&lt;br&gt;Speak to the outside only through &lt;i&gt;HttpClientInterface&lt;/i&gt; and &lt;i&gt;StorageInterface&lt;/i&gt;, and parse the raw payload into a DTO/DAO. The infra failure travels on untouched — translating it is the repository&apos;s job.&lt;/div&gt;" style="rounded=1;absoluteArcSize=1;arcSize=8;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=middle;align=center;fillColor=#eef3f9;strokeColor=#a9c0da;strokeWidth=1.5;fontColor=#204d7d;spacingLeft=12;spacingRight=12;" parent="n4" vertex="1">
+                    <mxGeometry x="16" y="222" width="438" height="84" as="geometry" />
+                </mxCell>
+                <mxCell id="n5" value="&lt;b style=&quot;font-size:19px&quot;&gt;Infrastructure&lt;/b&gt;&lt;div style=&quot;font-size:13.5px;font-weight:400;color:#6b7280&quot;&gt;&lt;br&gt;The two external packages, each isolated behind a contract: Dio via &lt;i&gt;HttpClientInterface&lt;/i&gt;, SharedPreferences via &lt;i&gt;StorageInterface&lt;/i&gt;. Returns a raw payload, or an infra failure rich in technical detail. No Flutter.&lt;/div&gt;" style="rounded=1;absoluteArcSize=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=middle;align=center;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=2;fontColor=#204d7d;spacingLeft=12;spacingRight=12;" parent="1" vertex="1">
+                    <mxGeometry x="690" y="613" width="470" height="116" as="geometry" />
+                </mxCell>
+                <mxCell id="amb1" value="&lt;b style=&quot;font-size:15px&quot;&gt;On the device&lt;/b&gt;&lt;div style=&quot;font-size:12px;font-weight:400;color:#6b7280&quot;&gt;&lt;br&gt;SharedPreferences&lt;br&gt;key–value&lt;/div&gt;" style="rounded=1;absoluteArcSize=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=middle;align=center;fillColor=#f5f6f7;strokeColor=#9199a4;strokeWidth=2;fontColor=#565658;spacingLeft=12;spacingRight=12;" parent="1" vertex="1">
+                    <mxGeometry x="730" y="785" width="180" height="100" as="geometry" />
+                </mxCell>
+                <mxCell id="amb2" value="&lt;b style=&quot;font-size:15px&quot;&gt;Outside&lt;/b&gt;&lt;div style=&quot;font-size:12px;font-weight:400;color:#6b7280&quot;&gt;&lt;br&gt;Binance public API&lt;br&gt;data-api.binance.vision&lt;/div&gt;" style="rounded=1;absoluteArcSize=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=middle;align=center;fillColor=#efefef;strokeColor=#b9c4d4;strokeWidth=2;dashed=1;dashPattern=6 4;fontColor=#565658;spacingLeft=12;spacingRight=12;" parent="1" vertex="1">
+                    <mxGeometry x="940" y="785" width="180" height="100" as="geometry" />
+                </mxCell>
+                <mxCell id="x1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;startArrow=blockThin;startFill=1;strokeColor=#2d67a7;strokeWidth=2;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" edge="1" source="n1" target="n2">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="x2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;startArrow=blockThin;startFill=1;strokeColor=#2d67a7;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.57;entryDx=0;entryDy=0;" parent="1" edge="1" source="n2" target="n3">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="x3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;startArrow=blockThin;startFill=1;strokeColor=#2d67a7;strokeWidth=2;fontFamily=Helvetica;fontSize=11;fontStyle=1;fontColor=#204d7d;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="n4a" target="n3b" value="Entities /&lt;br&gt;Domain Failures">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="x9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;startArrow=blockThin;startFill=1;strokeColor=#2d67a7;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="n4a" target="n4h">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="x7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;startArrow=blockThin;startFill=1;strokeColor=#2d67a7;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.2158;entryY=0;entryDx=0;entryDy=0;" parent="1" edge="1" source="n4a" target="n4b">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="x10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;startArrow=blockThin;startFill=1;strokeColor=#2d67a7;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.7842;entryY=0;entryDx=0;entryDy=0;" parent="1" edge="1" source="n4h" target="n4b">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="x4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;startArrow=blockThin;startFill=1;strokeColor=#2d67a7;strokeWidth=2;fontFamily=Helvetica;fontSize=12;fontStyle=1;fontColor=#204d7d;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" edge="1" source="n4b" target="n5" value="Raw payload / Infra Failure">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="x5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;startArrow=blockThin;startFill=1;strokeColor=#2d67a7;strokeWidth=2;fontFamily=Helvetica;fontSize=13;fontStyle=1;fontColor=#204d7d;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.2766;entryY=1;entryDx=0;entryDy=0;" parent="1" edge="1" source="amb1" target="n5" value="DAO">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="x6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;startArrow=blockThin;startFill=1;strokeColor=#2d67a7;strokeWidth=2;fontFamily=Helvetica;fontSize=13;fontStyle=1;fontColor=#204d7d;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.7234;entryY=1;entryDx=0;entryDy=0;" parent="1" edge="1" source="amb2" target="n5" value="DTO">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="x8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#a9c0da;strokeWidth=1.6;dashed=1;dashPattern=6 4;fontFamily=Helvetica;fontSize=10.5;fontColor=#9199a4;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.18;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" edge="1" source="n1" target="n3" value="the screen reads entities directly — the graph allows it">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="640" y="513" />
+                            <mxPoint x="640" y="480" />
+                            <mxPoint x="460" y="480" />
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="core1" value="&lt;b style=&quot;font-size:18px&quot;&gt;Core&lt;/b&gt;&lt;div style=&quot;font-size:12.5px;font-weight:400;color:#6b7280&quot;&gt;&lt;br&gt;Cross-cutting, not a layer: every layer may import it, it may import none. Ten files — the Failure union, the base URL, the theme, the generated l10n, and the AutoRoute table.&lt;/div&gt;" style="rounded=1;absoluteArcSize=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=middle;align=center;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=2;fontColor=#204d7d;spacingLeft=16;spacingRight=16;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="952" width="1120" height="75" as="geometry" />
+                </mxCell>
+                <mxCell id="di1" value="&lt;b style=&quot;font-size:18px&quot;&gt;Providers · dependency injection with Riverpod&lt;/b&gt;&lt;div style=&quot;font-size:12.5px;font-weight:400;color:#6b7280&quot;&gt;&lt;br&gt;The other cross-cutting mechanism. Each class declares its provider in a &lt;i&gt;*_di.dart&lt;/i&gt; beside it — 19 of them, from the Dio adapter up to the use case — and the provider is resolved at the point of use. That is what makes every class substitutable, and what the test suite overrides.&lt;/div&gt;" style="rounded=1;absoluteArcSize=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=middle;align=center;fillColor=#f5f6f7;strokeColor=#9199a4;strokeWidth=1.5;dashed=1;dashPattern=8 5;fontColor=#565658;spacingLeft=16;spacingRight=16;" parent="1" vertex="1">
+                    <mxGeometry x="40" y="1047" width="1120" height="90" as="geometry" />
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="fcar-enforcement" name="Enforcement">
+        <mxGraphModel dx="926" dy="257" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="800" math="0" shadow="0">
+            <root>
+                <mxCell id="0" />
+                <mxCell id="1" parent="0" />
+                <mxCell id="g1" value="FLUTTER CLEAN ARCH + RIVERPOD · HOW THE GRAPH IS ENFORCED" style="text;html=1;fontFamily=Helvetica;fontSize=10.5;fontStyle=1;fontColor=#6b7280;align=left;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="44" y="16" width="520" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="g2" value="the layers are folders in one package, so nothing but a test stops domain/ from importing presentation/ — the rule is written down once, as code, and checked on every run" style="text;html=1;fontFamily=Helvetica;fontSize=11.5;fontColor=#9199a4;align=left;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="44" y="36" width="900" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="B1" value="1 · THE GRAPH, AS CODE — test/integrity/architecture_test.dart · reads every import under lib/ as text, no analyzer, no app" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=10.5;fontStyle=1;fillColor=#FFFFFF;strokeColor=#d7e0ec;strokeWidth=1.5;fontColor=#757475;verticalAlign=top;align=left;spacingLeft=14;spacingTop=6;" parent="1" vertex="1">
+                    <mxGeometry x="44" y="70" width="1112" height="232" as="geometry" />
+                </mxCell>
+                <mxCell id="p1" value="&lt;b style=&quot;font-size:12.5px&quot;&gt;allowed{}&lt;/b&gt;&lt;div style=&quot;font-size:10.5px;color:#6b7280&quot;&gt;&lt;br&gt;who may know about whom, beyond itself:&lt;br&gt;&lt;br&gt;&lt;span style=&quot;color:#173a60&quot;&gt;core&lt;/span&gt; → nothing&lt;br&gt;&lt;span style=&quot;color:#173a60&quot;&gt;domain&lt;/span&gt; → core&lt;br&gt;&lt;span style=&quot;color:#173a60&quot;&gt;application&lt;/span&gt; → core, domain&lt;br&gt;&lt;span style=&quot;color:#173a60&quot;&gt;data&lt;/span&gt; → core, domain, infrastructure&lt;br&gt;&lt;span style=&quot;color:#173a60&quot;&gt;infrastructure&lt;/span&gt; → core&lt;br&gt;&lt;span style=&quot;color:#173a60&quot;&gt;presentation&lt;/span&gt; → core, domain, application&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=top;align=left;spacingLeft=12;spacingRight=12;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="65" y="112" width="254" height="172" as="geometry" />
+                </mxCell>
+                <mxCell id="p2" value="&lt;b style=&quot;font-size:12.5px&quot;&gt;wiringExceptions · wiringReach&lt;/b&gt;&lt;div style=&quot;font-size:10.5px;color:#6b7280&quot;&gt;&lt;br&gt;composition has to know both sides, so it is named rather than left as a hole:&lt;br&gt;&lt;br&gt;&lt;i&gt;*_di.dart&lt;/i&gt; — application and presentation may see data; data may see infrastructure&lt;br&gt;&lt;br&gt;&lt;i&gt;core/routes/auto_route.dart&lt;/i&gt; — the route table names 3 screens and one entity&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=top;align=left;spacingLeft=12;spacingRight=12;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="344" y="112" width="254" height="172" as="geometry" />
+                </mxCell>
+                <mxCell id="p3" value="&lt;b style=&quot;font-size:12.5px&quot;&gt;pureLayers&lt;/b&gt;&lt;div style=&quot;font-size:10.5px;color:#6b7280&quot;&gt;&lt;br&gt;&lt;span style=&quot;color:#173a60&quot;&gt;domain · application · infrastructure&lt;/span&gt; import no flutter, flutter_riverpod, flutter_localizations, auto_route or fl_chart.&lt;br&gt;&lt;br&gt;A layer that imports one of those has quietly become a UI layer — and its tests would need a widget binding. These run without one.&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=top;align=left;spacingLeft=12;spacingRight=12;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="623" y="112" width="254" height="172" as="geometry" />
+                </mxCell>
+                <mxCell id="p4" value="&lt;b style=&quot;font-size:12.5px&quot;&gt;wrappedPackages&lt;/b&gt;&lt;div style=&quot;font-size:10.5px;color:#6b7280&quot;&gt;&lt;br&gt;&lt;i&gt;dio&lt;/i&gt; and &lt;i&gt;shared_preferences&lt;/i&gt; may only be named inside infrastructure/, so swapping either is an edit in one folder.&lt;br&gt;&lt;br&gt;&lt;span style=&quot;color:#8a5300&quot;&gt;Two files in data/ still import shared_preferences directly. Both are listed, with a reason. The third one fails the test.&lt;/span&gt;&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=top;align=left;spacingLeft=12;spacingRight=12;spacingTop=10;strokeColor=#e8cfa6;" parent="1" vertex="1">
+                    <mxGeometry x="902" y="112" width="254" height="172" as="geometry" />
+                </mxCell>
+                <mxCell id="B2" value="2 · ONE COMMAND — tool/arch.dart · make is a one-line face over it, and CI runs the same code path" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=10.5;fontStyle=1;fillColor=#FFFFFF;strokeColor=#d7e0ec;strokeWidth=1.5;fontColor=#757475;verticalAlign=top;align=left;spacingLeft=14;spacingTop=6;" parent="1" vertex="1">
+                    <mxGeometry x="44" y="318" width="1112" height="154" as="geometry" />
+                </mxCell>
+                <mxCell id="s1" value="&lt;b style=&quot;font-size:12px&quot;&gt;make setup&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;pub get · l10n&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="62" y="360" width="160" height="56" as="geometry" />
+                </mxCell>
+                <mxCell id="s2" value="&lt;b style=&quot;font-size:12px&quot;&gt;format&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;dart format --set-exit-if-changed&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="244" y="360" width="160" height="56" as="geometry" />
+                </mxCell>
+                <mxCell id="s3" value="&lt;b style=&quot;font-size:12px&quot;&gt;analyze&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;flutter analyze&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="426" y="360" width="160" height="56" as="geometry" />
+                </mxCell>
+                <mxCell id="s4" value="&lt;b style=&quot;font-size:12px&quot;&gt;codegen gate&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;rebuild · fail if the output moved&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#f7fafd;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="608" y="360" width="160" height="56" as="geometry" />
+                </mxCell>
+                <mxCell id="s5" value="&lt;b style=&quot;font-size:12px&quot;&gt;test&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;5 levels, with coverage&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="790" y="360" width="160" height="56" as="geometry" />
+                </mxCell>
+                <mxCell id="s6" value="&lt;b style=&quot;font-size:12px&quot;&gt;coverage gate&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;95% per layer&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#f7fafd;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="972" y="360" width="160" height="56" as="geometry" />
+                </mxCell>
+                <mxCell id="se0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="s1" target="s2">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="se1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="s2" target="s3">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="se2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="s3" target="s4">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="se3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="s4" target="s5">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="se4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="s5" target="s6">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="b2n" value="&lt;i&gt;arch verify&lt;/i&gt; runs them in that order and stops at the first failure. &lt;i&gt;arch test diff&lt;/i&gt; and &lt;i&gt;arch test last&lt;/i&gt; map changed files to tests by filename alone — which is why a test is named after the file it covers." style="text;html=1;fontFamily=Helvetica;fontSize=11;fontColor=#6b7280;align=left;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="62" y="432" width="1080" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="B3" value="3 · FIVE TEST LEVELS — 71 test files, four directories" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=10.5;fontStyle=1;fillColor=#FFFFFF;strokeColor=#d7e0ec;strokeWidth=1.5;fontColor=#757475;verticalAlign=top;align=left;spacingLeft=14;spacingTop=6;" parent="1" vertex="1">
+                    <mxGeometry x="44" y="500" width="1112" height="200" as="geometry" />
+                </mxCell>
+                <mxCell id="t1" value="&lt;b style=&quot;font-size:13px&quot;&gt;Unit · 49&lt;/b&gt;&lt;div style=&quot;font-size:9.5px;color:#9199a4&quot;&gt;test/unit/&lt;/div&gt;&lt;div style=&quot;font-size:10.5px;color:#6b7280&quot;&gt;&lt;br&gt;every class alone, collaborators mocked with mocktail&lt;br&gt;&lt;br&gt;data 19 · application 16 · infrastructure 7 · presentation 4 · core 3&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=top;align=left;spacingLeft=12;spacingRight=12;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="65" y="544" width="194" height="130" as="geometry" />
+                </mxCell>
+                <mxCell id="t2" value="&lt;b style=&quot;font-size:13px&quot;&gt;Widget · 5&lt;/b&gt;&lt;div style=&quot;font-size:9.5px;color:#9199a4&quot;&gt;test/widget/&lt;/div&gt;&lt;div style=&quot;font-size:10.5px;color:#6b7280&quot;&gt;&lt;br&gt;screens and widgets pumped in a real tree, driven by WidgetTester against overridden providers&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=top;align=left;spacingLeft=12;spacingRight=12;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="284" y="544" width="194" height="130" as="geometry" />
+                </mxCell>
+                <mxCell id="t3" value="&lt;b style=&quot;font-size:13px&quot;&gt;Integration · 6&lt;/b&gt;&lt;div style=&quot;font-size:9.5px;color:#9199a4&quot;&gt;test/integration/&lt;/div&gt;&lt;div style=&quot;font-size:10.5px;color:#6b7280&quot;&gt;&lt;br&gt;the real classes wired together — use case → repository → datasource; only the true boundary is faked&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=top;align=left;spacingLeft=12;spacingRight=12;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="503" y="544" width="194" height="130" as="geometry" />
+                </mxCell>
+                <mxCell id="t4" value="&lt;b style=&quot;font-size:13px&quot;&gt;E2E · 8&lt;/b&gt;&lt;div style=&quot;font-size:9.5px;color:#9199a4&quot;&gt;integration_test/&lt;/div&gt;&lt;div style=&quot;font-size:10.5px;color:#6b7280&quot;&gt;&lt;br&gt;the real app from main.dart on a device, against the live Binance API&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=top;align=left;spacingLeft=12;spacingRight=12;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="722" y="544" width="194" height="130" as="geometry" />
+                </mxCell>
+                <mxCell id="t5" value="&lt;b style=&quot;font-size:13px&quot;&gt;Integrity · 3&lt;/b&gt;&lt;div style=&quot;font-size:9.5px;color:#9199a4&quot;&gt;test/integrity/&lt;/div&gt;&lt;div style=&quot;font-size:10.5px;color:#6b7280&quot;&gt;&lt;br&gt;the repository rather than the product: the layer graph, and the arch CLI driven as a process&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#dfeaf6;strokeColor=#204d7d;strokeWidth=1.5;fontColor=#173a60;verticalAlign=top;align=left;spacingLeft=12;spacingRight=12;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="941" y="544" width="194" height="130" as="geometry" />
+                </mxCell>
+                <mxCell id="b3n" value="Integrity is the level that makes the other four trustworthy: it is the only one that fails when the architecture erodes rather than when a feature breaks." style="text;html=1;fontFamily=Helvetica;fontSize=11;fontColor=#6b7280;align=left;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="65" y="678" width="1080" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="fn2" value="Read with the sources: &lt;i&gt;test/integrity/architecture_test.dart&lt;/i&gt; for the graph, &lt;i&gt;tool/arch.dart&lt;/i&gt; for the commands, &lt;i&gt;.github/workflows/ci.yml&lt;/i&gt; for the order CI runs them in." style="text;html=1;fontFamily=Helvetica;fontSize=11;fontColor=#9199a4;align=left;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="44" y="726" width="1112" height="18" as="geometry" />
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="fcar-dependencies" name="Dependencies">
+        <mxGraphModel dx="926" dy="257" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="800" math="0" shadow="0">
+            <root>
+                <mxCell id="0" />
+                <mxCell id="1" parent="0" />
+                <mxCell id="m1" value="FLUTTER CLEAN ARCH + RIVERPOD · LAYERS AND REAL DEPENDENCIES" style="text;html=1;fontFamily=Helvetica;fontSize=10.5;fontStyle=1;fontColor=#6b7280;align=left;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="44" y="16" width="520" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="m1b" value="not the ideal of clean architecture — what the imports under lib/ actually say today" style="text;html=1;fontFamily=Helvetica;fontSize=11.5;fontColor=#9199a4;align=left;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="44" y="36" width="700" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="m2" value="&lt;b style=&quot;font-size:16px&quot;&gt;presentation&lt;/b&gt;&lt;div style=&quot;font-size:10px;font-weight:400;color:#9199a4&quot;&gt;lib/presentation/ · 17 files&lt;/div&gt;&lt;div style=&quot;font-size:11.5px;font-weight:400;color:#6b7280&quot;&gt;&lt;br&gt;screens/ · 3 + 2 tabs&lt;br&gt;providers/ · 4 notifiers + 4 states&lt;br&gt;screens/home/widgets/ · 4&lt;/div&gt;&lt;div style=&quot;font-size:11px;font-weight:400;color:#9199a4&quot;&gt;&lt;br&gt;imports Flutter freely —&lt;br&gt;core/ is the only&lt;br&gt;other layer that may&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=top;align=center;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=2;fontColor=#204d7d;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="44" y="196" width="196" height="214" as="geometry" />
+                </mxCell>
+                <mxCell id="m3" value="&lt;b style=&quot;font-size:16px&quot;&gt;application&lt;/b&gt;&lt;div style=&quot;font-size:10px;font-weight:400;color:#9199a4&quot;&gt;lib/application/ · 16 files&lt;/div&gt;&lt;div style=&quot;font-size:11.5px;font-weight:400;color:#6b7280&quot;&gt;&lt;br&gt;8 use cases&lt;br&gt;+ 8 &lt;i&gt;_di.dart&lt;/i&gt;&lt;/div&gt;&lt;div style=&quot;font-size:11px;font-weight:400;color:#9199a4&quot;&gt;&lt;br&gt;one operation each&lt;br&gt;&lt;br&gt;Either&amp;lt;Failure, T&amp;gt;&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=top;align=center;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=2;fontColor=#204d7d;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="268" y="196" width="196" height="214" as="geometry" />
+                </mxCell>
+                <mxCell id="m4" value="&lt;b style=&quot;font-size:19px&quot;&gt;domain&lt;/b&gt;&lt;div style=&quot;font-size:10px;font-weight:400;color:#5b7ea6&quot;&gt;lib/domain/ · 8 files&lt;/div&gt;&lt;div style=&quot;font-size:12.5px;font-weight:400;color:#173a60&quot;&gt;&lt;br&gt;entities/ · 4&lt;br&gt;repositories/ · 4 interfaces&lt;/div&gt;&lt;div style=&quot;font-size:11px;font-weight:400;color:#1d6b3f&quot;&gt;&lt;br&gt;0 imports of presentation,&lt;br&gt;application, data&lt;br&gt;or infrastructure&lt;/div&gt;&lt;div style=&quot;font-size:11px;font-weight:400;color:#41618a&quot;&gt;&lt;br&gt;imports core/ in 4 files&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=top;align=center;fillColor=#dfeaf6;strokeColor=#204d7d;strokeWidth=2;fontColor=#173a60;spacingTop=14;" parent="1" vertex="1">
+                    <mxGeometry x="492" y="176" width="216" height="254" as="geometry" />
+                </mxCell>
+                <mxCell id="m5" value="&lt;b style=&quot;font-size:16px&quot;&gt;data&lt;/b&gt;&lt;div style=&quot;font-size:10px;font-weight:400;color:#9199a4&quot;&gt;lib/data/ · 19 files&lt;/div&gt;&lt;div style=&quot;font-size:11.5px;font-weight:400;color:#6b7280&quot;&gt;&lt;br&gt;repositories_impl/ · 4&lt;br&gt;data_sources/ · 4&lt;br&gt;data_objects/ · 2 DTO + 1 DAO&lt;br&gt;+ 8 &lt;i&gt;_di.dart&lt;/i&gt;&lt;/div&gt;&lt;div style=&quot;font-size:11px;font-weight:400;color:#9199a4&quot;&gt;&lt;br&gt;4 impls for 4 interfaces&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=top;align=center;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=2;fontColor=#204d7d;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="736" y="196" width="196" height="214" as="geometry" />
+                </mxCell>
+                <mxCell id="m6" value="&lt;b style=&quot;font-size:16px&quot;&gt;infrastructure&lt;/b&gt;&lt;div style=&quot;font-size:10px;font-weight:400;color:#9199a4&quot;&gt;lib/infrastructure/ · 13 files&lt;/div&gt;&lt;div style=&quot;font-size:11.5px;font-weight:400;color:#6b7280&quot;&gt;&lt;br&gt;http_client/ · dio&lt;br&gt;+ retry interceptor&lt;br&gt;storage/ · shared_preferences&lt;/div&gt;&lt;div style=&quot;font-size:11px;font-weight:400;color:#9199a4&quot;&gt;&lt;br&gt;2 contracts, 2 adapters&lt;/div&gt;" style="rounded=1;arcSize=10;whiteSpace=wrap;html=1;fontFamily=Helvetica;verticalAlign=top;align=center;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=2;fontColor=#204d7d;spacingTop=10;" parent="1" vertex="1">
+                    <mxGeometry x="960" y="196" width="196" height="214" as="geometry" />
+                </mxCell>
+                <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#2d67a7;strokeWidth=1.9;fontFamily=Helvetica;fontSize=11;fontStyle=1;fontColor=#2d67a7;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="m2" target="m3" value="4">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#2d67a7;strokeWidth=2.6;fontFamily=Helvetica;fontSize=11;fontStyle=1;fontColor=#2d67a7;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="m3" target="m4" value="8">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#2d67a7;strokeWidth=3.2;fontFamily=Helvetica;fontSize=11;fontStyle=1;fontColor=#2d67a7;labelBackgroundColor=#FFFFFF;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="m5" target="m4" value="11">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#2d67a7;strokeWidth=2.6;fontFamily=Helvetica;fontSize=11;fontStyle=1;fontColor=#2d67a7;labelBackgroundColor=#FFFFFF;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="m5" target="m6" value="8">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#2d67a7;strokeWidth=4.1;fontFamily=Helvetica;fontSize=11;fontColor=#2d67a7;labelBackgroundColor=#FFFFFF;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" parent="1" edge="1" source="m2" target="m4" value="16 · the screens read entities directly — allowed, and the arrow still points down">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="142" y="100" />
+                            <mxPoint x="546" y="100" />
+                        </Array>
+                        <mxPoint y="-11" as="offset" />
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#a9b6c8;strokeWidth=2;fontFamily=Helvetica;fontSize=11;fontColor=#9199a4;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 4;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" edge="1" source="m3" target="m5" value="8 · DI wiring only: every one of them is a *_di.dart">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="366" y="150" />
+                            <mxPoint x="834" y="150" />
+                        </Array>
+                        <mxPoint y="-11" as="offset" />
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#a9b6c8;strokeWidth=1.6;fontFamily=Helvetica;fontSize=11;fontColor=#9199a4;labelBackgroundColor=#FFFFFF;dashed=1;dashPattern=6 4;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" edge="1" source="m5" target="m6" value="4 of those 8 are DI wiring">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="834" y="458" />
+                            <mxPoint x="1058" y="458" />
+                        </Array>
+                        <mxPoint y="11" as="offset" />
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="k0" value="CORE · lib/core/ — 10 files, 4 of them generated l10n — imported by every layer, imports none" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=10.5;fontStyle=1;fillColor=#f5f6f7;strokeColor=#dcdfe3;dashed=1;dashPattern=4 3;strokeWidth=1.5;fontColor=#9199a4;verticalAlign=top;align=left;spacingLeft=14;spacingTop=6;" parent="1" vertex="1">
+                    <mxGeometry x="44" y="502" width="700" height="188" as="geometry" />
+                </mxCell>
+                <mxCell id="k1" value="&lt;b&gt;pure kernel&lt;/b&gt; — failures/ · constants/ · theme/ · l10n/ (generated)&lt;br&gt;&lt;span style=&quot;color:#6b7280&quot;&gt;imported by presentation 16 · application 8 · data 8 · domain 4 · infrastructure 3&lt;/span&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=11;fillColor=#eef3f9;strokeColor=#d7e0ec;fontColor=#204d7d;align=left;spacingLeft=12;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="536" width="668" height="42" as="geometry" />
+                </mxCell>
+                <mxCell id="k2" value="&lt;b&gt;composition root&lt;/b&gt; — the one place core looks upwards, and it is declared&lt;br&gt;&lt;span style=&quot;color:#6b7280&quot;&gt;routes/auto_route.dart · names 3 screens and CryptoQuoteEntity &amp;nbsp;·&amp;nbsp; listed in wiringExceptions&lt;/span&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=11;fillColor=#f3f4f6;strokeColor=#d9dde3;fontColor=#565658;align=left;spacingLeft=12;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="586" width="668" height="42" as="geometry" />
+                </mxCell>
+                <mxCell id="k3" value="&lt;b&gt;0 files in core/ import application, data or infrastructure&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#6b7280&quot;&gt;a cross-cutting utility that knew about a use case would stop being cross-cutting&lt;/span&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=11;fillColor=#eef7f0;strokeColor=#c3ddcb;fontColor=#1d6b3f;align=left;spacingLeft=12;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="60" y="636" width="668" height="42" as="geometry" />
+                </mxCell>
+                <mxCell id="v0" value="KNOWN LEAK · 2 files, named in the test rather than forgiven silently" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=10.5;fontStyle=1;fillColor=#fdf4e6;strokeColor=#e8cfa6;dashed=1;dashPattern=4 3;strokeWidth=1.5;fontColor=#8a5300;verticalAlign=top;align=left;spacingLeft=14;spacingTop=6;" parent="1" vertex="1">
+                    <mxGeometry x="768" y="502" width="388" height="188" as="geometry" />
+                </mxCell>
+                <mxCell id="v1" value="&lt;b&gt;data/data_objects/preferences_dao.dart&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#6b7280&quot;&gt;imports shared_preferences for the type alone&lt;/span&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=11;fillColor=#FFFFFF;strokeColor=#e8cfa6;fontColor=#8a5300;align=left;spacingLeft=12;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="784" y="536" width="356" height="42" as="geometry" />
+                </mxCell>
+                <mxCell id="v2" value="&lt;b&gt;data/repositories_impl/preferences_repository_impl.dart&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#6b7280&quot;&gt;same — StorageInterface is right there below it&lt;/span&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=11;fillColor=#FFFFFF;strokeColor=#e8cfa6;fontColor=#8a5300;align=left;spacingLeft=12;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="784" y="586" width="356" height="42" as="geometry" />
+                </mxCell>
+                <mxCell id="v3" value="&lt;b&gt;every other arrow above is one the graph allows&lt;/b&gt;&lt;br&gt;&lt;span style=&quot;color:#6b7280&quot;&gt;no layer skips downwards, nothing points back up&lt;/span&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=11;fillColor=#eef7f0;strokeColor=#c3ddcb;fontColor=#1d6b3f;align=left;spacingLeft=12;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="784" y="636" width="356" height="42" as="geometry" />
+                </mxCell>
+                <mxCell id="lg1" value="" style="endArrow=blockThin;endFill=1;html=1;strokeColor=#2d67a7;strokeWidth=2.4;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="44" y="716" as="sourcePoint" />
+                        <mxPoint x="82" y="716" as="targetPoint" />
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="lg1t" value="rule · the arrow points at the dependency" style="text;html=1;fontFamily=Helvetica;fontSize=11;fontColor=#6b7280;align=left;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="90" y="708" width="250" height="16" as="geometry" />
+                </mxCell>
+                <mxCell id="lg2" value="" style="endArrow=blockThin;endFill=1;html=1;strokeColor=#a9b6c8;strokeWidth=2;dashed=1;dashPattern=6 4;" parent="1" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="340" y="716" as="sourcePoint" />
+                        <mxPoint x="378" y="716" as="targetPoint" />
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="lg2t" value="DI wiring · composition, not rule" style="text;html=1;fontFamily=Helvetica;fontSize=11;fontColor=#6b7280;align=left;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="386" y="708" width="230" height="16" as="geometry" />
+                </mxCell>
+                <mxCell id="lg3t" value="arrow thickness is proportional to the number of files" style="text;html=1;fontFamily=Helvetica;fontSize=11;fontColor=#6b7280;align=left;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="626" y="708" width="320" height="16" as="geometry" />
+                </mxCell>
+                <mxCell id="m30" value="Each number counts hand-written .dart files declaring at least one &lt;i&gt;import 'package:flutter_clean_arch_riverpod/&amp;lt;layer&amp;gt;/…'&lt;/i&gt; — .g.dart, .freezed.dart, .gr.dart and .config.dart are left out.&lt;br&gt;&lt;span style=&quot;color:#9199a4&quot;&gt;Measured on 26/09/2026. To check one edge: &lt;i&gt;grep -rl &quot;import 'package:flutter_clean_arch_riverpod/domain/&quot; lib/presentation --include='*.dart' | wc -l&lt;/i&gt; — or just run &lt;i&gt;make flutter-test-arch&lt;/i&gt;.&lt;/span&gt;" style="text;html=1;fontFamily=Helvetica;fontSize=11;fontColor=#6b7280;align=left;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="44" y="744" width="1112" height="44" as="geometry" />
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="fcar-flows" name="Data flows">
+        <mxGraphModel dx="926" dy="257" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="800" math="0" shadow="0">
+            <root>
+                <mxCell id="0" />
+                <mxCell id="1" parent="0" />
+                <mxCell id="f1" value="FLUTTER CLEAN ARCH + RIVERPOD · THE THREE DATA FLOWS" style="text;html=1;fontFamily=Helvetica;fontSize=10.5;fontStyle=1;fontColor=#6b7280;align=left;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="44" y="16" width="520" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="f2" value="two read from the network and one never leaves the device — but all three cross the same layers, in the same order, and come back as Either&amp;lt;Failure, T&amp;gt;" style="text;html=1;fontFamily=Helvetica;fontSize=11.5;fontColor=#9199a4;align=left;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="44" y="36" width="900" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="L1" value="1 · QUOTES — the list, and pull-to-refresh" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=10.5;fontStyle=1;fillColor=#FFFFFF;strokeColor=#d7e0ec;strokeWidth=1.5;fontColor=#757475;verticalAlign=top;align=left;spacingLeft=14;spacingTop=6;" parent="1" vertex="1">
+                    <mxGeometry x="44" y="70" width="1112" height="150" as="geometry" />
+                </mxCell>
+                <mxCell id="q0" value="&lt;div style=&quot;font-size:9px;color:#9199a4&quot;&gt;PRESENTATION&lt;/div&gt;&lt;b style=&quot;font-size:12px&quot;&gt;quotes_tab&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;QuoteList · filter&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="49" y="118" width="142" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="q1" value="&lt;div style=&quot;font-size:9px;color:#9199a4&quot;&gt;PRESENTATION&lt;/div&gt;&lt;b style=&quot;font-size:12px&quot;&gt;CryptoQuoteNotifier&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;build() → loading&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="209" y="118" width="142" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="q2" value="&lt;div style=&quot;font-size:9px;color:#9199a4&quot;&gt;APPLICATION&lt;/div&gt;&lt;b style=&quot;font-size:12px&quot;&gt;GetCryptoQuotesUseCase&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;call()&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#f7fafd;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="369" y="118" width="142" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="q3" value="&lt;div style=&quot;font-size:9px;color:#9199a4&quot;&gt;DATA&lt;/div&gt;&lt;b style=&quot;font-size:12px&quot;&gt;CryptoQuotesRepositoryImpl&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;dto.toEntity()&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#8aa3bf;strokeWidth=1.5;fontColor=#41618a;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="529" y="118" width="142" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="q4" value="&lt;div style=&quot;font-size:9px;color:#9199a4&quot;&gt;DATA&lt;/div&gt;&lt;b style=&quot;font-size:12px&quot;&gt;CryptoQuoteDatasource&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;parses the JSON&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#8aa3bf;strokeWidth=1.5;fontColor=#41618a;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="689" y="118" width="142" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="q5" value="&lt;div style=&quot;font-size:9px;color:#9199a4&quot;&gt;INFRASTRUCTURE&lt;/div&gt;&lt;b style=&quot;font-size:12px&quot;&gt;DioImpl&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;HttpClientInterface&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#f5f6f7;strokeColor=#9199a4;strokeWidth=1.5;fontColor=#565658;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="849" y="118" width="142" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="q6" value="&lt;div style=&quot;font-size:9px;color:#9199a4&quot;&gt;OUTSIDE&lt;/div&gt;&lt;b style=&quot;font-size:12px&quot;&gt;Binance public API&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;/api/v3/ticker/24hr&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#efefef;strokeColor=#b9c4d4;strokeWidth=1.5;dashed=1;dashPattern=6 4;fontColor=#565658;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1009" y="118" width="142" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="qe0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="q0" target="q1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="qe1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="q1" target="q2">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="qe2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;fontSize=9.5;fontColor=#9199a4;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" parent="1" edge="1" source="q2" target="q3" value="CryptoQuoteRepository">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="qe3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="q3" target="q4">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="qe4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="q4" target="q5">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="qe5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="q5" target="q6">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="q_n" value="Every hop returns &lt;i&gt;Either&amp;lt;Failure, T&amp;gt;&lt;/i&gt;. The DTO dies at the repository — what leaves it is an entity — and the notifier folds the Either into &lt;i&gt;success&lt;/i&gt; or &lt;i&gt;failure&lt;/i&gt;, which is the whole of the error handling in the screen." style="text;html=1;fontFamily=Helvetica;fontSize=11;fontColor=#6b7280;align=left;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="65" y="188" width="1060" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="L2" value="2 · KLINES — the candlestick chart on the detail screen" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=10.5;fontStyle=1;fillColor=#FFFFFF;strokeColor=#d7e0ec;strokeWidth=1.5;fontColor=#757475;verticalAlign=top;align=left;spacingLeft=14;spacingTop=6;" parent="1" vertex="1">
+                    <mxGeometry x="44" y="244" width="1112" height="150" as="geometry" />
+                </mxCell>
+                <mxCell id="k0" value="&lt;div style=&quot;font-size:9px;color:#9199a4&quot;&gt;PRESENTATION&lt;/div&gt;&lt;b style=&quot;font-size:12px&quot;&gt;detail_screen&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;fl_chart · interval picker&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="49" y="292" width="142" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="k1" value="&lt;div style=&quot;font-size:9px;color:#9199a4&quot;&gt;PRESENTATION&lt;/div&gt;&lt;b style=&quot;font-size:12px&quot;&gt;KlineNotifier&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;family(symbol)&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="209" y="292" width="142" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="k2" value="&lt;div style=&quot;font-size:9px;color:#9199a4&quot;&gt;APPLICATION&lt;/div&gt;&lt;b style=&quot;font-size:12px&quot;&gt;GetKlinesUseCase&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;symbol · interval&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#f7fafd;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="369" y="292" width="142" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="k3" value="&lt;div style=&quot;font-size:9px;color:#9199a4&quot;&gt;DATA&lt;/div&gt;&lt;b style=&quot;font-size:12px&quot;&gt;KlineRepositoryImpl&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;dto.toEntity()&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#8aa3bf;strokeWidth=1.5;fontColor=#41618a;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="529" y="292" width="142" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="k4" value="&lt;div style=&quot;font-size:9px;color:#9199a4&quot;&gt;DATA&lt;/div&gt;&lt;b style=&quot;font-size:12px&quot;&gt;KlineDatasource&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;parses the arrays&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#8aa3bf;strokeWidth=1.5;fontColor=#41618a;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="689" y="292" width="142" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="k5" value="&lt;div style=&quot;font-size:9px;color:#9199a4&quot;&gt;INFRASTRUCTURE&lt;/div&gt;&lt;b style=&quot;font-size:12px&quot;&gt;DioImpl&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;HttpClientInterface&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#f5f6f7;strokeColor=#9199a4;strokeWidth=1.5;fontColor=#565658;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="849" y="292" width="142" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="k6" value="&lt;div style=&quot;font-size:9px;color:#9199a4&quot;&gt;OUTSIDE&lt;/div&gt;&lt;b style=&quot;font-size:12px&quot;&gt;Binance public API&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;/api/v3/klines&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#efefef;strokeColor=#b9c4d4;strokeWidth=1.5;dashed=1;dashPattern=6 4;fontColor=#565658;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1009" y="292" width="142" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="ke0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="k0" target="k1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="ke1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="k1" target="k2">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="ke2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;fontSize=9.5;fontColor=#9199a4;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" parent="1" edge="1" source="k2" target="k3" value="KlineRepository">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="ke3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="k3" target="k4">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="ke4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="k4" target="k5">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="ke5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="k5" target="k6">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="k_n" value="The notifier is a family scoped to one symbol, so two detail screens never share state. &lt;i&gt;switchInterval()&lt;/i&gt; re-enters at the notifier: back to &lt;i&gt;loading&lt;/i&gt;, then the same chain again — the chart never reaches for the API itself." style="text;html=1;fontFamily=Helvetica;fontSize=11;fontColor=#6b7280;align=left;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="65" y="362" width="1060" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="L3" value="3 · FAVORITES AND PREFERENCES — on the device, no network at all" style="rounded=1;arcSize=6;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=10.5;fontStyle=1;fillColor=#FFFFFF;strokeColor=#d7e0ec;strokeWidth=1.5;fontColor=#757475;verticalAlign=top;align=left;spacingLeft=14;spacingTop=6;" parent="1" vertex="1">
+                    <mxGeometry x="44" y="418" width="1112" height="212" as="geometry" />
+                </mxCell>
+                <mxCell id="s0" value="&lt;div style=&quot;font-size:9px;color:#9199a4&quot;&gt;PRESENTATION&lt;/div&gt;&lt;b style=&quot;font-size:12px&quot;&gt;favorites_tab&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;preferences_screen&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="49" y="466" width="142" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="s1" value="&lt;div style=&quot;font-size:9px;color:#9199a4&quot;&gt;PRESENTATION&lt;/div&gt;&lt;b style=&quot;font-size:12px&quot;&gt;FavoritesNotifier&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;PreferencesNotifier&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="209" y="466" width="142" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="s2" value="&lt;div style=&quot;font-size:9px;color:#9199a4&quot;&gt;APPLICATION&lt;/div&gt;&lt;b style=&quot;font-size:12px&quot;&gt;ToggleFavoriteUseCase&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;Update… · Get…&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#f7fafd;strokeColor=#2d67a7;strokeWidth=1.5;fontColor=#204d7d;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="369" y="466" width="142" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="s3" value="&lt;div style=&quot;font-size:9px;color:#9199a4&quot;&gt;DATA&lt;/div&gt;&lt;b style=&quot;font-size:12px&quot;&gt;FavoritesRepositoryImpl&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;symbols → entities&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#8aa3bf;strokeWidth=1.5;fontColor=#41618a;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="529" y="466" width="142" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="s4" value="&lt;div style=&quot;font-size:9px;color:#9199a4&quot;&gt;DATA&lt;/div&gt;&lt;b style=&quot;font-size:12px&quot;&gt;FavoritesDatasource&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;PreferencesDatasource&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#FFFFFF;strokeColor=#8aa3bf;strokeWidth=1.5;fontColor=#41618a;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="689" y="466" width="142" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="s5" value="&lt;div style=&quot;font-size:9px;color:#9199a4&quot;&gt;INFRASTRUCTURE&lt;/div&gt;&lt;b style=&quot;font-size:12px&quot;&gt;SharedPreferencesImpl&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;StorageInterface&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#f5f6f7;strokeColor=#9199a4;strokeWidth=1.5;fontColor=#565658;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="849" y="466" width="142" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="s6" value="&lt;div style=&quot;font-size:9px;color:#9199a4&quot;&gt;ON THE DEVICE&lt;/div&gt;&lt;b style=&quot;font-size:12px&quot;&gt;key–value store&lt;/b&gt;&lt;div style=&quot;font-size:10px;color:#6b7280&quot;&gt;'favorites' · pref_*&lt;/div&gt;" style="rounded=1;arcSize=12;whiteSpace=wrap;html=1;fontFamily=Helvetica;fillColor=#f5f6f7;strokeColor=#9199a4;strokeWidth=1.5;fontColor=#565658;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="1009" y="466" width="142" height="64" as="geometry" />
+                </mxCell>
+                <mxCell id="se0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="s0" target="s1">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="se1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="s1" target="s2">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="se2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontFamily=Helvetica;fontSize=9.5;fontColor=#9199a4;labelBackgroundColor=#FFFFFF;verticalAlign=bottom;" parent="1" edge="1" source="s2" target="s3" value="FavoritesRepository">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="se3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="s3" target="s4">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="se4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="s4" target="s5">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="se5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=blockThin;endFill=1;strokeColor=#9199a4;strokeWidth=1.4;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" parent="1" edge="1" source="s5" target="s6">
+                    <mxGeometry relative="1" as="geometry" />
+                </mxCell>
+                <mxCell id="s_n" value="Keys: &lt;i&gt;'favorites'&lt;/i&gt; — a string list toggled atomically down in the storage adapter, so two taps on the same symbol cannot race — plus &lt;i&gt;pref_locale&lt;/i&gt;, &lt;i&gt;pref_dark_mode&lt;/i&gt; and &lt;i&gt;pref_font_scale&lt;/i&gt;." style="text;html=1;fontFamily=Helvetica;fontSize=11;fontColor=#6b7280;align=left;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="65" y="536" width="1060" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="s_n2" value="&lt;i&gt;main.dart&lt;/i&gt; resolves SharedPreferencesImpl before &lt;i&gt;runApp&lt;/i&gt; and overrides &lt;i&gt;storageProvider&lt;/i&gt; with it — the single point where the app learns which adapter it got. PreferencesNotifier then drives ThemeMode, TextScaler and Locale on MaterialApp.router." style="text;html=1;fontFamily=Helvetica;fontSize=11;fontColor=#6b7280;align=left;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="65" y="562" width="1060" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="s_n3" value="The preferences pair is also the known leak: &lt;i&gt;preferences_dao.dart&lt;/i&gt; and &lt;i&gt;preferences_repository_impl.dart&lt;/i&gt; take a &lt;i&gt;SharedPreferences&lt;/i&gt; where &lt;i&gt;StorageInterface&lt;/i&gt; would do. Both are named in the architecture test; a third would fail it." style="text;html=1;fontFamily=Helvetica;fontSize=11;fontColor=#8a5300;align=left;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="65" y="588" width="1060" height="18" as="geometry" />
+                </mxCell>
+                <mxCell id="f_fn" value="Dio is configured with 30 s connect, receive and send timeouts; the retry interceptor retries twice on 5xx and never on 4xx. &lt;i&gt;HttpClientFailure&lt;/i&gt; and &lt;i&gt;StorageFailure&lt;/i&gt; become a domain &lt;i&gt;Failure&lt;/i&gt; at the datasource, so no layer above ever sees a dio or shared_preferences type." style="text;html=1;fontFamily=Helvetica;fontSize=11;fontColor=#6b7280;align=left;verticalAlign=top;" parent="1" vertex="1">
+                    <mxGeometry x="44" y="652" width="1112" height="32" as="geometry" />
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
