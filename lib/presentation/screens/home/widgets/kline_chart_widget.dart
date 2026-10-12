@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/core/l10n/generated/app_localizations.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/kline_entity.dart';
+import 'package:flutter_clean_arch_riverpod/presentation/failures/failure_message.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/klines/kline_notifier.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/klines/kline_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -42,7 +43,7 @@ class KlineChart extends ConsumerWidget {
             ),
             KlineStateFailure(:final Failure failure) => Center(
               child: Text(
-                failure.toString(),
+                failure.message(AppLocalizations.of(context)),
                 style: const TextStyle(color: Colors.grey),
               ),
             ),

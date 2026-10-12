@@ -71,5 +71,33 @@
     "noData": "No data",
     "@noData": {
         "description": "Translation of 'No data' for the kline chart empty state"
+    },
+    "failureNetwork": "No connection. Check your internet and try again.",
+    "@failureNetwork": {
+        "description": "Shown when the device could not reach the server"
+    },
+    "failureServer": "The server is having trouble. Try again in a moment.",
+    "@failureServer": {
+        "description": "Shown when the server answered with an error"
+    },
+    "failureNotFound": "Nothing was found for this request.",
+    "@failureNotFound": {
+        "description": "Shown when the server answered that the resource does not exist"
+    },
+    "failureClient": "The request was refused.",
+    "@failureClient": {
+        "description": "Shown when the server refused the request as invalid"
+    },
+    "failureParse": "The data received could not be read.",
+    "@failureParse": {
+        "description": "Shown when the server's answer was not in the expected shape"
+    },
+    "failureStorage": "Could not access the data saved on this device.",
+    "@failureStorage": {
+        "description": "Shown when reading or writing local storage failed"
+    },
+    "failureUnexpected": "Something went wrong.",
+    "@failureUnexpected": {
+        "description": "Shown for a failure with no more specific message"
     }
 }

@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/data/repositories_impl/preferences_repository_impl_di.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/preferences_entity.dart';
@@ -66,7 +66,10 @@ void main() {
       await tester.pump();
       await tester.pump();
 
-      expect(find.textContaining('Failure'), findsOneWidget);
+      expect(
+        find.text('Could not access the data saved on this device.'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders the loaded preferences', (
@@ -109,7 +112,7 @@ void main() {
       expect(englishTile.trailing, isNull);
     });
 
-    testWidgets('toggling dark mode calls the repository and reloads', (
+    testWidgets('toggling dark mode calls the repository and applies it', (
       final WidgetTester tester,
     ) async {
       await pumpApp(tester, const PreferencesScreen(), overrides: overrides());
@@ -121,6 +124,36 @@ void main() {
       await tester.pump();
 
       verify(() => preferencesRepository.saveDarkMode(true)).called(1);
+      final SwitchListTile darkModeSwitch = tester.widget(
+        find.byType(SwitchListTile),
+      );
+      expect(darkModeSwitch.value, isTrue);
+    });
+
+    testWidgets('a save that fails is reported and the form stays', (
+      final WidgetTester tester,
+    ) async {
+      when(
+        () => preferencesRepository.saveDarkMode(any()),
+      ).thenAnswer((_) async => const Left<Failure, Unit>(Failure.storage()));
+
+      await pumpApp(tester, const PreferencesScreen(), overrides: overrides());
+      await tester.pump();
+      await tester.pump();
+
+      await tester.tap(find.byType(SwitchListTile));
+      await tester.pump();
+      await tester.pump();
+
+      expect(find.byType(SnackBar), findsOneWidget);
+      expect(
+        find.text('Could not access the data saved on this device.'),
+        findsOneWidget,
+      );
+      final SwitchListTile darkModeSwitch = tester.widget(
+        find.byType(SwitchListTile),
+      );
+      expect(darkModeSwitch.value, isFalse);
     });
 
     testWidgets('dragging the font slider calls the repository', (

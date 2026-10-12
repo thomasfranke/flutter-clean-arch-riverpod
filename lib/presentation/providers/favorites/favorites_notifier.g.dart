@@ -56,7 +56,7 @@ final class FavoritesNotifierProvider
   }
 }
 
-String _$favoritesNotifierHash() => r'171a1ce63b0a8e92fe2e674740e6e9771d0dadc1';
+String _$favoritesNotifierHash() => r'68ac7442a517307c1919ce367d750abe8a4f73fd';
 
 /// Notifier for managing the state of favorite cryptocurrencies.
 ///

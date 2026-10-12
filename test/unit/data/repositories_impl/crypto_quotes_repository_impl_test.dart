@@ -1,4 +1,4 @@
-import 'package:dartz/dartz.dart';
+import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_objects/crypto_quote_dto.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/crypto_quotes_datasource.dart';
@@ -100,6 +100,34 @@ void main() {
     });
   });
 
+  group('getQuotes with malformed rows', () {
+    test('should drop the malformed quote and keep the rest', () async {
+      when(() => datasource.getQuotes()).thenAnswer(
+        (_) async => Right<HttpClientFailure, List<CryptoQuoteDTO>>(
+          <CryptoQuoteDTO>[tDto, tDto.copyWith(lastPrice: 'not a number')],
+        ),
+      );
+
+      final Either<Failure, List<CryptoQuoteEntity>> result = await sut
+          .getQuotes();
+
+      expect(result.getOrElse(() => <CryptoQuoteEntity>[]), hasLength(1));
+    });
+
+    test('should be Failure.parse when no quote is well-formed', () async {
+      when(() => datasource.getQuotes()).thenAnswer(
+        (_) async => Right<HttpClientFailure, List<CryptoQuoteDTO>>(
+          <CryptoQuoteDTO>[tDto.copyWith(lastPrice: 'not a number')],
+        ),
+      );
+
+      expect(
+        await sut.getQuotes(),
+        const Left<Failure, List<CryptoQuoteEntity>>(Failure.parse()),
+      );
+    });
+  });
+
   group('getQuote', () {
     test('should convert the DTO into a domain entity', () async {
       when(() => datasource.getQuote('BTCUSDT')).thenAnswer(
@@ -146,6 +174,19 @@ void main() {
       );
 
       expect(result, const Left<Failure, CryptoQuoteEntity>(Failure.parse()));
+    });
+
+    test('should be Failure.parse when the quote is malformed', () async {
+      when(() => datasource.getQuote('BTCUSDT')).thenAnswer(
+        (_) async => Right<HttpClientFailure, CryptoQuoteDTO>(
+          tDto.copyWith(lastPrice: 'not a number'),
+        ),
+      );
+
+      expect(
+        await sut.getQuote('BTCUSDT'),
+        const Left<Failure, CryptoQuoteEntity>(Failure.parse()),
+      );
     });
   });
 }

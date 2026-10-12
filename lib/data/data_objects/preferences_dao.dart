@@ -1,12 +1,11 @@
 import 'package:flutter_clean_arch_riverpod/domain/entities/preferences_entity.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'preferences_dao.freezed.dart';
 
 /// Data Access Object (DAO) for user preferences, responsible for retrieving
 /// and storing user settings such as locale, dark mode, and font scale
-/// using [SharedPreferences].
+/// through `StorageInterface`.
 @freezed
 abstract class PreferencesDAO with _$PreferencesDAO {
   /// Creates a [PreferencesDAO] instance with the given parameters.

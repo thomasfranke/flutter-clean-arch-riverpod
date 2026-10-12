@@ -61,4 +61,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noData => 'No data';
+
+  @override
+  String get failureNetwork =>
+      'No connection. Check your internet and try again.';
+
+  @override
+  String get failureServer =>
+      'The server is having trouble. Try again in a moment.';
+
+  @override
+  String get failureNotFound => 'Nothing was found for this request.';
+
+  @override
+  String get failureClient => 'The request was refused.';
+
+  @override
+  String get failureParse => 'The data received could not be read.';
+
+  @override
+  String get failureStorage =>
+      'Could not access the data saved on this device.';
+
+  @override
+  String get failureUnexpected => 'Something went wrong.';
 }

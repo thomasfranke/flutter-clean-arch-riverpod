@@ -3,9 +3,12 @@ library;
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/l10n/generated/app_localizations.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/storage/shared_preferences/shared_preferences_impl.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/storage/storage_di.dart';
 import 'package:flutter_clean_arch_riverpod/main.dart';
+import 'package:flutter_clean_arch_riverpod/presentation/failures/failure_message.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/screens/home/tabs/favorites_tab.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/screens/home/tabs/quotes_tab.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/screens/home/widgets/kline_chart_widget.dart';
@@ -424,10 +427,26 @@ final class CryptoRobot {
   String _complaint() {
     for (final Element element in find.byType(Text).evaluate()) {
       final String? data = (element.widget as Text).data;
-      if (data != null && data.startsWith('Failure.')) {
+      if (data != null && _failureSentences.contains(data)) {
         return '\nThe screen says: $data';
       }
     }
     return '';
   }
+
+  /// Every sentence a [Failure] can be drawn as, in every language the app
+  /// speaks — the screen shows the localized message, not the type.
+  static final Set<String> _failureSentences = <String>{
+    for (final Locale locale in AppLocalizations.supportedLocales)
+      for (final Failure failure in const <Failure>[
+        Failure.apiNetwork(),
+        Failure.apiServer(),
+        Failure.apiNotFound(),
+        Failure.apiClient(),
+        Failure.parse(),
+        Failure.storage(),
+        Failure.unexpected(),
+      ])
+        failure.message(lookupAppLocalizations(locale)),
+  };
 }

@@ -61,4 +61,28 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get noData => 'Sin datos';
+
+  @override
+  String get failureNetwork =>
+      'Sin conexión. Revisa tu internet e inténtalo de nuevo.';
+
+  @override
+  String get failureServer =>
+      'El servidor tiene problemas. Inténtalo de nuevo en un momento.';
+
+  @override
+  String get failureNotFound => 'No se encontró nada para esta solicitud.';
+
+  @override
+  String get failureClient => 'La solicitud fue rechazada.';
+
+  @override
+  String get failureParse => 'No se pudieron leer los datos recibidos.';
+
+  @override
+  String get failureStorage =>
+      'No se pudo acceder a los datos guardados en este dispositivo.';
+
+  @override
+  String get failureUnexpected => 'Algo salió mal.';
 }

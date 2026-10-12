@@ -3,6 +3,7 @@ import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/core/l10n/generated/app_localizations.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/crypto_quote_entity.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/favorite_entity.dart';
+import 'package:flutter_clean_arch_riverpod/presentation/failures/failure_message.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/crypto_quote/crypto_quote_notifier.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/favorites/favorites_notifier.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/favorites/favorites_state.dart';
@@ -27,7 +28,7 @@ class FavoritesTab extends ConsumerWidget {
         child: CircularProgressIndicator(strokeWidth: 2),
       ),
       FavoritesStateFailure(:final Failure failure) => Center(
-        child: Text(failure.toString()),
+        child: Text(failure.message(AppLocalizations.of(context))),
       ),
       FavoritesStateSuccess(:final List<FavoriteEntity> favorites) =>
         _buildList(context, ref, favorites),

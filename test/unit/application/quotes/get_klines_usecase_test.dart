@@ -1,5 +1,5 @@
-import 'package:dartz/dartz.dart';
 import 'package:flutter_clean_arch_riverpod/application/quotes/get_klines_usecase.dart';
+import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/kline_entity.dart';
 import 'package:flutter_clean_arch_riverpod/domain/repositories/kline_repository_interface.dart';

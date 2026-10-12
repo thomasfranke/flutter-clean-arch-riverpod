@@ -82,15 +82,46 @@ abstract class CryptoQuoteDTO with _$CryptoQuoteDTO {
 /// Extension method to convert [CryptoQuoteDTO] to the
 /// domain entity [CryptoQuoteEntity].
 extension CryptoQuoteDTOMapper on CryptoQuoteDTO {
-  /// Converts this DTO to a [CryptoQuoteEntity] entity.
-  CryptoQuoteEntity toEntity() => CryptoQuoteEntity(
-    symbol: symbol ?? '',
-    lastPrice: double.tryParse(lastPrice ?? '') ?? 0.0,
-    priceChange: double.tryParse(priceChange ?? '') ?? 0.0,
-    priceChangePct: double.tryParse(priceChangePercent ?? '') ?? 0.0,
-    highPrice: double.tryParse(highPrice ?? '') ?? 0.0,
-    lowPrice: double.tryParse(lowPrice ?? '') ?? 0.0,
-    volume: double.tryParse(volume ?? '') ?? 0.0,
-    quoteVolume: double.tryParse(quoteVolume ?? '') ?? 0.0,
-  );
+  /// Converts this DTO to a [CryptoQuoteEntity], or `null` when the symbol is
+  /// missing or any price or volume is not a number.
+  ///
+  /// Null rather than `0.0`: a quote whose price defaulted to zero cannot be
+  /// told apart from a coin that is worth nothing.
+  CryptoQuoteEntity? toEntity() => switch ((
+    symbol,
+    _number(lastPrice),
+    _number(priceChange),
+    _number(priceChangePercent),
+    _number(highPrice),
+    _number(lowPrice),
+    _number(volume),
+    _number(quoteVolume),
+  )) {
+    (
+      final String symbol,
+      final double lastPrice,
+      final double priceChange,
+      final double priceChangePct,
+      final double highPrice,
+      final double lowPrice,
+      final double volume,
+      final double quoteVolume,
+    )
+        when symbol.isNotEmpty =>
+      CryptoQuoteEntity(
+        symbol: symbol,
+        lastPrice: lastPrice,
+        priceChange: priceChange,
+        priceChangePct: priceChangePct,
+        highPrice: highPrice,
+        lowPrice: lowPrice,
+        volume: volume,
+        quoteVolume: quoteVolume,
+      ),
+    _ => null,
+  };
 }
+
+/// Binance sends every price as a decimal string.
+double? _number(final String? value) =>
+    value == null ? null : double.tryParse(value);

@@ -1,7 +1,9 @@
-import 'package:dartz/dartz.dart';
+import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_objects/kline_dto.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/kline_datasource.dart';
+import 'package:flutter_clean_arch_riverpod/data/repositories_impl/entity_list.dart';
+import 'package:flutter_clean_arch_riverpod/data/repositories_impl/failure_mappers.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/kline_entity.dart';
 import 'package:flutter_clean_arch_riverpod/domain/repositories/kline_repository_interface.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_failure.dart';
@@ -29,9 +31,12 @@ class KlineRepositoryImpl implements KlineRepository {
 
     return result
         .leftMap((final HttpClientFailure failure) => failure.toDomainFailure())
-        .map(
-          (final List<KlineDTO> dtos) =>
-              dtos.map((final KlineDTO dto) => dto.toEntity()).toList(),
+        .flatMap(
+          (final List<KlineDTO> dtos) => toEntities(
+            dtos,
+            (final KlineDTO dto) => dto.toEntity(),
+            source: 'KlineRepositoryImpl',
+          ),
         );
   }
 }

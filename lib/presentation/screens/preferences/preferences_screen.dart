@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/core/l10n/generated/app_localizations.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/preferences_entity.dart';
+import 'package:flutter_clean_arch_riverpod/presentation/failures/failure_message.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/preferences/preferences_notifier.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/preferences/preferences_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,7 +26,7 @@ class PreferencesScreen extends ConsumerWidget {
           child: CircularProgressIndicator(),
         ),
         PreferencesStateFailure(:final Failure failure) => Center(
-          child: Text(failure.toString()),
+          child: Text(failure.message(AppLocalizations.of(context))),
         ),
         PreferencesStateSuccess(:final PreferencesEntity preferences) =>
           _PreferencesForm(preferences: preferences),
@@ -50,7 +51,8 @@ class _PreferencesForm extends ConsumerWidget {
         SwitchListTile(
           title: Text(AppLocalizations.of(context).darkMode),
           value: preferences.darkMode,
-          onChanged: notifier.updateDarkMode,
+          onChanged: (final bool value) =>
+              reportFailure(context, notifier.updateDarkMode(value)),
         ),
         const Divider(),
         _SectionTitle(title: AppLocalizations.of(context).fontSize),
@@ -60,7 +62,8 @@ class _PreferencesForm extends ConsumerWidget {
           max: 1.4,
           divisions: 6,
           label: preferences.fontScale.toStringAsFixed(1),
-          onChanged: notifier.updateFontScale,
+          onChanged: (final double value) =>
+              reportFailure(context, notifier.updateFontScale(value)),
         ),
         const Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -75,19 +78,19 @@ class _PreferencesForm extends ConsumerWidget {
           label: 'Português',
           value: 'pt',
           selected: preferences.locale,
-          onTap: () => notifier.updateLocale('pt'),
+          onTap: () => reportFailure(context, notifier.updateLocale('pt')),
         ),
         _LocaleTile(
           label: 'English',
           value: 'en',
           selected: preferences.locale,
-          onTap: () => notifier.updateLocale('en'),
+          onTap: () => reportFailure(context, notifier.updateLocale('en')),
         ),
         _LocaleTile(
           label: 'Español',
           value: 'es',
           selected: preferences.locale,
-          onTap: () => notifier.updateLocale('es'),
+          onTap: () => reportFailure(context, notifier.updateLocale('es')),
         ),
       ],
     );

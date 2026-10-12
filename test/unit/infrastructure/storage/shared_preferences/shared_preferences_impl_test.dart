@@ -1,4 +1,4 @@
-import 'package:dartz/dartz.dart';
+import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/storage/shared_preferences/shared_preferences_impl.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/storage/storage_failure.dart';
 import 'package:flutter_test/flutter_test.dart';

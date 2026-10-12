@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/data/repositories_impl/failure_mappers.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/dio/dio_impl.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/dio/dio_interceptor_retry.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_failure.dart';

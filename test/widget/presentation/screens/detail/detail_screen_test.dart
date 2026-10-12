@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:dartz/dartz.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/data/repositories_impl/favorites_repository_impl_di.dart';
 import 'package:flutter_clean_arch_riverpod/data/repositories_impl/kline_repository_impl_di.dart';
@@ -180,7 +180,10 @@ void main() {
       await tester.pump();
       await tester.pump();
 
-      expect(find.textContaining('Failure'), findsOneWidget);
+      expect(
+        find.text('The server is having trouble. Try again in a moment.'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('tapping the chart shows the touch tooltip for the spot', (

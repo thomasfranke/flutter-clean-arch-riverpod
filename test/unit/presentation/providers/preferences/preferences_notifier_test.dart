@@ -1,4 +1,5 @@
-import 'package:dartz/dartz.dart';
+import 'dart:async';
+
 import 'package:flutter_clean_arch_riverpod/application/preferences/get_preferences_usecase.dart';
 import 'package:flutter_clean_arch_riverpod/application/preferences/get_preferences_usecase_di.dart';
 import 'package:flutter_clean_arch_riverpod/application/preferences/update_darkmode_preferences_usecase.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_clean_arch_riverpod/application/preferences/update_fonts
 import 'package:flutter_clean_arch_riverpod/application/preferences/update_fontscale_usecase_di.dart';
 import 'package:flutter_clean_arch_riverpod/application/preferences/update_locale_usecase.dart';
 import 'package:flutter_clean_arch_riverpod/application/preferences/update_locale_usecase_di.dart';
+import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/preferences_entity.dart';
 import 'package:flutter_clean_arch_riverpod/domain/repositories/preferences_repository_interface.dart';
@@ -78,129 +80,205 @@ void main() {
       );
     });
 
+    /// A container whose preferences have finished their first load.
+    Future<ProviderContainer> loadedContainer() async {
+      when(() => repository.getPreferences()).thenAnswer(
+        (_) async => Right<Failure, PreferencesEntity>(tPreferences),
+      );
+      final ProviderContainer container = makeContainer();
+      addTearDown(container.dispose);
+      container.listen(preferencesProvider, (_, _) {});
+      await Future<void>.delayed(Duration.zero);
+      return container;
+    }
+
     test(
-      'updateLocale should save and reload preferences on success',
+      'updateLocale applies the saved locale without reading back',
       () async {
-        when(() => repository.getPreferences()).thenAnswer(
-          (_) async => Right<Failure, PreferencesEntity>(tPreferences),
-        );
+        final ProviderContainer container = await loadedContainer();
         when(
           () => repository.saveLocale('es'),
         ).thenAnswer((_) async => const Right<Failure, Unit>(unit));
 
-        final ProviderContainer container = makeContainer();
-        addTearDown(container.dispose);
-        // updateLocale reloads via `unawaited(loadPreferences())`. Without an
-        // active listener the autoDispose provider tears itself down as soon
-        // as `.notifier` is released, discarding that pending reload — keep
-        // a listener alive for the duration of the test.
-        container.listen(preferencesProvider, (_, _) {});
+        final Failure? failure = await container
+            .read(preferencesProvider.notifier)
+            .updateLocale('es');
 
-        await container.read(preferencesProvider.notifier).updateLocale('es');
-        await Future<void>.delayed(Duration.zero);
-
+        expect(failure, isNull);
         expect(
           container.read(preferencesProvider),
-          PreferencesState.success(tPreferences),
+          PreferencesState.success(tPreferences.copyWith(locale: 'es')),
         );
-        verify(() => repository.saveLocale('es')).called(1);
+        verify(() => repository.getPreferences()).called(1);
       },
     );
 
-    test('updateLocale should emit failure when saveLocale fails', () async {
-      when(() => repository.getPreferences()).thenAnswer(
-        (_) async => Right<Failure, PreferencesEntity>(tPreferences),
-      );
-      when(
-        () => repository.saveLocale('es'),
-      ).thenAnswer((_) async => const Left<Failure, Unit>(Failure.storage()));
-
-      final ProviderContainer container = makeContainer();
-      addTearDown(container.dispose);
-
-      await container.read(preferencesProvider.notifier).updateLocale('es');
-
-      expect(
-        container.read(preferencesProvider),
-        const PreferencesState.failure(Failure.storage()),
-      );
-    });
-
-    test('updateDarkMode should delegate to saveDarkMode', () async {
-      when(() => repository.getPreferences()).thenAnswer(
-        (_) async => Right<Failure, PreferencesEntity>(tPreferences),
-      );
+    test('updateDarkMode applies the saved flag', () async {
+      final ProviderContainer container = await loadedContainer();
       when(
         () => repository.saveDarkMode(true),
       ).thenAnswer((_) async => const Right<Failure, Unit>(unit));
 
-      final ProviderContainer container = makeContainer();
-      addTearDown(container.dispose);
-
       await container.read(preferencesProvider.notifier).updateDarkMode(true);
 
-      verify(() => repository.saveDarkMode(true)).called(1);
+      expect(
+        container.read(preferencesProvider),
+        PreferencesState.success(tPreferences.copyWith(darkMode: true)),
+      );
     });
 
-    test('updateFontScale should delegate to saveFontScale', () async {
-      when(() => repository.getPreferences()).thenAnswer(
-        (_) async => Right<Failure, PreferencesEntity>(tPreferences),
-      );
+    test('updateFontScale applies the saved scale', () async {
+      final ProviderContainer container = await loadedContainer();
       when(
-        () => repository.saveFontScale(1.8),
+        () => repository.saveFontScale(1.2),
       ).thenAnswer((_) async => const Right<Failure, Unit>(unit));
 
-      final ProviderContainer container = makeContainer();
-      addTearDown(container.dispose);
+      await container.read(preferencesProvider.notifier).updateFontScale(1.2);
 
-      await container.read(preferencesProvider.notifier).updateFontScale(1.8);
-
-      verify(() => repository.saveFontScale(1.8)).called(1);
+      expect(
+        container.read(preferencesProvider),
+        PreferencesState.success(tPreferences.copyWith(fontScale: 1.2)),
+      );
     });
 
-    test(
-      'updateDarkMode should emit failure when saveDarkMode fails',
-      () async {
-        when(() => repository.getPreferences()).thenAnswer(
-          (_) async => Right<Failure, PreferencesEntity>(tPreferences),
-        );
-        when(
-          () => repository.saveDarkMode(true),
-        ).thenAnswer((_) async => const Left<Failure, Unit>(Failure.storage()));
+    test('an update never passes through loading', () async {
+      final ProviderContainer container = await loadedContainer();
+      when(
+        () => repository.saveDarkMode(true),
+      ).thenAnswer((_) async => const Right<Failure, Unit>(unit));
+      final List<PreferencesState> seen = <PreferencesState>[];
+      container.listen(
+        preferencesProvider,
+        (_, final PreferencesState next) => seen.add(next),
+      );
 
-        final ProviderContainer container = makeContainer();
-        addTearDown(container.dispose);
+      await container.read(preferencesProvider.notifier).updateDarkMode(true);
+      await Future<void>.delayed(Duration.zero);
 
-        await container.read(preferencesProvider.notifier).updateDarkMode(true);
+      expect(seen, <PreferencesState>[
+        PreferencesState.success(tPreferences.copyWith(darkMode: true)),
+      ]);
+    });
 
-        expect(
-          container.read(preferencesProvider),
-          const PreferencesState.failure(Failure.storage()),
-        );
-      },
-    );
+    for (final (
+          String name,
+          Future<Failure?> Function(PreferencesNotifier) update,
+          void Function() failSave,
+        )
+        in <
+          (
+            String,
+            Future<Failure?> Function(PreferencesNotifier),
+            void Function(),
+          )
+        >[
+          (
+            'updateLocale',
+            (final PreferencesNotifier n) => n.updateLocale('es'),
+            () => when(() => repository.saveLocale('es')).thenAnswer(
+              (_) async => const Left<Failure, Unit>(Failure.storage()),
+            ),
+          ),
+          (
+            'updateDarkMode',
+            (final PreferencesNotifier n) => n.updateDarkMode(true),
+            () => when(() => repository.saveDarkMode(true)).thenAnswer(
+              (_) async => const Left<Failure, Unit>(Failure.storage()),
+            ),
+          ),
+          (
+            'updateFontScale',
+            (final PreferencesNotifier n) => n.updateFontScale(1.2),
+            () => when(() => repository.saveFontScale(1.2)).thenAnswer(
+              (_) async => const Left<Failure, Unit>(Failure.storage()),
+            ),
+          ),
+        ]) {
+      test(
+        '$name that fails returns the failure and keeps the preferences',
+        () async {
+          final ProviderContainer container = await loadedContainer();
+          failSave();
 
-    test(
-      'updateFontScale should emit failure when saveFontScale fails',
-      () async {
-        when(() => repository.getPreferences()).thenAnswer(
-          (_) async => Right<Failure, PreferencesEntity>(tPreferences),
-        );
-        when(
-          () => repository.saveFontScale(1.8),
-        ).thenAnswer((_) async => const Left<Failure, Unit>(Failure.storage()));
+          final Failure? failure = await update(
+            container.read(preferencesProvider.notifier),
+          );
 
-        final ProviderContainer container = makeContainer();
-        addTearDown(container.dispose);
+          expect(failure, const Failure.storage());
+          expect(
+            container.read(preferencesProvider),
+            PreferencesState.success(tPreferences),
+          );
+        },
+      );
+    }
 
-        await container.read(preferencesProvider.notifier).updateFontScale(1.8);
+    test('a reload that fails keeps the preferences already held', () async {
+      final ProviderContainer container = await loadedContainer();
+      when(() => repository.getPreferences()).thenAnswer(
+        (_) async => const Left<Failure, PreferencesEntity>(Failure.storage()),
+      );
 
-        expect(
-          container.read(preferencesProvider),
-          const PreferencesState.failure(Failure.storage()),
-        );
-      },
-    );
+      final Failure? failure = await container
+          .read(preferencesProvider.notifier)
+          .loadPreferences();
+
+      expect(failure, const Failure.storage());
+      expect(
+        container.read(preferencesProvider),
+        PreferencesState.success(tPreferences),
+      );
+    });
+
+    test('a save before the first load reads the preferences back', () async {
+      final Completer<Either<Failure, PreferencesEntity>> firstLoad =
+          Completer<Either<Failure, PreferencesEntity>>();
+      when(
+        () => repository.getPreferences(),
+      ).thenAnswer((_) => firstLoad.future);
+      when(
+        () => repository.saveDarkMode(true),
+      ).thenAnswer((_) async => const Right<Failure, Unit>(unit));
+      final ProviderContainer container = makeContainer();
+      addTearDown(container.dispose);
+      container.listen(preferencesProvider, (_, _) {});
+
+      await container.read(preferencesProvider.notifier).updateDarkMode(true);
+      firstLoad.complete(
+        Right<Failure, PreferencesEntity>(
+          tPreferences.copyWith(darkMode: true),
+        ),
+      );
+      await Future<void>.delayed(Duration.zero);
+
+      expect(
+        container.read(preferencesProvider),
+        PreferencesState.success(tPreferences.copyWith(darkMode: true)),
+      );
+      verify(() => repository.getPreferences()).called(2);
+    });
+
+    test('an answer that arrives after disposal is still returned', () async {
+      final ProviderContainer container = await loadedContainer();
+      final Completer<Either<Failure, Unit>> save =
+          Completer<Either<Failure, Unit>>();
+      when(() => repository.saveDarkMode(true)).thenAnswer((_) => save.future);
+      final Completer<Either<Failure, PreferencesEntity>> load =
+          Completer<Either<Failure, PreferencesEntity>>();
+
+      final PreferencesNotifier notifier = container.read(
+        preferencesProvider.notifier,
+      );
+      final Future<Failure?> pendingSave = notifier.updateDarkMode(true);
+      when(() => repository.getPreferences()).thenAnswer((_) => load.future);
+      final Future<Failure?> pendingLoad = notifier.loadPreferences();
+      container.dispose();
+      save.complete(const Left<Failure, Unit>(Failure.storage()));
+      load.complete(const Left<Failure, PreferencesEntity>(Failure.storage()));
+
+      expect(await pendingSave, const Failure.storage());
+      expect(await pendingLoad, const Failure.storage());
+    });
 
     test('preferencesProvider.overrideWithValue replaces the state', () {
       expect(

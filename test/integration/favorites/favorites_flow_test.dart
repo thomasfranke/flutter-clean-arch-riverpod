@@ -1,6 +1,6 @@
-import 'package:dartz/dartz.dart';
 import 'package:flutter_clean_arch_riverpod/application/favorites/get_favorites_usecase.dart';
 import 'package:flutter_clean_arch_riverpod/application/favorites/toggle_favorite_usecase.dart';
+import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/favorites_datasource.dart';
 import 'package:flutter_clean_arch_riverpod/data/repositories_impl/favorites_repository_impl.dart';

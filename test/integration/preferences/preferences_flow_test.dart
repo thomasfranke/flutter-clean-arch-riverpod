@@ -1,8 +1,8 @@
-import 'package:dartz/dartz.dart';
 import 'package:flutter_clean_arch_riverpod/application/preferences/get_preferences_usecase.dart';
 import 'package:flutter_clean_arch_riverpod/application/preferences/update_darkmode_preferences_usecase.dart';
 import 'package:flutter_clean_arch_riverpod/application/preferences/update_fontscale_usecase.dart';
 import 'package:flutter_clean_arch_riverpod/application/preferences/update_locale_usecase.dart';
+import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/preferences_datasource.dart';
 import 'package:flutter_clean_arch_riverpod/data/repositories_impl/preferences_repository_impl.dart';

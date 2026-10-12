@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_clean_arch_riverpod/core/l10n/generated/app_localizations.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/crypto_quote_entity.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/favorite_entity.dart';
+import 'package:flutter_clean_arch_riverpod/presentation/failures/failure_message.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/favorites/favorites_notifier.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/favorites/favorites_state.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/screens/home/widgets/kline_chart_widget.dart';
@@ -40,9 +41,10 @@ class CryptoQuoteDetailScreen extends ConsumerWidget {
               isFavorite ? Icons.star : Icons.star_outline,
               color: isFavorite ? Colors.amber : null,
             ),
-            onPressed: () => ref
-                .read(favoritesProvider.notifier)
-                .toggleFavorite(quote.symbol),
+            onPressed: () => reportFailure(
+              context,
+              ref.read(favoritesProvider.notifier).toggleFavorite(quote.symbol),
+            ),
           ),
         ],
       ),

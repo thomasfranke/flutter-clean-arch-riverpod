@@ -1,8 +1,10 @@
-import 'package:dartz/dartz.dart';
+import 'dart:async';
+
 import 'package:flutter_clean_arch_riverpod/application/favorites/get_favorites_usecase.dart';
 import 'package:flutter_clean_arch_riverpod/application/favorites/get_favorites_usecase_di.dart';
 import 'package:flutter_clean_arch_riverpod/application/favorites/toggle_favorite_usecase.dart';
 import 'package:flutter_clean_arch_riverpod/application/favorites/toggle_favorite_usecase_di.dart';
+import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/favorite_entity.dart';
 import 'package:flutter_clean_arch_riverpod/domain/repositories/favorites_repository_interface.dart';
@@ -143,11 +145,13 @@ void main() {
     );
 
     test(
-      'toggleFavorite should emit failure when the repository fails',
+      'a toggle that fails returns the failure and keeps the list',
       () async {
+        const List<FavoriteEntity> held = <FavoriteEntity>[
+          FavoriteEntity(symbol: 'ETHUSDT'),
+        ];
         when(() => repository.getFavorites()).thenAnswer(
-          (_) async =>
-              const Right<Failure, List<FavoriteEntity>>(<FavoriteEntity>[]),
+          (_) async => const Right<Failure, List<FavoriteEntity>>(held),
         );
         when(() => repository.toggleFavorite('BTCUSDT')).thenAnswer(
           (_) async =>
@@ -156,18 +160,82 @@ void main() {
 
         final ProviderContainer container = makeContainer();
         addTearDown(container.dispose);
+        container.listen(favoritesProvider, (_, _) {});
 
         await container.read(favoritesProvider.notifier).loadFavorites();
-        await container
+        final Failure? failure = await container
             .read(favoritesProvider.notifier)
             .toggleFavorite('BTCUSDT');
 
+        expect(failure, const Failure.storage());
         expect(
           container.read(favoritesProvider),
-          const FavoritesState.failure(Failure.storage()),
+          const FavoritesState.success(held),
         );
       },
     );
+
+    test('a reload that fails keeps the favorites already held', () async {
+      const List<FavoriteEntity> held = <FavoriteEntity>[
+        FavoriteEntity(symbol: 'ETHUSDT'),
+      ];
+      when(() => repository.getFavorites()).thenAnswer(
+        (_) async => const Right<Failure, List<FavoriteEntity>>(held),
+      );
+      final ProviderContainer container = makeContainer();
+      addTearDown(container.dispose);
+      container.listen(favoritesProvider, (_, _) {});
+      await container.read(favoritesProvider.notifier).loadFavorites();
+
+      when(() => repository.getFavorites()).thenAnswer(
+        (_) async =>
+            const Left<Failure, List<FavoriteEntity>>(Failure.storage()),
+      );
+      final Failure? failure = await container
+          .read(favoritesProvider.notifier)
+          .loadFavorites();
+
+      expect(failure, const Failure.storage());
+      expect(
+        container.read(favoritesProvider),
+        const FavoritesState.success(held),
+      );
+    });
+
+    test('an answer that arrives after disposal is still returned', () async {
+      when(() => repository.getFavorites()).thenAnswer(
+        (_) async =>
+            const Right<Failure, List<FavoriteEntity>>(<FavoriteEntity>[]),
+      );
+      final ProviderContainer container = makeContainer()
+        ..listen(favoritesProvider, (_, _) {});
+      await Future<void>.delayed(Duration.zero);
+
+      final Completer<Either<Failure, List<FavoriteEntity>>> toggle =
+          Completer<Either<Failure, List<FavoriteEntity>>>();
+      final Completer<Either<Failure, List<FavoriteEntity>>> load =
+          Completer<Either<Failure, List<FavoriteEntity>>>();
+      when(
+        () => repository.toggleFavorite('BTCUSDT'),
+      ).thenAnswer((_) => toggle.future);
+      when(() => repository.getFavorites()).thenAnswer((_) => load.future);
+
+      final FavoritesNotifier notifier = container.read(
+        favoritesProvider.notifier,
+      );
+      final Future<Failure?> pendingToggle = notifier.toggleFavorite('BTCUSDT');
+      final Future<Failure?> pendingLoad = notifier.loadFavorites();
+      container.dispose();
+      toggle.complete(
+        const Left<Failure, List<FavoriteEntity>>(Failure.storage()),
+      );
+      load.complete(
+        const Left<Failure, List<FavoriteEntity>>(Failure.storage()),
+      );
+
+      expect(await pendingToggle, const Failure.storage());
+      expect(await pendingLoad, const Failure.storage());
+    });
 
     test('favoritesProvider.overrideWithValue replaces the state', () {
       expect(

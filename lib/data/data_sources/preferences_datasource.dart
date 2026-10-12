@@ -1,4 +1,4 @@
-import 'package:dartz/dartz.dart';
+import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_objects/preferences_dao.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/storage/storage_failure.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/storage/storage_interface.dart';
@@ -20,45 +20,23 @@ class PreferencesDatasource {
   ///
   /// The first key that fails decides the result: a half-read preferences
   /// record is not a record, so there is nothing useful to return.
-  Either<StorageFailure, PreferencesDAO> getPreferences() {
-    final Either<StorageFailure, String?> localeResult = storage.getString(
-      key: 'pref_locale',
-    );
-
-    if (localeResult.isLeft()) {
-      return Left<StorageFailure, PreferencesDAO>(
-        (localeResult as Left<StorageFailure, String?>).value,
+  Either<StorageFailure, PreferencesDAO> getPreferences() => storage
+      .getString(key: 'pref_locale')
+      .flatMap(
+        (final String? locale) => storage
+            .getBool(key: 'pref_dark_mode')
+            .flatMap(
+              (final bool? darkMode) => storage
+                  .getDouble(key: 'pref_font_scale')
+                  .map(
+                    (final double? fontScale) => PreferencesDAO(
+                      locale: locale,
+                      darkMode: darkMode,
+                      fontScale: fontScale,
+                    ),
+                  ),
+            ),
       );
-    }
-
-    final Either<StorageFailure, bool?> darkModeResult = storage.getBool(
-      key: 'pref_dark_mode',
-    );
-
-    if (darkModeResult.isLeft()) {
-      return Left<StorageFailure, PreferencesDAO>(
-        (darkModeResult as Left<StorageFailure, bool?>).value,
-      );
-    }
-
-    final Either<StorageFailure, double?> fontScaleResult = storage.getDouble(
-      key: 'pref_font_scale',
-    );
-
-    if (fontScaleResult.isLeft()) {
-      return Left<StorageFailure, PreferencesDAO>(
-        (fontScaleResult as Left<StorageFailure, double?>).value,
-      );
-    }
-
-    return Right<StorageFailure, PreferencesDAO>(
-      PreferencesDAO(
-        locale: localeResult.fold((_) => null, (String? value) => value),
-        darkMode: darkModeResult.fold((_) => null, (bool? value) => value),
-        fontScale: fontScaleResult.fold((_) => null, (double? value) => value),
-      ),
-    );
-  }
 
   /// Saves only the locale preference to storage.
   Future<Either<StorageFailure, Unit>> saveLocale(final String locale) =>

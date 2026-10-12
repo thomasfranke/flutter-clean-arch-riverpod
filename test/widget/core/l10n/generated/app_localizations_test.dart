@@ -28,6 +28,22 @@ void main() {
       expect(l10n.priceHistory, 'Price History');
       expect(l10n.noFavoritesYet, 'No favorites yet');
       expect(l10n.noData, 'No data');
+      expect(
+        l10n.failureNetwork,
+        'No connection. Check your internet and try again.',
+      );
+      expect(
+        l10n.failureServer,
+        'The server is having trouble. Try again in a moment.',
+      );
+      expect(l10n.failureNotFound, 'Nothing was found for this request.');
+      expect(l10n.failureClient, 'The request was refused.');
+      expect(l10n.failureParse, 'The data received could not be read.');
+      expect(
+        l10n.failureStorage,
+        'Could not access the data saved on this device.',
+      );
+      expect(l10n.failureUnexpected, 'Something went wrong.');
     });
 
     test('localeName is derived from the given locale', () {
@@ -58,6 +74,22 @@ void main() {
       expect(l10n.priceHistory, 'Historial de Precio');
       expect(l10n.noFavoritesYet, 'Aún no hay favoritos');
       expect(l10n.noData, 'Sin datos');
+      expect(
+        l10n.failureNetwork,
+        'Sin conexión. Revisa tu internet e inténtalo de nuevo.',
+      );
+      expect(
+        l10n.failureServer,
+        'El servidor tiene problemas. Inténtalo de nuevo en un momento.',
+      );
+      expect(l10n.failureNotFound, 'No se encontró nada para esta solicitud.');
+      expect(l10n.failureClient, 'La solicitud fue rechazada.');
+      expect(l10n.failureParse, 'No se pudieron leer los datos recibidos.');
+      expect(
+        l10n.failureStorage,
+        'No se pudo acceder a los datos guardados en este dispositivo.',
+      );
+      expect(l10n.failureUnexpected, 'Algo salió mal.');
     });
   });
 
@@ -83,6 +115,22 @@ void main() {
       expect(l10n.priceHistory, 'Histórico de Preço');
       expect(l10n.noFavoritesYet, 'Nenhum favorito ainda');
       expect(l10n.noData, 'Sem dados');
+      expect(
+        l10n.failureNetwork,
+        'Sem conexão. Verifique sua internet e tente de novo.',
+      );
+      expect(
+        l10n.failureServer,
+        'O servidor está com problemas. Tente de novo em instantes.',
+      );
+      expect(l10n.failureNotFound, 'Nada foi encontrado para esta busca.');
+      expect(l10n.failureClient, 'A requisição foi recusada.');
+      expect(l10n.failureParse, 'Não foi possível ler os dados recebidos.');
+      expect(
+        l10n.failureStorage,
+        'Não foi possível acessar os dados salvos neste aparelho.',
+      );
+      expect(l10n.failureUnexpected, 'Algo deu errado.');
     });
   });
 

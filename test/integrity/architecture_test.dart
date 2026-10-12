@@ -40,7 +40,10 @@ const Map<String, Set<String>> allowed = <String, Set<String>>{
   'domain': <String>{'core'},
   'application': <String>{'core', 'domain'},
   'data': <String>{'core', 'domain', 'infrastructure'},
-  'infrastructure': <String>{'core'},
+  // Not even `core`: the failure types it hands up carry no domain meaning,
+  // and the one config it reads is read in its wiring, below. `Either` is
+  // the exception, and is not a layer — see [kernel].
+  'infrastructure': <String>{},
   'presentation': <String>{'core', 'domain', 'application'},
 };
 
@@ -76,6 +79,8 @@ const Map<String, Set<String>> wiringReach = <String, Set<String>>{
   'application': <String>{'data'},
   'presentation': <String>{'data'},
   'data': <String>{'infrastructure'},
+  // The HTTP client's provider reads the base URL from `AppConfig`.
+  'infrastructure': <String>{'core'},
 };
 
 /// Packages that only exist because Flutter does.
@@ -113,18 +118,22 @@ const List<String> wrappedPackages = <String>[
   'package:shared_preferences/',
 ];
 
-/// Files outside `infrastructure/` that still import a wrapped package, and
+/// Files outside `infrastructure/` allowed to import a wrapped package, and
 /// the reason each one is tolerated.
 ///
-/// These are a known leak, listed rather than forgiven silently: both of them
-/// take a `SharedPreferences` instance where they should take
-/// `StorageInterface`, which is the contract the layer below already offers.
-/// Writing them down here is what stops the leak spreading — the third file
-/// to do it fails this test.
-const Set<String> wrappedPackageExceptions = <String>{
-  'lib/data/data_objects/preferences_dao.dart',
-  'lib/data/repositories_impl/preferences_repository_impl.dart',
-};
+/// Empty, and meant to stay that way. The two files once listed here imported
+/// `shared_preferences` only to name it in a doc comment; an entry is a leak
+/// written down rather than forgiven silently, so a new one needs its reason
+/// on the line above it.
+const Set<String> wrappedPackageExceptions = <String>{};
+
+/// Files any layer may import, whatever [allowed] says.
+///
+/// `Either` is vocabulary at the level of the language — what `Future` is to
+/// async code — so importing it says nothing about which layer a file knows.
+/// It sits under `core/` for want of a better home, but counting it as `core`
+/// would hand `infrastructure` the domain's `Failure` along with it.
+const Set<String> kernel = <String>{'core/either/either.dart'};
 
 /// The package's own import prefix, which is how a file names another layer.
 const String selfPackage = 'package:flutter_clean_arch_riverpod/';
@@ -275,7 +284,8 @@ class _Source {
   /// The layers of this package that the file imports, each once.
   Set<String> get importedLayers => <String>{
     for (final String import in imports)
-      if (import.startsWith(selfPackage))
+      if (import.startsWith(selfPackage) &&
+          !kernel.contains(import.substring(selfPackage.length)))
         import.substring(selfPackage.length).split('/').first,
   }..removeWhere((String imported) => !layers.contains(imported));
 

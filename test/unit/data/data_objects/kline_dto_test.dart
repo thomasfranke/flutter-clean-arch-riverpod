@@ -21,7 +21,7 @@ void main() {
 
     test('should correctly convert positional list to Kline', () {
       final KlineDTO dto = KlineDTO.fromList(tRawKline);
-      final Kline entity = dto.toEntity();
+      final Kline entity = dto.toEntity()!;
 
       expect(entity.open, 60000.0);
       expect(entity.high, 61000.0);
@@ -39,7 +39,7 @@ void main() {
       );
     });
 
-    test('should use 0.0 for invalid strings', () {
+    test('should refuse a kline whose prices are not numbers', () {
       final List<dynamic> invalidKline = <dynamic>[
         0,
         'invalid',
@@ -56,13 +56,8 @@ void main() {
       ];
 
       final KlineDTO dto = KlineDTO.fromList(invalidKline);
-      final Kline entity = dto.toEntity();
 
-      expect(entity.open, 0.0);
-      expect(entity.high, 0.0);
-      expect(entity.low, 0.0);
-      expect(entity.close, 0.0);
-      expect(entity.volume, 0.0);
+      expect(dto.toEntity(), isNull);
     });
 
     test('should not throw when the list has fewer elements than expected', () {
@@ -72,8 +67,9 @@ void main() {
 
       expect(dto.openTime, 1713916800000);
       expect(dto.open, '60000.0');
-      expect(dto.high, '0');
-      expect(dto.numberOfTrades, 0);
+      expect(dto.high, isNull);
+      expect(dto.numberOfTrades, isNull);
+      expect(dto.toEntity(), isNull);
     });
 
     test('should not throw when a numeric field comes as double instead of '
@@ -95,6 +91,27 @@ void main() {
       expect(dto.openTime, 1713916800000);
       expect(dto.closeTime, 1713920399999);
       expect(dto.numberOfTrades, 1234);
+      expect(dto.toEntity(), isNotNull);
+    });
+
+    test('should read a non-numeric time as absent', () {
+      final List<dynamic> textTime = <dynamic>[
+        'yesterday',
+        '60000.0',
+        '61000.0',
+        '59000.0',
+        '60500.0',
+        '500.5',
+        <int>[],
+        '30000000.0',
+        1234,
+      ];
+
+      final KlineDTO dto = KlineDTO.fromList(textTime);
+
+      expect(dto.openTime, isNull);
+      expect(dto.closeTime, isNull);
+      expect(dto.toEntity(), isNull);
     });
   });
 }

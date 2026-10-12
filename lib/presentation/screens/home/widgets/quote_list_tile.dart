@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_clean_arch_riverpod/core/routes/auto_route.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/crypto_quote_entity.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/favorite_entity.dart';
+import 'package:flutter_clean_arch_riverpod/presentation/failures/failure_message.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/favorites/favorites_notifier.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/favorites/favorites_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -57,9 +58,10 @@ class QuoteTile extends ConsumerWidget {
               isFavorite ? Icons.star : Icons.star_outline,
               color: isFavorite ? Colors.amber : Colors.grey,
             ),
-            onPressed: () => ref
-                .read(favoritesProvider.notifier)
-                .toggleFavorite(quote.symbol),
+            onPressed: () => reportFailure(
+              context,
+              ref.read(favoritesProvider.notifier).toggleFavorite(quote.symbol),
+            ),
           ),
         ],
       ),

@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:dartz/dartz.dart';
+import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_objects/crypto_quote_dto.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_failure.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_interface.dart';

@@ -1,4 +1,4 @@
-import 'package:dartz/dartz.dart';
+import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_objects/kline_dto.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/kline_datasource.dart';
@@ -68,6 +68,21 @@ void main() {
       expect(
         result,
         const Left<Failure, List<Kline>>(Failure.apiServer('boom')),
+      );
+    });
+
+    test('should be Failure.parse when no kline is well-formed', () async {
+      when(
+        () => datasource.getKlines(symbol: 'BTCUSDT', interval: '1h'),
+      ).thenAnswer(
+        (_) async => Right<HttpClientFailure, List<KlineDTO>>(<KlineDTO>[
+          KlineDTO.fromList(<dynamic>[1713916800000]),
+        ]),
+      );
+
+      expect(
+        await sut.getKlines(symbol: 'BTCUSDT', interval: '1h'),
+        const Left<Failure, List<Kline>>(Failure.parse()),
       );
     });
   });

@@ -71,5 +71,12 @@
     "noData": "Sem dados",
     "@noData": {
         "description": "Tradução de 'Sem dados' para o estado vazio do gráfico de klines"
-    }
+    },
+    "failureNetwork": "Sem conexão. Verifique sua internet e tente de novo.",
+    "failureServer": "O servidor está com problemas. Tente de novo em instantes.",
+    "failureNotFound": "Nada foi encontrado para esta busca.",
+    "failureClient": "A requisição foi recusada.",
+    "failureParse": "Não foi possível ler os dados recebidos.",
+    "failureStorage": "Não foi possível acessar os dados salvos neste aparelho.",
+    "failureUnexpected": "Algo deu errado."
 }

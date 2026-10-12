@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/data/repositories_impl/crypto_quotes_repository_impl_di.dart';
 import 'package:flutter_clean_arch_riverpod/data/repositories_impl/favorites_repository_impl_di.dart';
@@ -171,7 +171,11 @@ void main() {
       await tester.pump();
       await tester.pump();
 
-      expect(find.textContaining('Failure'), findsOneWidget);
+      expect(
+        find.text('No connection. Check your internet and try again.'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('Failure'), findsNothing);
     });
 
     testWidgets(
@@ -305,6 +309,39 @@ void main() {
       },
     );
 
+    testWidgets('a favorite toggle that fails is reported and the star stays', (
+      final WidgetTester tester,
+    ) async {
+      when(() => cryptoQuoteRepository.getQuotes()).thenAnswer(
+        (_) async => const Right<Failure, List<CryptoQuoteEntity>>(
+          <CryptoQuoteEntity>[tQuote],
+        ),
+      );
+      when(() => favoritesRepository.getFavorites()).thenAnswer(
+        (_) async => const Right<Failure, List<FavoriteEntity>>(
+          <FavoriteEntity>[FavoriteEntity(symbol: 'BTCUSDT')],
+        ),
+      );
+      when(() => favoritesRepository.toggleFavorite('BTCUSDT')).thenAnswer(
+        (_) async =>
+            const Left<Failure, List<FavoriteEntity>>(Failure.storage()),
+      );
+
+      await pumpApp(tester, const HomeScreen(), overrides: overrides());
+      await tester.pump();
+      await tester.pump();
+
+      await tester.tap(find.byIcon(Icons.star).first);
+      await tester.pump();
+      await tester.pump();
+
+      expect(
+        find.text('Could not access the data saved on this device.'),
+        findsOneWidget,
+      );
+      expect(find.byIcon(Icons.star), findsWidgets);
+    });
+
     testWidgets('tapping a quote tile navigates to the detail screen', (
       final WidgetTester tester,
     ) async {
@@ -344,7 +381,10 @@ void main() {
       await tester.tap(find.text('Favorites'));
       await tester.pumpAndSettle();
 
-      expect(find.textContaining('Failure'), findsOneWidget);
+      expect(
+        find.text('Could not access the data saved on this device.'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('pulling to refresh on the favorites tab re-fetches quotes', (

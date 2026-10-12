@@ -1,8 +1,8 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_failure.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_interface.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/api_route.dart';

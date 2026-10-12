@@ -1,5 +1,5 @@
-import 'package:dartz/dartz.dart';
 import 'package:flutter_clean_arch_riverpod/application/quotes/get_crypto_quotes_usecase.dart';
+import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/crypto_quotes_datasource.dart';
 import 'package:flutter_clean_arch_riverpod/data/repositories_impl/crypto_quotes_repository_impl.dart';

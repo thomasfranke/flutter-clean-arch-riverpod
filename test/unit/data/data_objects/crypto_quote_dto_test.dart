@@ -29,7 +29,7 @@ void main() {
         count: null,
       );
 
-      final CryptoQuoteEntity entity = dto.toEntity();
+      final CryptoQuoteEntity entity = dto.toEntity()!;
 
       expect(entity.symbol, 'BTCUSDT');
       expect(entity.lastPrice, 60000.12345678);
@@ -41,7 +41,7 @@ void main() {
       expect(entity.quoteVolume, 30000000.0);
     });
 
-    test('should use default values when fields are null', () {
+    test('should refuse a DTO whose fields are null', () {
       const CryptoQuoteDTO dto = CryptoQuoteDTO(
         symbol: null,
         lastPrice: null,
@@ -66,28 +66,19 @@ void main() {
         count: null,
       );
 
-      final CryptoQuoteEntity entity = dto.toEntity();
-
-      expect(entity.symbol, '');
-      expect(entity.lastPrice, 0.0);
-      expect(entity.priceChange, 0.0);
-      expect(entity.priceChangePct, 0.0);
-      expect(entity.highPrice, 0.0);
-      expect(entity.lowPrice, 0.0);
-      expect(entity.volume, 0.0);
-      expect(entity.quoteVolume, 0.0);
+      expect(dto.toEntity(), isNull);
     });
 
-    test('should use 0.0 when string is not a valid number', () {
+    test('should refuse a DTO whose price is not a number', () {
       const CryptoQuoteDTO dto = CryptoQuoteDTO(
         symbol: 'BTCUSDT',
         lastPrice: 'invalid',
-        priceChange: '',
+        priceChange: '1000.0',
         priceChangePercent: '1',
-        highPrice: null,
-        lowPrice: null,
-        volume: null,
-        quoteVolume: null,
+        highPrice: '61000.0',
+        lowPrice: '59000.0',
+        volume: '500.5',
+        quoteVolume: '30000000.0',
         weightedAvgPrice: null,
         prevClosePrice: null,
         lastQty: null,
@@ -103,11 +94,35 @@ void main() {
         count: null,
       );
 
-      final CryptoQuoteEntity entity = dto.toEntity();
+      expect(dto.toEntity(), isNull);
+    });
 
-      expect(entity.lastPrice, 0.0);
-      expect(entity.priceChange, 0.0);
-      expect(entity.priceChangePct, 1);
+    test('should refuse a DTO whose symbol is empty', () {
+      const CryptoQuoteDTO dto = CryptoQuoteDTO(
+        symbol: '',
+        lastPrice: '60000.0',
+        priceChange: '1000.0',
+        priceChangePercent: '1',
+        highPrice: '61000.0',
+        lowPrice: '59000.0',
+        volume: '500.5',
+        quoteVolume: '30000000.0',
+        weightedAvgPrice: null,
+        prevClosePrice: null,
+        lastQty: null,
+        bidPrice: null,
+        bidQty: null,
+        askPrice: null,
+        askQty: null,
+        openPrice: null,
+        openTime: null,
+        closeTime: null,
+        firstId: null,
+        lastId: null,
+        count: null,
+      );
+
+      expect(dto.toEntity(), isNull);
     });
 
     test('should return CryptoQuoteEntity with correct types', () {
@@ -135,7 +150,7 @@ void main() {
         count: null,
       );
 
-      final CryptoQuoteEntity entity = dto.toEntity();
+      final CryptoQuoteEntity entity = dto.toEntity()!;
 
       expect(entity, isA<CryptoQuoteEntity>());
       expect(entity.priceChange, -50.0);

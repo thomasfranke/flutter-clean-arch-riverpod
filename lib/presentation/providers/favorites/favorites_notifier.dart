@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:dartz/dartz.dart';
 import 'package:flutter_clean_arch_riverpod/application/favorites/get_favorites_usecase.dart';
 import 'package:flutter_clean_arch_riverpod/application/favorites/get_favorites_usecase_di.dart';
 import 'package:flutter_clean_arch_riverpod/application/favorites/toggle_favorite_usecase.dart';
 import 'package:flutter_clean_arch_riverpod/application/favorites/toggle_favorite_usecase_di.dart';
+import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/favorite_entity.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/favorites/favorites_state.dart';
@@ -25,18 +25,38 @@ class FavoritesNotifier extends _$FavoritesNotifier {
     return const FavoritesState.loading();
   }
 
-  /// Loads the list of favorites and updates the state accordingly.
-  Future<void> loadFavorites() async {
-    state = const FavoritesState.loading();
-
+  /// Loads the list of favorites, returning the [Failure] if the read
+  /// failed.
+  ///
+  /// The state becomes `failure` only when nothing was loaded before; a
+  /// failed reload keeps the favorites already held.
+  Future<Failure?> loadFavorites() async {
     final GetFavoritesUseCase useCase = ref.read(getFavoritesUseCaseProvider);
     final Either<Failure, List<FavoriteEntity>> result = await useCase.call();
 
-    state = result.fold(FavoritesState.failure, FavoritesState.success);
+    if (!ref.mounted) {
+      return result.fold((final Failure failure) => failure, (_) => null);
+    }
+    return result.fold(
+      (final Failure failure) {
+        if (state is! FavoritesStateSuccess) {
+          state = FavoritesState.failure(failure);
+        }
+        return failure;
+      },
+      (final List<FavoriteEntity> favorites) {
+        state = FavoritesState.success(favorites);
+        return null;
+      },
+    );
   }
 
-  /// Toggles the favorite status of the given [symbol] and updates the state.
-  Future<void> toggleFavorite(final String symbol) async {
+  /// Toggles the favorite status of the given [symbol], returning the
+  /// [Failure] if it was not saved.
+  ///
+  /// A failed toggle leaves the list as it was. Replacing it with the failure
+  /// would empty every star on screen over one symbol that did not save.
+  Future<Failure?> toggleFavorite(final String symbol) async {
     final ToggleFavoriteUseCase useCase = ref.read(
       toggleFavoriteUseCaseProvider,
     );
@@ -44,11 +64,15 @@ class FavoritesNotifier extends _$FavoritesNotifier {
       symbol,
     );
 
-    result.fold(
-      (final Failure failure) => state = FavoritesState.failure(failure),
-      (final List<FavoriteEntity> favorites) =>
-          state = FavoritesState.success(favorites),
-    );
+    if (!ref.mounted) {
+      return result.fold((final Failure failure) => failure, (_) => null);
+    }
+    return result.fold((final Failure failure) => failure, (
+      final List<FavoriteEntity> favorites,
+    ) {
+      state = FavoritesState.success(favorites);
+      return null;
+    });
   }
 
   /// Returns whether the given [symbol] is currently a favorite.

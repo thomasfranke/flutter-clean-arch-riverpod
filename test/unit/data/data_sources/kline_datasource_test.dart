@@ -1,4 +1,4 @@
-import 'package:dartz/dartz.dart';
+import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_objects/kline_dto.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/kline_datasource.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_failure.dart';

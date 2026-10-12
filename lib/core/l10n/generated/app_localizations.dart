@@ -207,6 +207,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No data'**
   String get noData;
+
+  /// Shown when the device could not reach the server
+  ///
+  /// In en, this message translates to:
+  /// **'No connection. Check your internet and try again.'**
+  String get failureNetwork;
+
+  /// Shown when the server answered with an error
+  ///
+  /// In en, this message translates to:
+  /// **'The server is having trouble. Try again in a moment.'**
+  String get failureServer;
+
+  /// Shown when the server answered that the resource does not exist
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing was found for this request.'**
+  String get failureNotFound;
+
+  /// Shown when the server refused the request as invalid
+  ///
+  /// In en, this message translates to:
+  /// **'The request was refused.'**
+  String get failureClient;
+
+  /// Shown when the server's answer was not in the expected shape
+  ///
+  /// In en, this message translates to:
+  /// **'The data received could not be read.'**
+  String get failureParse;
+
+  /// Shown when reading or writing local storage failed
+  ///
+  /// In en, this message translates to:
+  /// **'Could not access the data saved on this device.'**
+  String get failureStorage;
+
+  /// Shown for a failure with no more specific message
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong.'**
+  String get failureUnexpected;
 }
 
 class _AppLocalizationsDelegate

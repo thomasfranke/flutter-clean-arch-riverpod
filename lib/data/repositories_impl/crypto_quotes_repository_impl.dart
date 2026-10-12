@@ -1,7 +1,9 @@
-import 'package:dartz/dartz.dart';
+import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_objects/crypto_quote_dto.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/crypto_quotes_datasource.dart';
+import 'package:flutter_clean_arch_riverpod/data/repositories_impl/entity_list.dart';
+import 'package:flutter_clean_arch_riverpod/data/repositories_impl/failure_mappers.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/crypto_quote_entity.dart';
 import 'package:flutter_clean_arch_riverpod/domain/repositories/crypto_quotes_repository_interface.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_failure.dart';
@@ -30,9 +32,12 @@ class CryptoQuotesRepositoryImpl implements CryptoQuoteRepository {
 
     return result
         .leftMap((final HttpClientFailure failure) => failure.toDomainFailure())
-        .map(
-          (final List<CryptoQuoteDTO> dtos) =>
-              dtos.map((final CryptoQuoteDTO dto) => dto.toEntity()).toList(),
+        .flatMap(
+          (final List<CryptoQuoteDTO> dtos) => toEntities(
+            dtos,
+            (final CryptoQuoteDTO dto) => dto.toEntity(),
+            source: 'CryptoQuotesRepositoryImpl',
+          ),
         );
   }
 
@@ -45,6 +50,9 @@ class CryptoQuotesRepositoryImpl implements CryptoQuoteRepository {
 
     return result
         .leftMap((final HttpClientFailure failure) => failure.toDomainFailure())
-        .map((final CryptoQuoteDTO dto) => dto.toEntity());
+        .flatMap(
+          (final CryptoQuoteDTO dto) =>
+              toEntity(dto, (final CryptoQuoteDTO dto) => dto.toEntity()),
+        );
   }
 }

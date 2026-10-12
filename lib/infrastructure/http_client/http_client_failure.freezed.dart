@@ -134,16 +134,16 @@ return cancelled(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? error,  String? errorMessage,  Response<dynamic>? response,  int? statusCode)?  network,TResult Function( String? error,  String? errorMessage,  Response<dynamic>? response,  int? statusCode)?  client,TResult Function( String? error,  String? errorMessage,  Response<dynamic>? response,  int? statusCode)?  server,TResult Function( String? error,  String? errorMessage,  Response<dynamic>? response,  int? statusCode)?  unknown,TResult Function()?  parse,TResult Function( String? error,  String? errorMessage,  Response<dynamic>? response,  int? statusCode)?  notFound,TResult Function( String? error,  String? errorMessage,  Response<dynamic>? response,  int? statusCode)?  cancelled,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? error,  String? errorMessage,  int? statusCode)?  network,TResult Function( String? error,  String? errorMessage,  int? statusCode)?  client,TResult Function( String? error,  String? errorMessage,  int? statusCode)?  server,TResult Function( String? error,  String? errorMessage,  int? statusCode)?  unknown,TResult Function()?  parse,TResult Function( String? error,  String? errorMessage,  int? statusCode)?  notFound,TResult Function( String? error,  String? errorMessage,  int? statusCode)?  cancelled,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case HttpClientNetworkFailure() when network != null:
-return network(_that.error,_that.errorMessage,_that.response,_that.statusCode);case HttpClientClientFailure() when client != null:
-return client(_that.error,_that.errorMessage,_that.response,_that.statusCode);case HttpClientServerFailure() when server != null:
-return server(_that.error,_that.errorMessage,_that.response,_that.statusCode);case HttpClientUnknownFailure() when unknown != null:
-return unknown(_that.error,_that.errorMessage,_that.response,_that.statusCode);case HttpClientParseFailure() when parse != null:
+return network(_that.error,_that.errorMessage,_that.statusCode);case HttpClientClientFailure() when client != null:
+return client(_that.error,_that.errorMessage,_that.statusCode);case HttpClientServerFailure() when server != null:
+return server(_that.error,_that.errorMessage,_that.statusCode);case HttpClientUnknownFailure() when unknown != null:
+return unknown(_that.error,_that.errorMessage,_that.statusCode);case HttpClientParseFailure() when parse != null:
 return parse();case HttpClientNotFoundFailure() when notFound != null:
-return notFound(_that.error,_that.errorMessage,_that.response,_that.statusCode);case HttpClientCancelledFailure() when cancelled != null:
-return cancelled(_that.error,_that.errorMessage,_that.response,_that.statusCode);case _:
+return notFound(_that.error,_that.errorMessage,_that.statusCode);case HttpClientCancelledFailure() when cancelled != null:
+return cancelled(_that.error,_that.errorMessage,_that.statusCode);case _:
   return orElse();
 
 }
@@ -161,16 +161,16 @@ return cancelled(_that.error,_that.errorMessage,_that.response,_that.statusCode)
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? error,  String? errorMessage,  Response<dynamic>? response,  int? statusCode)  network,required TResult Function( String? error,  String? errorMessage,  Response<dynamic>? response,  int? statusCode)  client,required TResult Function( String? error,  String? errorMessage,  Response<dynamic>? response,  int? statusCode)  server,required TResult Function( String? error,  String? errorMessage,  Response<dynamic>? response,  int? statusCode)  unknown,required TResult Function()  parse,required TResult Function( String? error,  String? errorMessage,  Response<dynamic>? response,  int? statusCode)  notFound,required TResult Function( String? error,  String? errorMessage,  Response<dynamic>? response,  int? statusCode)  cancelled,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? error,  String? errorMessage,  int? statusCode)  network,required TResult Function( String? error,  String? errorMessage,  int? statusCode)  client,required TResult Function( String? error,  String? errorMessage,  int? statusCode)  server,required TResult Function( String? error,  String? errorMessage,  int? statusCode)  unknown,required TResult Function()  parse,required TResult Function( String? error,  String? errorMessage,  int? statusCode)  notFound,required TResult Function( String? error,  String? errorMessage,  int? statusCode)  cancelled,}) {final _that = this;
 switch (_that) {
 case HttpClientNetworkFailure():
-return network(_that.error,_that.errorMessage,_that.response,_that.statusCode);case HttpClientClientFailure():
-return client(_that.error,_that.errorMessage,_that.response,_that.statusCode);case HttpClientServerFailure():
-return server(_that.error,_that.errorMessage,_that.response,_that.statusCode);case HttpClientUnknownFailure():
-return unknown(_that.error,_that.errorMessage,_that.response,_that.statusCode);case HttpClientParseFailure():
+return network(_that.error,_that.errorMessage,_that.statusCode);case HttpClientClientFailure():
+return client(_that.error,_that.errorMessage,_that.statusCode);case HttpClientServerFailure():
+return server(_that.error,_that.errorMessage,_that.statusCode);case HttpClientUnknownFailure():
+return unknown(_that.error,_that.errorMessage,_that.statusCode);case HttpClientParseFailure():
 return parse();case HttpClientNotFoundFailure():
-return notFound(_that.error,_that.errorMessage,_that.response,_that.statusCode);case HttpClientCancelledFailure():
-return cancelled(_that.error,_that.errorMessage,_that.response,_that.statusCode);}
+return notFound(_that.error,_that.errorMessage,_that.statusCode);case HttpClientCancelledFailure():
+return cancelled(_that.error,_that.errorMessage,_that.statusCode);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -184,16 +184,16 @@ return cancelled(_that.error,_that.errorMessage,_that.response,_that.statusCode)
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? error,  String? errorMessage,  Response<dynamic>? response,  int? statusCode)?  network,TResult? Function( String? error,  String? errorMessage,  Response<dynamic>? response,  int? statusCode)?  client,TResult? Function( String? error,  String? errorMessage,  Response<dynamic>? response,  int? statusCode)?  server,TResult? Function( String? error,  String? errorMessage,  Response<dynamic>? response,  int? statusCode)?  unknown,TResult? Function()?  parse,TResult? Function( String? error,  String? errorMessage,  Response<dynamic>? response,  int? statusCode)?  notFound,TResult? Function( String? error,  String? errorMessage,  Response<dynamic>? response,  int? statusCode)?  cancelled,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? error,  String? errorMessage,  int? statusCode)?  network,TResult? Function( String? error,  String? errorMessage,  int? statusCode)?  client,TResult? Function( String? error,  String? errorMessage,  int? statusCode)?  server,TResult? Function( String? error,  String? errorMessage,  int? statusCode)?  unknown,TResult? Function()?  parse,TResult? Function( String? error,  String? errorMessage,  int? statusCode)?  notFound,TResult? Function( String? error,  String? errorMessage,  int? statusCode)?  cancelled,}) {final _that = this;
 switch (_that) {
 case HttpClientNetworkFailure() when network != null:
-return network(_that.error,_that.errorMessage,_that.response,_that.statusCode);case HttpClientClientFailure() when client != null:
-return client(_that.error,_that.errorMessage,_that.response,_that.statusCode);case HttpClientServerFailure() when server != null:
-return server(_that.error,_that.errorMessage,_that.response,_that.statusCode);case HttpClientUnknownFailure() when unknown != null:
-return unknown(_that.error,_that.errorMessage,_that.response,_that.statusCode);case HttpClientParseFailure() when parse != null:
+return network(_that.error,_that.errorMessage,_that.statusCode);case HttpClientClientFailure() when client != null:
+return client(_that.error,_that.errorMessage,_that.statusCode);case HttpClientServerFailure() when server != null:
+return server(_that.error,_that.errorMessage,_that.statusCode);case HttpClientUnknownFailure() when unknown != null:
+return unknown(_that.error,_that.errorMessage,_that.statusCode);case HttpClientParseFailure() when parse != null:
 return parse();case HttpClientNotFoundFailure() when notFound != null:
-return notFound(_that.error,_that.errorMessage,_that.response,_that.statusCode);case HttpClientCancelledFailure() when cancelled != null:
-return cancelled(_that.error,_that.errorMessage,_that.response,_that.statusCode);case _:
+return notFound(_that.error,_that.errorMessage,_that.statusCode);case HttpClientCancelledFailure() when cancelled != null:
+return cancelled(_that.error,_that.errorMessage,_that.statusCode);case _:
   return null;
 
 }
@@ -205,12 +205,11 @@ return cancelled(_that.error,_that.errorMessage,_that.response,_that.statusCode)
 
 
 class HttpClientNetworkFailure implements HttpClientFailure {
-  const HttpClientNetworkFailure({this.error, this.errorMessage, this.response, this.statusCode});
+  const HttpClientNetworkFailure({this.error, this.errorMessage, this.statusCode});
   
 
  final  String? error;
  final  String? errorMessage;
- final  Response<dynamic>? response;
  final  int? statusCode;
 
 /// Create a copy of HttpClientFailure
@@ -223,16 +222,16 @@ $HttpClientNetworkFailureCopyWith<HttpClientNetworkFailure> get copyWith => _$Ht
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HttpClientNetworkFailure&&(identical(other.error, error) || other.error == error)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.response, response) || other.response == response)&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HttpClientNetworkFailure&&(identical(other.error, error) || other.error == error)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,error,errorMessage,response,statusCode);
+int get hashCode => Object.hash(runtimeType,error,errorMessage,statusCode);
 
 @override
 String toString() {
-  return 'HttpClientFailure.network(error: $error, errorMessage: $errorMessage, response: $response, statusCode: $statusCode)';
+  return 'HttpClientFailure.network(error: $error, errorMessage: $errorMessage, statusCode: $statusCode)';
 }
 
 
@@ -243,7 +242,7 @@ abstract mixin class $HttpClientNetworkFailureCopyWith<$Res> implements $HttpCli
   factory $HttpClientNetworkFailureCopyWith(HttpClientNetworkFailure value, $Res Function(HttpClientNetworkFailure) _then) = _$HttpClientNetworkFailureCopyWithImpl;
 @useResult
 $Res call({
- String? error, String? errorMessage, Response<dynamic>? response, int? statusCode
+ String? error, String? errorMessage, int? statusCode
 });
 
 
@@ -260,12 +259,11 @@ class _$HttpClientNetworkFailureCopyWithImpl<$Res>
 
 /// Create a copy of HttpClientFailure
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? error = freezed,Object? errorMessage = freezed,Object? response = freezed,Object? statusCode = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? error = freezed,Object? errorMessage = freezed,Object? statusCode = freezed,}) {
   return _then(HttpClientNetworkFailure(
 error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
-as String?,response: freezed == response ? _self.response : response // ignore: cast_nullable_to_non_nullable
-as Response<dynamic>?,statusCode: freezed == statusCode ? _self.statusCode : statusCode // ignore: cast_nullable_to_non_nullable
+as String?,statusCode: freezed == statusCode ? _self.statusCode : statusCode // ignore: cast_nullable_to_non_nullable
 as int?,
   ));
 }
@@ -277,12 +275,11 @@ as int?,
 
 
 class HttpClientClientFailure implements HttpClientFailure {
-  const HttpClientClientFailure({this.error, this.errorMessage, this.response, this.statusCode});
+  const HttpClientClientFailure({this.error, this.errorMessage, this.statusCode});
   
 
  final  String? error;
  final  String? errorMessage;
- final  Response<dynamic>? response;
  final  int? statusCode;
 
 /// Create a copy of HttpClientFailure
@@ -295,16 +292,16 @@ $HttpClientClientFailureCopyWith<HttpClientClientFailure> get copyWith => _$Http
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HttpClientClientFailure&&(identical(other.error, error) || other.error == error)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.response, response) || other.response == response)&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HttpClientClientFailure&&(identical(other.error, error) || other.error == error)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,error,errorMessage,response,statusCode);
+int get hashCode => Object.hash(runtimeType,error,errorMessage,statusCode);
 
 @override
 String toString() {
-  return 'HttpClientFailure.client(error: $error, errorMessage: $errorMessage, response: $response, statusCode: $statusCode)';
+  return 'HttpClientFailure.client(error: $error, errorMessage: $errorMessage, statusCode: $statusCode)';
 }
 
 
@@ -315,7 +312,7 @@ abstract mixin class $HttpClientClientFailureCopyWith<$Res> implements $HttpClie
   factory $HttpClientClientFailureCopyWith(HttpClientClientFailure value, $Res Function(HttpClientClientFailure) _then) = _$HttpClientClientFailureCopyWithImpl;
 @useResult
 $Res call({
- String? error, String? errorMessage, Response<dynamic>? response, int? statusCode
+ String? error, String? errorMessage, int? statusCode
 });
 
 
@@ -332,12 +329,11 @@ class _$HttpClientClientFailureCopyWithImpl<$Res>
 
 /// Create a copy of HttpClientFailure
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? error = freezed,Object? errorMessage = freezed,Object? response = freezed,Object? statusCode = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? error = freezed,Object? errorMessage = freezed,Object? statusCode = freezed,}) {
   return _then(HttpClientClientFailure(
 error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
-as String?,response: freezed == response ? _self.response : response // ignore: cast_nullable_to_non_nullable
-as Response<dynamic>?,statusCode: freezed == statusCode ? _self.statusCode : statusCode // ignore: cast_nullable_to_non_nullable
+as String?,statusCode: freezed == statusCode ? _self.statusCode : statusCode // ignore: cast_nullable_to_non_nullable
 as int?,
   ));
 }
@@ -349,12 +345,11 @@ as int?,
 
 
 class HttpClientServerFailure implements HttpClientFailure {
-  const HttpClientServerFailure({this.error, this.errorMessage, this.response, this.statusCode});
+  const HttpClientServerFailure({this.error, this.errorMessage, this.statusCode});
   
 
  final  String? error;
  final  String? errorMessage;
- final  Response<dynamic>? response;
  final  int? statusCode;
 
 /// Create a copy of HttpClientFailure
@@ -367,16 +362,16 @@ $HttpClientServerFailureCopyWith<HttpClientServerFailure> get copyWith => _$Http
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HttpClientServerFailure&&(identical(other.error, error) || other.error == error)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.response, response) || other.response == response)&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HttpClientServerFailure&&(identical(other.error, error) || other.error == error)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,error,errorMessage,response,statusCode);
+int get hashCode => Object.hash(runtimeType,error,errorMessage,statusCode);
 
 @override
 String toString() {
-  return 'HttpClientFailure.server(error: $error, errorMessage: $errorMessage, response: $response, statusCode: $statusCode)';
+  return 'HttpClientFailure.server(error: $error, errorMessage: $errorMessage, statusCode: $statusCode)';
 }
 
 
@@ -387,7 +382,7 @@ abstract mixin class $HttpClientServerFailureCopyWith<$Res> implements $HttpClie
   factory $HttpClientServerFailureCopyWith(HttpClientServerFailure value, $Res Function(HttpClientServerFailure) _then) = _$HttpClientServerFailureCopyWithImpl;
 @useResult
 $Res call({
- String? error, String? errorMessage, Response<dynamic>? response, int? statusCode
+ String? error, String? errorMessage, int? statusCode
 });
 
 
@@ -404,12 +399,11 @@ class _$HttpClientServerFailureCopyWithImpl<$Res>
 
 /// Create a copy of HttpClientFailure
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? error = freezed,Object? errorMessage = freezed,Object? response = freezed,Object? statusCode = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? error = freezed,Object? errorMessage = freezed,Object? statusCode = freezed,}) {
   return _then(HttpClientServerFailure(
 error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
-as String?,response: freezed == response ? _self.response : response // ignore: cast_nullable_to_non_nullable
-as Response<dynamic>?,statusCode: freezed == statusCode ? _self.statusCode : statusCode // ignore: cast_nullable_to_non_nullable
+as String?,statusCode: freezed == statusCode ? _self.statusCode : statusCode // ignore: cast_nullable_to_non_nullable
 as int?,
   ));
 }
@@ -421,12 +415,11 @@ as int?,
 
 
 class HttpClientUnknownFailure implements HttpClientFailure {
-  const HttpClientUnknownFailure({this.error, this.errorMessage, this.response, this.statusCode});
+  const HttpClientUnknownFailure({this.error, this.errorMessage, this.statusCode});
   
 
  final  String? error;
  final  String? errorMessage;
- final  Response<dynamic>? response;
  final  int? statusCode;
 
 /// Create a copy of HttpClientFailure
@@ -439,16 +432,16 @@ $HttpClientUnknownFailureCopyWith<HttpClientUnknownFailure> get copyWith => _$Ht
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HttpClientUnknownFailure&&(identical(other.error, error) || other.error == error)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.response, response) || other.response == response)&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HttpClientUnknownFailure&&(identical(other.error, error) || other.error == error)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,error,errorMessage,response,statusCode);
+int get hashCode => Object.hash(runtimeType,error,errorMessage,statusCode);
 
 @override
 String toString() {
-  return 'HttpClientFailure.unknown(error: $error, errorMessage: $errorMessage, response: $response, statusCode: $statusCode)';
+  return 'HttpClientFailure.unknown(error: $error, errorMessage: $errorMessage, statusCode: $statusCode)';
 }
 
 
@@ -459,7 +452,7 @@ abstract mixin class $HttpClientUnknownFailureCopyWith<$Res> implements $HttpCli
   factory $HttpClientUnknownFailureCopyWith(HttpClientUnknownFailure value, $Res Function(HttpClientUnknownFailure) _then) = _$HttpClientUnknownFailureCopyWithImpl;
 @useResult
 $Res call({
- String? error, String? errorMessage, Response<dynamic>? response, int? statusCode
+ String? error, String? errorMessage, int? statusCode
 });
 
 
@@ -476,12 +469,11 @@ class _$HttpClientUnknownFailureCopyWithImpl<$Res>
 
 /// Create a copy of HttpClientFailure
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? error = freezed,Object? errorMessage = freezed,Object? response = freezed,Object? statusCode = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? error = freezed,Object? errorMessage = freezed,Object? statusCode = freezed,}) {
   return _then(HttpClientUnknownFailure(
 error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
-as String?,response: freezed == response ? _self.response : response // ignore: cast_nullable_to_non_nullable
-as Response<dynamic>?,statusCode: freezed == statusCode ? _self.statusCode : statusCode // ignore: cast_nullable_to_non_nullable
+as String?,statusCode: freezed == statusCode ? _self.statusCode : statusCode // ignore: cast_nullable_to_non_nullable
 as int?,
   ));
 }
@@ -525,12 +517,11 @@ String toString() {
 
 
 class HttpClientNotFoundFailure implements HttpClientFailure {
-  const HttpClientNotFoundFailure({this.error, this.errorMessage, this.response, this.statusCode});
+  const HttpClientNotFoundFailure({this.error, this.errorMessage, this.statusCode});
   
 
  final  String? error;
  final  String? errorMessage;
- final  Response<dynamic>? response;
  final  int? statusCode;
 
 /// Create a copy of HttpClientFailure
@@ -543,16 +534,16 @@ $HttpClientNotFoundFailureCopyWith<HttpClientNotFoundFailure> get copyWith => _$
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HttpClientNotFoundFailure&&(identical(other.error, error) || other.error == error)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.response, response) || other.response == response)&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HttpClientNotFoundFailure&&(identical(other.error, error) || other.error == error)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,error,errorMessage,response,statusCode);
+int get hashCode => Object.hash(runtimeType,error,errorMessage,statusCode);
 
 @override
 String toString() {
-  return 'HttpClientFailure.notFound(error: $error, errorMessage: $errorMessage, response: $response, statusCode: $statusCode)';
+  return 'HttpClientFailure.notFound(error: $error, errorMessage: $errorMessage, statusCode: $statusCode)';
 }
 
 
@@ -563,7 +554,7 @@ abstract mixin class $HttpClientNotFoundFailureCopyWith<$Res> implements $HttpCl
   factory $HttpClientNotFoundFailureCopyWith(HttpClientNotFoundFailure value, $Res Function(HttpClientNotFoundFailure) _then) = _$HttpClientNotFoundFailureCopyWithImpl;
 @useResult
 $Res call({
- String? error, String? errorMessage, Response<dynamic>? response, int? statusCode
+ String? error, String? errorMessage, int? statusCode
 });
 
 
@@ -580,12 +571,11 @@ class _$HttpClientNotFoundFailureCopyWithImpl<$Res>
 
 /// Create a copy of HttpClientFailure
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? error = freezed,Object? errorMessage = freezed,Object? response = freezed,Object? statusCode = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? error = freezed,Object? errorMessage = freezed,Object? statusCode = freezed,}) {
   return _then(HttpClientNotFoundFailure(
 error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
-as String?,response: freezed == response ? _self.response : response // ignore: cast_nullable_to_non_nullable
-as Response<dynamic>?,statusCode: freezed == statusCode ? _self.statusCode : statusCode // ignore: cast_nullable_to_non_nullable
+as String?,statusCode: freezed == statusCode ? _self.statusCode : statusCode // ignore: cast_nullable_to_non_nullable
 as int?,
   ));
 }
@@ -597,12 +587,11 @@ as int?,
 
 
 class HttpClientCancelledFailure implements HttpClientFailure {
-  const HttpClientCancelledFailure({this.error, this.errorMessage, this.response, this.statusCode});
+  const HttpClientCancelledFailure({this.error, this.errorMessage, this.statusCode});
   
 
  final  String? error;
  final  String? errorMessage;
- final  Response<dynamic>? response;
  final  int? statusCode;
 
 /// Create a copy of HttpClientFailure
@@ -615,16 +604,16 @@ $HttpClientCancelledFailureCopyWith<HttpClientCancelledFailure> get copyWith => 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HttpClientCancelledFailure&&(identical(other.error, error) || other.error == error)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.response, response) || other.response == response)&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HttpClientCancelledFailure&&(identical(other.error, error) || other.error == error)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,error,errorMessage,response,statusCode);
+int get hashCode => Object.hash(runtimeType,error,errorMessage,statusCode);
 
 @override
 String toString() {
-  return 'HttpClientFailure.cancelled(error: $error, errorMessage: $errorMessage, response: $response, statusCode: $statusCode)';
+  return 'HttpClientFailure.cancelled(error: $error, errorMessage: $errorMessage, statusCode: $statusCode)';
 }
 
 
@@ -635,7 +624,7 @@ abstract mixin class $HttpClientCancelledFailureCopyWith<$Res> implements $HttpC
   factory $HttpClientCancelledFailureCopyWith(HttpClientCancelledFailure value, $Res Function(HttpClientCancelledFailure) _then) = _$HttpClientCancelledFailureCopyWithImpl;
 @useResult
 $Res call({
- String? error, String? errorMessage, Response<dynamic>? response, int? statusCode
+ String? error, String? errorMessage, int? statusCode
 });
 
 
@@ -652,12 +641,11 @@ class _$HttpClientCancelledFailureCopyWithImpl<$Res>
 
 /// Create a copy of HttpClientFailure
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? error = freezed,Object? errorMessage = freezed,Object? response = freezed,Object? statusCode = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? error = freezed,Object? errorMessage = freezed,Object? statusCode = freezed,}) {
   return _then(HttpClientCancelledFailure(
 error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as String?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
-as String?,response: freezed == response ? _self.response : response // ignore: cast_nullable_to_non_nullable
-as Response<dynamic>?,statusCode: freezed == statusCode ? _self.statusCode : statusCode // ignore: cast_nullable_to_non_nullable
+as String?,statusCode: freezed == statusCode ? _self.statusCode : statusCode // ignore: cast_nullable_to_non_nullable
 as int?,
   ));
 }
