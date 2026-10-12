@@ -7,10 +7,10 @@
 
 # The CLI every target below delegates to. Nothing in tool/ calls back into
 # `make` — that direction is the whole point.
-ARCH := dart run tool/arch.dart
+ARCH := dart run tool/cli.dart
 
 # The layers, in dependency order. Each may depend only on the ones before it;
-# test/integrity/architecture_test.dart enforces that by reading the imports.
+# test/code_rules/layer_graph_test.dart enforces that by reading the imports.
 LAYERS := core domain application data infrastructure presentation
 
 # Make would read `make arch test` as two goals, so the subcommand travels in
@@ -20,7 +20,8 @@ ARGS ?=
 .DEFAULT_GOAL := help
 .PHONY: help arch setup clean fvm doctor updates l10n format analyze verify \
         flutter-test flutter-test-unit flutter-test-widget \
-        flutter-test-integration flutter-test-e2e e2e-clean flutter-test-arch \
+        flutter-test-integration flutter-test-e2e e2e-clean \
+        flutter-test-code-rules \
         flutter-test-cli flutter-test-diff flutter-test-last \
         coverage coverage-last coverage-diff coverage-gate \
         runner runner-hard runner-watch run build
@@ -76,7 +77,8 @@ verify: ## Everything CI runs, in one command
 ### *** Tests *** ###
 ##############################
 
-# Without KIND or LAYER, everything runs: the integrity suites, then the unit
+# Without KIND or LAYER, everything runs: the rules and the CLI's own tests,
+# then the unit
 # tests layer by layer, then widget and integration.
 flutter-test: ## Run every test, live (KIND=unit|widget|integration, LAYER=<name>)
 	@$(ARCH) test $(KIND) $(LAYER)
@@ -100,12 +102,14 @@ flutter-test-e2e: ## The e2e scenarios (SCENARIO="<name>", ALL=1, DEVICE=<id>, W
 e2e-clean: ## Delete the recordings, keeping the record of what passed
 	@$(ARCH) e2e clean
 
-# Reads the import statements under lib/ and asserts the layer graph. The
-# fastest answer to "did I just break a boundary".
-flutter-test-arch: ## Assert the layer graph the imports actually declare
-	@$(ARCH) test arch
+# The code rules, one file each under test/code_rules. Without RULE they all
+# run, in one
+# invocation, in seconds — the fastest answer to "did I just break a rule".
+# RULE=graph narrows it to one.
+flutter-test-code-rules: ## Assert the code rules (RULE=layer_graph|l10n|...)
+	@$(ARCH) test code_rules $(RULE)
 
-flutter-test-cli: ## Test the arch CLI itself
+flutter-test-cli: ## Test the arch CLI itself, driven as a process
 	@$(ARCH) test cli
 
 # Maps changed files to test files by name alone — a changed lib/foo.dart runs

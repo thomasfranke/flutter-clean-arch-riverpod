@@ -1,14 +1,14 @@
 # `arch` — the project CLI
 
-Every task this repository has is one command. `dart run tool/arch.dart` with
+Every task this repository has is one command. `dart run tool/cli.dart` with
 no arguments opens a navigable menu; with a subcommand it runs the same code
 path non-interactively. `make <target>` is a one-line face over the same
 thing, kept because `make verify` is shorter to type and because the target
 names predate the CLI.
 
 ```
-dart run tool/arch.dart            # the menu
-dart run tool/arch.dart verify     # everything CI runs
+dart run tool/cli.dart            # the menu
+dart run tool/cli.dart verify     # everything CI runs
 make verify                        # the same thing
 ```
 
@@ -22,7 +22,7 @@ ARCH — Clean Arch + Riverpod
 
 Tests › Unit
 
-  → dart run tool/arch.dart test unit data
+  → dart run tool/cli.dart test unit data
 ```
 
 That line is the contract between the two faces. A menu row whose value is
@@ -56,7 +56,7 @@ Makefile call them by name.
 ## Layout
 
 ```
-tool/arch.dart                 the entry point: the menu, and the dispatch
+tool/cli.dart                  the entry point: the menu, and the dispatch
 tool/analysis_options.yaml     the CLI's own rules, and why they differ
 tool/src/repo.dart             the repository root, found by marker
 tool/src/tty.dart              draw, or log?
@@ -98,7 +98,7 @@ suite to get a row per run would pay the compile cost over and over for
 nothing.
 
 So the rows are cut out of the *paths* instead. `test/unit/<layer>` is that
-layer's row, `test/widget` is one row, `test/integrity/architecture_test.dart`
+layer's row, `test/widget` is one row, `test/code_rules/`
 is another — the grouping the folders already declare, read back rather than
 maintained twice. The suite compiles once, the JSON reporter says which file
 each event came from, and each event lands in the row its path belongs to.
@@ -196,7 +196,7 @@ declares three happens in the app: the CLI passes the name as
 constant. The three things they must nevertheless agree on — the marker that
 makes a step report findable in a device log, the folder the frames go in, and
 the names of the defines — are checked by
-[`test/integrity/e2e_catalogue_test.dart`](../../test/integrity/e2e_catalogue_test.dart),
+[`test/code_rules/e2e_scenarios_test.dart`](../../test/code_rules/e2e_scenarios_test.dart),
 which also reads the scenarios back and fails on a file whose flows the CLI
 cannot see. A flow missing from a list is the one failure nobody notices.
 
@@ -277,7 +277,7 @@ asks `git status` whether anything moved.
 
 ## Adding a command
 
-1. Add a `_Command` to the list in `tool/arch.dart`. It is alphabetical: the
+1. Add a `_Command` to the list in `tool/cli.dart`. It is alphabetical: the
    list is read by someone looking for a name they already have in mind.
 2. Give it a `description` if it is a menu row. That text is the footer, two
    or three lines; the one-line `summary` is what `--help` prints.
@@ -291,4 +291,8 @@ asks `git status` whether anything moved.
    a run and whether to return there after one, which is what keeps the two
    from disagreeing.
 6. Add a Makefile target, one line, delegating to it.
-7. `test/integrity/cli_test.dart` lists every command by name. Add it there.
+7. `test/cli/cli_test.dart` lists every command by name. Add it there.
+   A new rule is two lines instead: the name in `ruleNames` in
+   `tool/src/commands/process.dart`, and a row with its description in
+   `_rules` in `tool/cli.dart`. The file is `test/code_rules/<name>_test.dart`,
+   derived rather than mapped, and `cli_test.dart` asserts both directions.

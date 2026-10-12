@@ -9,16 +9,6 @@ import 'process.dart';
 /// The dashboard that runs the tests and renders them.
 const _runner = 'tool/src/commands/run_tests.dart';
 
-/// The argument that selects the architecture assertions.
-///
-/// Not a kind: a run narrowed to unit tests is not asking about the layer
-/// graph, and the graph is not a layer's own property. It lives in
-/// `test/integrity/` with the other suite that reads the repository as text.
-const arch = 'arch';
-
-/// The argument that selects this CLI's own tests.
-const cli = 'cli';
-
 /// The argument that selects the diff-driven run.
 const changed = 'diff';
 
@@ -27,10 +17,10 @@ const last = 'last';
 
 /// Runs tests.
 ///
-/// With neither [kind] nor [targets], everything under `test/` — the
-/// integrity suites included, since they are the cheapest thing in the run
-/// and the most likely to explain the rest of it. [kind] narrows to a folder;
-/// [targets] narrows to the layers, which means every `test/<kind>/<layer>`
+/// With neither [kind] nor [targets], everything under `test/` — the rules
+/// and the CLI's own tests included, since they are the cheapest thing in the
+/// run and the most likely to explain the rest of it. [kind] narrows to a
+/// folder; [targets] narrows to the layers, which means every `test/<kind>/<layer>`
 /// that exists — `test/unit/core` and `test/widget/core` for `core`, because
 /// both of those are that layer's tests and neither is more so than the
 /// other.
@@ -54,16 +44,27 @@ Future<int> runTests({
   return dart([_runner, if (coverage) '--coverage', ...paths]);
 }
 
-/// Runs only the architecture assertions.
+/// Runs the code rules, or the ones named.
 ///
 /// Worth running alone because they are the fastest answer to "did I just
-/// break a layer boundary" — they read the import statements under `lib/` and
-/// never start the app — and because crossing a boundary is where the intent
-/// gets declared, deliberately, since the graph is a decision.
-Future<int> runArchTests({bool coverage = false}) => dart([
+/// break a rule" — they read the tree as text and never start the app — and
+/// because breaking one is where the intent gets declared, deliberately,
+/// since every rule here is a decision someone wrote down.
+///
+/// With no [rules], the whole folder goes in one invocation: every rule, one
+/// VM, still seconds. With some, only their files run — one for
+/// `arch test code_rules layer_graph`, several when the menu was asked for a
+/// whole group, which is a group only on screen.
+Future<int> runRuleTests({
+  bool coverage = false,
+  List<String> rules = const [],
+}) => dart([
   _runner,
   if (coverage) '--coverage',
-  '$integrityDirectory/architecture_test.dart',
+  if (rules.isEmpty)
+    rulesDirectory
+  else
+    for (final rule in rules) '$rulesDirectory/${rule}_test.dart',
 ]);
 
 /// Runs the tests for `arch` itself.
@@ -71,11 +72,8 @@ Future<int> runArchTests({bool coverage = false}) => dart([
 /// Black box: they drive the CLI as a process, the way the Makefile and CI
 /// do, because that is the contract a script depends on. Coverage is off —
 /// `flutter test --coverage` measures `lib/`, and none of this is in it.
-Future<int> runCliTests({bool coverage = false}) => dart([
-  _runner,
-  if (coverage) '--coverage',
-  '$integrityDirectory/cli_test.dart',
-]);
+Future<int> runCliTests({bool coverage = false}) =>
+    dart([_runner, if (coverage) '--coverage', cliTestDirectory]);
 
 /// Runs only the tests this branch's diff maps to, by filename convention.
 ///

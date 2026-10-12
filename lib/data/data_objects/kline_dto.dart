@@ -80,9 +80,9 @@ class KlineDTO {
   /// The number of trades in the kline.
   final int? numberOfTrades;
 
-  /// Converts this DTO to a [Kline] domain entity, or `null` when any field
-  /// is missing or not a number.
-  Kline? toEntity() => switch ((
+  /// Converts this DTO to a [KlineEntity], or `null` when any field is
+  /// missing or not a number.
+  KlineEntity? toEntity() => switch ((
     openTime,
     closeTime,
     _number(open),
@@ -102,7 +102,7 @@ class KlineDTO {
       final double volume,
       final int numberOfTrades,
     ) =>
-      Kline(
+      KlineEntity(
         openTime: DateTime.fromMillisecondsSinceEpoch(openTime),
         closeTime: DateTime.fromMillisecondsSinceEpoch(closeTime),
         open: open,

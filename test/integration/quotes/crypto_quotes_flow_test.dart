@@ -1,6 +1,6 @@
 import 'package:flutter_clean_arch_riverpod/application/quotes/get_crypto_quotes_usecase.dart';
 import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/crypto_quotes_datasource.dart';
 import 'package:flutter_clean_arch_riverpod/data/repositories_impl/crypto_quotes_repository_impl.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/crypto_quote_entity.dart';
@@ -39,14 +39,14 @@ Map<String, dynamic> _btcUsdtJson() => <String, dynamic>{
 /// it in the app.
 typedef _QuotesStack = ({
   GetCryptoQuotesUseCase getQuotes,
-  CryptoQuoteRepository repository,
+  CryptoQuotesRepositoryInterface repository,
 });
 
 /// Builds the real crypto quotes chain (use case -> repository ->
 /// datasource) on top of a [FakeHttpClientInterface], which fakes only the
-/// network edge — everything from `CryptoQuoteDatasource` up is real.
+/// network edge — everything from `CryptoQuotesDatasource` up is real.
 _QuotesStack _buildStack(final FakeHttpClientInterface httpClient) {
-  final CryptoQuoteDatasource datasource = CryptoQuoteDatasource(
+  final CryptoQuotesDatasource datasource = CryptoQuotesDatasource(
     httpClient: httpClient,
   );
   final CryptoQuotesRepositoryImpl repository = CryptoQuotesRepositoryImpl(

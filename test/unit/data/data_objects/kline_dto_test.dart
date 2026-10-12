@@ -19,9 +19,9 @@ void main() {
       '0', // ignore
     ];
 
-    test('should correctly convert positional list to Kline', () {
+    test('should correctly convert positional list to KlineEntity', () {
       final KlineDTO dto = KlineDTO.fromList(tRawKline);
-      final Kline entity = dto.toEntity()!;
+      final KlineEntity entity = dto.toEntity()!;
 
       expect(entity.open, 60000.0);
       expect(entity.high, 61000.0);

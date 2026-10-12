@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
 import 'package:flutter_clean_arch_riverpod/data/repositories_impl/favorites_repository_impl_di.dart';
 import 'package:flutter_clean_arch_riverpod/data/repositories_impl/kline_repository_impl_di.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/crypto_quote_entity.dart';
@@ -18,9 +18,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../test_helpers.dart';
 
-class _MockFavoritesRepository extends Mock implements FavoritesRepository {}
+class _MockFavoritesRepository extends Mock
+    implements FavoritesRepositoryInterface {}
 
-class _MockKlineRepository extends Mock implements KlineRepository {}
+class _MockKlineRepository extends Mock implements KlineRepositoryInterface {}
 
 void main() {
   late _MockFavoritesRepository favoritesRepository;
@@ -37,7 +38,7 @@ void main() {
     quoteVolume: 30000000,
   );
 
-  final Kline tKline = Kline(
+  final KlineEntity tKline = KlineEntity(
     openTime: DateTime.fromMillisecondsSinceEpoch(0),
     closeTime: DateTime.fromMillisecondsSinceEpoch(1),
     open: 1,
@@ -62,7 +63,9 @@ void main() {
         interval: any(named: 'interval'),
         limit: any(named: 'limit'),
       ),
-    ).thenAnswer((_) async => Right<Failure, List<Kline>>(<Kline>[tKline]));
+    ).thenAnswer(
+      (_) async => Right<Failure, List<KlineEntity>>(<KlineEntity>[tKline]),
+    );
   });
 
   List<Override> overrides() => <Override>[
@@ -125,7 +128,9 @@ void main() {
           interval: any(named: 'interval'),
           limit: any(named: 'limit'),
         ),
-      ).thenAnswer((_) => Completer<Either<Failure, List<Kline>>>().future);
+      ).thenAnswer(
+        (_) => Completer<Either<Failure, List<KlineEntity>>>().future,
+      );
 
       await pumpApp(
         tester,
@@ -146,7 +151,9 @@ void main() {
           interval: any(named: 'interval'),
           limit: any(named: 'limit'),
         ),
-      ).thenAnswer((_) async => const Right<Failure, List<Kline>>(<Kline>[]));
+      ).thenAnswer(
+        (_) async => const Right<Failure, List<KlineEntity>>(<KlineEntity>[]),
+      );
 
       await pumpApp(
         tester,
@@ -169,7 +176,8 @@ void main() {
           limit: any(named: 'limit'),
         ),
       ).thenAnswer(
-        (_) async => const Left<Failure, List<Kline>>(Failure.apiServer()),
+        (_) async =>
+            const Left<Failure, List<KlineEntity>>(Failure.apiServer()),
       );
 
       await pumpApp(
@@ -189,9 +197,9 @@ void main() {
     testWidgets('tapping the chart shows the touch tooltip for the spot', (
       final WidgetTester tester,
     ) async {
-      final List<Kline> denseKlines = List<Kline>.generate(
+      final List<KlineEntity> denseKlines = List<KlineEntity>.generate(
         60,
-        (final int i) => Kline(
+        (final int i) => KlineEntity(
           openTime: DateTime.fromMillisecondsSinceEpoch(i * 60000),
           closeTime: DateTime.fromMillisecondsSinceEpoch(i * 60000 + 59999),
           open: 100 + i.toDouble(),
@@ -208,7 +216,7 @@ void main() {
           interval: any(named: 'interval'),
           limit: any(named: 'limit'),
         ),
-      ).thenAnswer((_) async => Right<Failure, List<Kline>>(denseKlines));
+      ).thenAnswer((_) async => Right<Failure, List<KlineEntity>>(denseKlines));
 
       await pumpApp(
         tester,

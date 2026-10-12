@@ -20,11 +20,11 @@ final cryptoQuotesRepositoryProvider = CryptoQuotesRepositoryProvider._();
 final class CryptoQuotesRepositoryProvider
     extends
         $FunctionalProvider<
-          CryptoQuoteRepository,
-          CryptoQuoteRepository,
-          CryptoQuoteRepository
+          CryptoQuotesRepositoryInterface,
+          CryptoQuotesRepositoryInterface,
+          CryptoQuotesRepositoryInterface
         >
-    with $Provider<CryptoQuoteRepository> {
+    with $Provider<CryptoQuotesRepositoryInterface> {
   /// Riverpod provider for the [CryptoQuotesRepositoryImpl], allowing it to be
   /// easily injected and used throughout the application.
   CryptoQuotesRepositoryProvider._()
@@ -43,23 +43,25 @@ final class CryptoQuotesRepositoryProvider
 
   @$internal
   @override
-  $ProviderElement<CryptoQuoteRepository> $createElement(
+  $ProviderElement<CryptoQuotesRepositoryInterface> $createElement(
     $ProviderPointer pointer,
   ) => $ProviderElement(pointer);
 
   @override
-  CryptoQuoteRepository create(Ref ref) {
+  CryptoQuotesRepositoryInterface create(Ref ref) {
     return cryptoQuotesRepository(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(CryptoQuoteRepository value) {
+  Override overrideWithValue(CryptoQuotesRepositoryInterface value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<CryptoQuoteRepository>(value),
+      providerOverride: $SyncValueProvider<CryptoQuotesRepositoryInterface>(
+        value,
+      ),
     );
   }
 }
 
 String _$cryptoQuotesRepositoryHash() =>
-    r'a8a12b96219804df729ef4caf4e68e30eeada787';
+    r'abeb37f73db53a1f6857891e43c94e19ab0b8441';

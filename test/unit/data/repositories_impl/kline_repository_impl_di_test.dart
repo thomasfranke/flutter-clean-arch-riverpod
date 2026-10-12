@@ -10,7 +10,9 @@ void main() {
     final ProviderContainer container = ProviderContainer();
     addTearDown(container.dispose);
 
-    final KlineRepository repository = container.read(klineRepositoryProvider);
+    final KlineRepositoryInterface repository = container.read(
+      klineRepositoryProvider,
+    );
 
     expect(repository, isA<KlineRepositoryImpl>());
     expect(klineRepositoryProvider.overrideWithValue(repository), isNotNull);

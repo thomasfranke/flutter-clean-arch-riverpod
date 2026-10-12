@@ -4,7 +4,7 @@ import 'package:flutter_clean_arch_riverpod/application/preferences/get_preferen
 import 'package:flutter_clean_arch_riverpod/application/preferences/update_locale_usecase.dart';
 import 'package:flutter_clean_arch_riverpod/application/quotes/get_crypto_quotes_usecase.dart';
 import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/crypto_quotes_datasource.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/favorites_datasource.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/preferences_datasource.dart';
@@ -104,7 +104,7 @@ void main() {
         ]);
       final GetCryptoQuotesUseCase getQuotes = GetCryptoQuotesUseCase(
         repository: CryptoQuotesRepositoryImpl(
-          datasource: CryptoQuoteDatasource(httpClient: httpClient),
+          datasource: CryptoQuotesDatasource(httpClient: httpClient),
         ),
       );
 

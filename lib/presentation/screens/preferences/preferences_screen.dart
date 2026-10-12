@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
 import 'package:flutter_clean_arch_riverpod/core/l10n/generated/app_localizations.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/preferences_entity.dart';
-import 'package:flutter_clean_arch_riverpod/presentation/failures/failure_message.dart';
+import 'package:flutter_clean_arch_riverpod/presentation/failures/failure_message_mapper.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/preferences/preferences_notifier.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/preferences/preferences_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

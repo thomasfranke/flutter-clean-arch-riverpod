@@ -1,5 +1,5 @@
 import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/favorite_entity.dart';
 import 'package:flutter_clean_arch_riverpod/domain/repositories/favorites_repository_interface.dart';
 
@@ -9,11 +9,11 @@ import 'package:flutter_clean_arch_riverpod/domain/repositories/favorites_reposi
 /// at the time the operation runs, avoiding a check-then-act race between
 /// concurrent toggles of the same symbol.
 class ToggleFavoriteUseCase {
-  /// Creates a [ToggleFavoriteUseCase] with the required [FavoritesRepository].
+  /// Creates a [ToggleFavoriteUseCase] with the required repository.
   const ToggleFavoriteUseCase({required this.repository});
 
   /// The repository used to manage favorites.
-  final FavoritesRepository repository;
+  final FavoritesRepositoryInterface repository;
 
   /// Executes the use case, returning either a [Failure] or the updated list
   /// of [FavoriteEntity] entities.

@@ -1,14 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
 import 'package:flutter_clean_arch_riverpod/core/l10n/generated/app_localizations.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/crypto_quote_entity.dart';
-import 'package:flutter_clean_arch_riverpod/presentation/failures/failure_message.dart';
+import 'package:flutter_clean_arch_riverpod/presentation/failures/failure_message_mapper.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/crypto_quote/crypto_quote_notifier.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/crypto_quote/crypto_quote_state.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/screens/home/tabs/favorites_tab.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/screens/home/tabs/quotes_tab.dart';
-import 'package:flutter_clean_arch_riverpod/presentation/screens/home/widgets/drawer_widget.dart';
+import 'package:flutter_clean_arch_riverpod/presentation/screens/home/widgets/app_drawer_widget.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Home screen displaying a list of crypto quotes with loading and
@@ -26,7 +26,7 @@ class HomeScreen extends ConsumerWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Crypto Quotes'),
+          title: Text(AppLocalizations.of(context).appTitle),
           bottom: TabBar(
             tabs: <Widget>[
               Tab(
@@ -40,7 +40,7 @@ class HomeScreen extends ConsumerWidget {
             ],
           ),
         ),
-        drawer: const AppDrawer(),
+        drawer: const AppDrawerWidget(),
         body: switch (state) {
           CryptoQuoteStateInitial() || CryptoQuoteStateLoading() =>
             const Center(child: CircularProgressIndicator(strokeWidth: 2)),

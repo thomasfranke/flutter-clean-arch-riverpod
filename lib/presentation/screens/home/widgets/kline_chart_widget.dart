@@ -1,11 +1,11 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
 import 'package:flutter_clean_arch_riverpod/core/l10n/generated/app_localizations.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/kline_entity.dart';
-import 'package:flutter_clean_arch_riverpod/presentation/failures/failure_message.dart';
-import 'package:flutter_clean_arch_riverpod/presentation/providers/klines/kline_notifier.dart';
-import 'package:flutter_clean_arch_riverpod/presentation/providers/klines/kline_state.dart';
+import 'package:flutter_clean_arch_riverpod/presentation/failures/failure_message_mapper.dart';
+import 'package:flutter_clean_arch_riverpod/presentation/providers/kline/kline_notifier.dart';
+import 'package:flutter_clean_arch_riverpod/presentation/providers/kline/kline_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -14,9 +14,9 @@ const List<String> kKlineIntervals = <String>['15m', '1h', '4h', '1d'];
 
 /// Widget that displays a kline (candlestick) chart for a given [symbol],
 /// with an interval selector and loading/error states.
-class KlineChart extends ConsumerWidget {
-  /// Creates a [KlineChart] for the given [symbol].
-  const KlineChart({required this.symbol, super.key});
+class KlineChartWidget extends ConsumerWidget {
+  /// Creates a [KlineChartWidget] for the given [symbol].
+  const KlineChartWidget({required this.symbol, super.key});
 
   /// The cryptocurrency symbol to display klines for.
   final String symbol;
@@ -47,7 +47,7 @@ class KlineChart extends ConsumerWidget {
                 style: const TextStyle(color: Colors.grey),
               ),
             ),
-            KlineStateSuccess(:final List<Kline> klines) => _Chart(
+            KlineStateSuccess(:final List<KlineEntity> klines) => _Chart(
               klines: klines,
             ),
           },
@@ -84,7 +84,7 @@ class _IntervalSelector extends StatelessWidget {
 class _Chart extends StatelessWidget {
   const _Chart({required this.klines});
 
-  final List<Kline> klines;
+  final List<KlineEntity> klines;
 
   @override
   Widget build(final BuildContext context) {
@@ -101,16 +101,16 @@ class _Chart extends StatelessWidget {
         .asMap()
         .entries
         .map(
-          (final MapEntry<int, Kline> e) =>
+          (final MapEntry<int, KlineEntity> e) =>
               FlSpot(e.key.toDouble(), e.value.close),
         )
         .toList();
 
     final double minY = klines
-        .map((final Kline k) => k.low)
+        .map((final KlineEntity k) => k.low)
         .reduce((final double a, final double b) => a < b ? a : b);
     final double maxY = klines
-        .map((final Kline k) => k.high)
+        .map((final KlineEntity k) => k.high)
         .reduce((final double a, final double b) => a > b ? a : b);
 
     final bool isPositive = klines.last.close >= klines.first.close;
@@ -173,7 +173,7 @@ class _Chart extends StatelessWidget {
           touchTooltipData: LineTouchTooltipData(
             getTooltipItems: (final List<LineBarSpot> spots) =>
                 spots.map((final LineBarSpot spot) {
-                  final Kline kline = klines[spot.x.toInt()];
+                  final KlineEntity kline = klines[spot.x.toInt()];
                   return LineTooltipItem(
                     '${kline.close.toStringAsFixed(4)}\n',
                     TextStyle(

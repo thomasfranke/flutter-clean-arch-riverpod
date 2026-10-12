@@ -5,7 +5,7 @@ import 'package:flutter_clean_arch_riverpod/application/favorites/get_favorites_
 import 'package:flutter_clean_arch_riverpod/application/favorites/toggle_favorite_usecase.dart';
 import 'package:flutter_clean_arch_riverpod/application/favorites/toggle_favorite_usecase_di.dart';
 import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/favorite_entity.dart';
 import 'package:flutter_clean_arch_riverpod/domain/repositories/favorites_repository_interface.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/favorites/favorites_notifier.dart';
@@ -14,7 +14,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-class _MockFavoritesRepository extends Mock implements FavoritesRepository {}
+class _MockFavoritesRepository extends Mock
+    implements FavoritesRepositoryInterface {}
 
 void main() {
   group('FavoritesNotifier', () {

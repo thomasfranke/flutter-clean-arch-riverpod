@@ -1,7 +1,7 @@
 import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_failure.dart';
-import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/api_route.dart';
-import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/http_client_response.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/api_route_value_object.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/http_client_response_value_object.dart';
 
 /// Abstract interface for HTTP client. Deliberately framework-agnostic: no
 /// method here should expose types from a specific HTTP client package (e.g.

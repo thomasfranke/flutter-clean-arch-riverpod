@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_clean_arch_riverpod/core/l10n/generated/app_localizations.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/crypto_quote_entity.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/favorite_entity.dart';
-import 'package:flutter_clean_arch_riverpod/presentation/failures/failure_message.dart';
+import 'package:flutter_clean_arch_riverpod/presentation/failures/failure_message_mapper.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/favorites/favorites_notifier.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/favorites/favorites_state.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/screens/home/widgets/kline_chart_widget.dart';
@@ -62,7 +62,7 @@ class CryptoQuoteDetailScreen extends ConsumerWidget {
           const SizedBox(height: 24),
           _SectionCard(
             title: AppLocalizations.of(context).priceHistory,
-            children: <Widget>[KlineChart(symbol: quote.symbol)],
+            children: <Widget>[KlineChartWidget(symbol: quote.symbol)],
           ),
           const SizedBox(height: 16),
           _SectionCard(
@@ -211,7 +211,7 @@ class _RangeBar extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
-          'Range 24h',
+          AppLocalizations.of(context).range24h,
           style: Theme.of(
             context,
           ).textTheme.labelMedium?.copyWith(color: Colors.grey),

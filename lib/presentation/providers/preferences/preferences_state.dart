@@ -1,4 +1,4 @@
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/preferences_entity.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 

@@ -4,13 +4,13 @@ import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_objects/kline_dto.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_failure.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_interface.dart';
-import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/api_route.dart';
-import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/http_client_response.dart';
-import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/http_methods.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/api_route_value_object.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/http_client_response_value_object.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/http_method_enum.dart';
 
 /// Datasource for fetching kline (candlestick) data from the Binance API.
 ///
-/// It resolves data and nothing else — see `CryptoQuoteDatasource` for why
+/// It resolves data and nothing else — see `CryptoQuotesDatasource` for why
 /// the failure stays an [HttpClientFailure] all the way to the repository.
 class KlineDatasource {
   /// Creates a [KlineDatasource] with the required [HttpClientInterface].

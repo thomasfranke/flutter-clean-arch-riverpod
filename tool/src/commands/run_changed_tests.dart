@@ -107,15 +107,23 @@ List<String> _testsFor(Directory root, List<String> changed) {
   final paths = <String>{};
 
   for (final path in changed) {
-    if (path.startsWith('tool/') ||
-        path == '$integrityDirectory/cli_test.dart') {
-      paths.add('$integrityDirectory/cli_test.dart');
+    if (path.startsWith('tool/') || path.startsWith('$cliTestDirectory/')) {
+      // A change to the CLI is answered by the suite that drives it, and by
+      // the rule that asserts it depends on nothing.
+      paths
+        ..add(cliTestDirectory)
+        ..add('$rulesDirectory/tooling_test.dart');
       continue;
     }
-    if (path == 'pubspec.yaml' ||
-        path == 'analysis_options.yaml' ||
-        path == '$integrityDirectory/architecture_test.dart') {
-      paths.add('$integrityDirectory/architecture_test.dart');
+    if (path == 'pubspec.yaml' || path == 'analysis_options.yaml') {
+      paths.add(rulesDirectory);
+      continue;
+    }
+    if (path.startsWith('$rulesDirectory/') ||
+        path.startsWith('$supportDirectory/')) {
+      // A rule, or the walker every rule reads the tree with: either way the
+      // answer is the whole folder, since one rule's helper is another's too.
+      paths.add(rulesDirectory);
       continue;
     }
     if (path.startsWith('test/') && path.endsWith('_test.dart')) {
@@ -136,11 +144,20 @@ List<String> _testsFor(Directory root, List<String> changed) {
   // that was itself deleted in the diff. Drop those rather than hand
   // run_tests.dart a path that does not exist, which `flutter test` treats as
   // a fatal error rather than as an empty run.
+  //
+  // Either kind of path: a single `foo_test.dart` for a changed `lib/foo.dart`,
+  // or a whole folder for the changes that have no one test — a bumped
+  // dependency, an analyzer rule, the walker every code rule reads with.
   return [
     for (final path in paths)
-      if (File('${root.path}/$path').existsSync()) path,
+      if (_exists(root, path)) path,
   ]..sort();
 }
+
+/// Whether [path] is on disk at all, as a file or as a folder.
+bool _exists(Directory root, String path) =>
+    File('${root.path}/$path').existsSync() ||
+    Directory('${root.path}/$path').existsSync();
 
 /// Every file under [directory] whose name is exactly [name].
 Iterable<File> _filesNamed(Directory directory, String name) sync* {

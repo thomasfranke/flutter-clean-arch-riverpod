@@ -1,19 +1,19 @@
 import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_objects/kline_dto.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/kline_datasource.dart';
-import 'package:flutter_clean_arch_riverpod/data/repositories_impl/entity_list.dart';
-import 'package:flutter_clean_arch_riverpod/data/repositories_impl/failure_mappers.dart';
+import 'package:flutter_clean_arch_riverpod/data/repositories_impl/entity_mapper.dart';
+import 'package:flutter_clean_arch_riverpod/data/repositories_impl/failure_mapper.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/kline_entity.dart';
 import 'package:flutter_clean_arch_riverpod/domain/repositories/kline_repository_interface.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_failure.dart';
 
 /// Repository implementation for fetching kline data, using [KlineDatasource]
-/// to retrieve data and converting DTOs to [Kline] entities.
+/// to retrieve data and converting DTOs to [KlineEntity] entities.
 ///
 /// Like every repository here, it is where an [HttpClientFailure] becomes a
 /// [Failure] — the datasource below only resolves data.
-class KlineRepositoryImpl implements KlineRepository {
+class KlineRepositoryImpl implements KlineRepositoryInterface {
   /// Creates a [KlineRepositoryImpl] with the required [KlineDatasource].
   const KlineRepositoryImpl({required this.datasource});
 
@@ -21,7 +21,7 @@ class KlineRepositoryImpl implements KlineRepository {
   final KlineDatasource datasource;
 
   @override
-  Future<Either<Failure, List<Kline>>> getKlines({
+  Future<Either<Failure, List<KlineEntity>>> getKlines({
     required final String symbol,
     required final String interval,
     final int limit = 24,

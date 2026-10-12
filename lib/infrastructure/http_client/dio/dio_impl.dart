@@ -5,9 +5,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_failure.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_interface.dart';
-import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/api_route.dart';
-import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/http_client_response.dart';
-import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/http_methods.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/api_route_value_object.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/http_client_response_value_object.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/http_method_enum.dart';
 
 /// Implementation of [HttpClientInterface] using
 /// `dio` package.

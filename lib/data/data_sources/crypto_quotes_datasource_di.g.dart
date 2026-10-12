@@ -8,22 +8,22 @@ part of 'crypto_quotes_datasource_di.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Riverpod provider for the [CryptoQuoteDatasource].
+/// Riverpod provider for the [CryptoQuotesDatasource].
 
 @ProviderFor(cryptoQuoteDatasource)
 final cryptoQuoteDatasourceProvider = CryptoQuoteDatasourceProvider._();
 
-/// Riverpod provider for the [CryptoQuoteDatasource].
+/// Riverpod provider for the [CryptoQuotesDatasource].
 
 final class CryptoQuoteDatasourceProvider
     extends
         $FunctionalProvider<
-          CryptoQuoteDatasource,
-          CryptoQuoteDatasource,
-          CryptoQuoteDatasource
+          CryptoQuotesDatasource,
+          CryptoQuotesDatasource,
+          CryptoQuotesDatasource
         >
-    with $Provider<CryptoQuoteDatasource> {
-  /// Riverpod provider for the [CryptoQuoteDatasource].
+    with $Provider<CryptoQuotesDatasource> {
+  /// Riverpod provider for the [CryptoQuotesDatasource].
   CryptoQuoteDatasourceProvider._()
     : super(
         from: null,
@@ -40,23 +40,23 @@ final class CryptoQuoteDatasourceProvider
 
   @$internal
   @override
-  $ProviderElement<CryptoQuoteDatasource> $createElement(
+  $ProviderElement<CryptoQuotesDatasource> $createElement(
     $ProviderPointer pointer,
   ) => $ProviderElement(pointer);
 
   @override
-  CryptoQuoteDatasource create(Ref ref) {
+  CryptoQuotesDatasource create(Ref ref) {
     return cryptoQuoteDatasource(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(CryptoQuoteDatasource value) {
+  Override overrideWithValue(CryptoQuotesDatasource value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<CryptoQuoteDatasource>(value),
+      providerOverride: $SyncValueProvider<CryptoQuotesDatasource>(value),
     );
   }
 }
 
 String _$cryptoQuoteDatasourceHash() =>
-    r'583ffa321680cf5bb5052b294f7fb23a63f1d965';
+    r'6e25e59f56f1973d2cfed1e4eecf6a752a269e20';

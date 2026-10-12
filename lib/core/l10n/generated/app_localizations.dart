@@ -249,6 +249,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Something went wrong.'**
   String get failureUnexpected;
+
+  /// The name of the app, shown in the bar and the drawer
+  ///
+  /// In en, this message translates to:
+  /// **'Crypto Quotes'**
+  String get appTitle;
+
+  /// The traded volume of a quote, under its symbol
+  ///
+  /// In en, this message translates to:
+  /// **'Vol: {value}'**
+  String volumeLabel(String value);
+
+  /// Heading of the 24 hour high/low range on the detail screen
+  ///
+  /// In en, this message translates to:
+  /// **'Range 24h'**
+  String get range24h;
 }
 
 class _AppLocalizationsDelegate

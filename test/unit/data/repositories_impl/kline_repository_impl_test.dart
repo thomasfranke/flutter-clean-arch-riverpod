@@ -1,5 +1,5 @@
 import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_objects/kline_dto.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/kline_datasource.dart';
 import 'package:flutter_clean_arch_riverpod/data/repositories_impl/kline_repository_impl.dart';
@@ -32,20 +32,20 @@ void main() {
   ]);
 
   group('getKlines', () {
-    test('should convert the list of DTOs into Kline entities', () async {
+    test('should convert the list of DTOs into KlineEntity entities', () async {
       when(
         () => datasource.getKlines(symbol: 'BTCUSDT', interval: '1h'),
       ).thenAnswer(
         (_) async => Right<HttpClientFailure, List<KlineDTO>>(<KlineDTO>[tDto]),
       );
 
-      final Either<Failure, List<Kline>> result = await sut.getKlines(
+      final Either<Failure, List<KlineEntity>> result = await sut.getKlines(
         symbol: 'BTCUSDT',
         interval: '1h',
       );
 
       expect(result.isRight(), isTrue);
-      final List<Kline> klines = result.getOrElse(() => <Kline>[]);
+      final List<KlineEntity> klines = result.getOrElse(() => <KlineEntity>[]);
       expect(klines, hasLength(1));
       expect(klines.first.numberOfTrades, 1234);
     });
@@ -60,14 +60,14 @@ void main() {
         ),
       );
 
-      final Either<Failure, List<Kline>> result = await sut.getKlines(
+      final Either<Failure, List<KlineEntity>> result = await sut.getKlines(
         symbol: 'BTCUSDT',
         interval: '1h',
       );
 
       expect(
         result,
-        const Left<Failure, List<Kline>>(Failure.apiServer('boom')),
+        const Left<Failure, List<KlineEntity>>(Failure.apiServer('boom')),
       );
     });
 
@@ -82,7 +82,7 @@ void main() {
 
       expect(
         await sut.getKlines(symbol: 'BTCUSDT', interval: '1h'),
-        const Left<Failure, List<Kline>>(Failure.parse()),
+        const Left<Failure, List<KlineEntity>>(Failure.parse()),
       );
     });
   });

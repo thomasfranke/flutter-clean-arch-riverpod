@@ -1,7 +1,7 @@
 import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/favorites_datasource.dart';
-import 'package:flutter_clean_arch_riverpod/data/repositories_impl/failure_mappers.dart';
+import 'package:flutter_clean_arch_riverpod/data/repositories_impl/failure_mapper.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/favorite_entity.dart';
 import 'package:flutter_clean_arch_riverpod/domain/repositories/favorites_repository_interface.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/storage/storage_failure.dart';
@@ -26,7 +26,7 @@ Either<Failure, List<FavoriteEntity>> _toDomain(
 /// [FavoritesDatasource] to persist data and converting symbols to
 /// [FavoriteEntity]
 /// entities.
-class FavoritesRepositoryImpl implements FavoritesRepository {
+class FavoritesRepositoryImpl implements FavoritesRepositoryInterface {
   /// Creates a [FavoritesRepositoryImpl] with the required
   /// [FavoritesDatasource].
   const FavoritesRepositoryImpl({required this.datasource});

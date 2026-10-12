@@ -3,15 +3,15 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
-import 'package:flutter_clean_arch_riverpod/data/repositories_impl/failure_mappers.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
+import 'package:flutter_clean_arch_riverpod/data/repositories_impl/failure_mapper.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/dio/dio_impl.dart';
-import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/dio/dio_interceptor_retry.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/dio/dio_retry_interceptor.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_failure.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_interface.dart';
-import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/api_route.dart';
-import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/http_client_response.dart';
-import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/http_methods.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/api_route_value_object.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/http_client_response_value_object.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/http_method_enum.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// A local HTTP server that returns the queued status codes in order (200

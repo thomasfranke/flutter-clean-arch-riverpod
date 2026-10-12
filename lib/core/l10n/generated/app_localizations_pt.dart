@@ -85,4 +85,15 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get failureUnexpected => 'Algo deu errado.';
+
+  @override
+  String get appTitle => 'Crypto Quotes';
+
+  @override
+  String volumeLabel(String value) {
+    return 'Vol: $value';
+  }
+
+  @override
+  String get range24h => 'Variação 24h';
 }

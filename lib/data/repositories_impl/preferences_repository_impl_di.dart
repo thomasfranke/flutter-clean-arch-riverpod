@@ -7,7 +7,7 @@ part 'preferences_repository_impl_di.g.dart';
 
 /// Riverpod provider for the [PreferencesRepositoryImpl].
 @riverpod
-PreferencesRepository preferencesRepository(Ref ref) =>
+PreferencesRepositoryInterface preferencesRepository(Ref ref) =>
     PreferencesRepositoryImpl(
       datasource: ref.watch(preferencesDatasourceProvider),
     );

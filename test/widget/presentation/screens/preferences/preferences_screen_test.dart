@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
 import 'package:flutter_clean_arch_riverpod/data/repositories_impl/preferences_repository_impl_di.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/preferences_entity.dart';
 import 'package:flutter_clean_arch_riverpod/domain/repositories/preferences_repository_interface.dart';
@@ -14,7 +14,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../test_helpers.dart';
 
 class _MockPreferencesRepository extends Mock
-    implements PreferencesRepository {}
+    implements PreferencesRepositoryInterface {}
 
 void main() {
   late _MockPreferencesRepository preferencesRepository;

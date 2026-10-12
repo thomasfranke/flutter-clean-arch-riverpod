@@ -85,4 +85,15 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get failureUnexpected => 'Algo salió mal.';
+
+  @override
+  String get appTitle => 'Crypto Quotes';
+
+  @override
+  String volumeLabel(String value) {
+    return 'Vol: $value';
+  }
+
+  @override
+  String get range24h => 'Rango 24h';
 }

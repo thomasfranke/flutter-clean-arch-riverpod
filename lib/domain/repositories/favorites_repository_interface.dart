@@ -1,10 +1,10 @@
 import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/favorite_entity.dart';
 
 /// Repository interface for managing favorite cryptocurrencies, defining the
 /// contract for retrieving, adding, and removing favorites.
-abstract interface class FavoritesRepository {
+abstract interface class FavoritesRepositoryInterface {
   /// Retrieves the list of favorite cryptocurrencies, returning either a
   /// [Failure] or a list of [FavoriteEntity] entities.
   Future<Either<Failure, List<FavoriteEntity>>> getFavorites();

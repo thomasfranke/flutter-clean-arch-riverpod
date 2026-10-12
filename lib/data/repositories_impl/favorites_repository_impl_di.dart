@@ -7,5 +7,5 @@ part 'favorites_repository_impl_di.g.dart';
 
 /// Riverpod provider for the [FavoritesRepositoryImpl].
 @riverpod
-FavoritesRepository favoritesRepository(Ref ref) =>
+FavoritesRepositoryInterface favoritesRepository(Ref ref) =>
     FavoritesRepositoryImpl(datasource: ref.watch(favoritesDatasourceProvider));

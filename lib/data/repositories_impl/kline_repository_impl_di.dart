@@ -5,7 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'kline_repository_impl_di.g.dart';
 
-/// Provides the [KlineRepository] implementation.
+/// Provides the [KlineRepositoryInterface] implementation.
 @riverpod
-KlineRepository klineRepository(final Ref ref) =>
+KlineRepositoryInterface klineRepository(final Ref ref) =>
     KlineRepositoryImpl(datasource: ref.watch(klineDatasourceProvider));

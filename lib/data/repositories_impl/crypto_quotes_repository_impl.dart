@@ -1,15 +1,15 @@
 import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_objects/crypto_quote_dto.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/crypto_quotes_datasource.dart';
-import 'package:flutter_clean_arch_riverpod/data/repositories_impl/entity_list.dart';
-import 'package:flutter_clean_arch_riverpod/data/repositories_impl/failure_mappers.dart';
+import 'package:flutter_clean_arch_riverpod/data/repositories_impl/entity_mapper.dart';
+import 'package:flutter_clean_arch_riverpod/data/repositories_impl/failure_mapper.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/crypto_quote_entity.dart';
 import 'package:flutter_clean_arch_riverpod/domain/repositories/crypto_quotes_repository_interface.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_failure.dart';
 
 /// Repository implementation for fetching cryptocurrency quotes, using a
-/// [CryptoQuoteDatasource] to retrieve data and converting it to domain
+/// [CryptoQuotesDatasource] to retrieve data and converting it to domain
 /// entities.
 ///
 /// This is the boundary, in both directions: the datasource hands it a DTO
@@ -17,13 +17,13 @@ import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_clie
 /// [Failure]. The translation lives here because this is the class that
 /// implements a domain contract — nothing below it is obliged to know the
 /// domain's vocabulary, and nothing above it may see infrastructure's.
-class CryptoQuotesRepositoryImpl implements CryptoQuoteRepository {
+class CryptoQuotesRepositoryImpl implements CryptoQuotesRepositoryInterface {
   /// Creates a [CryptoQuotesRepositoryImpl] with the
-  /// required [CryptoQuoteDatasource].
+  /// required [CryptoQuotesDatasource].
   const CryptoQuotesRepositoryImpl({required this.datasource});
 
   /// The data source used to fetch cryptocurrency quotes.
-  final CryptoQuoteDatasource datasource;
+  final CryptoQuotesDatasource datasource;
 
   @override
   Future<Either<Failure, List<CryptoQuoteEntity>>> getQuotes() async {

@@ -1,0 +1,46 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_clean_arch_riverpod/core/l10n/generated/app_localizations.dart';
+import 'package:flutter_clean_arch_riverpod/core/routes/app_router.dart';
+
+/// Drawer widget for the home screen, providing navigation options.
+class AppDrawerWidget extends StatelessWidget {
+  /// Creates a new instance of [AppDrawerWidget].
+  const AppDrawerWidget({super.key});
+
+  @override
+  Widget build(final BuildContext context) => Drawer(
+    child: ListView(
+      padding: EdgeInsets.zero,
+      children: <Widget>[
+        DrawerHeader(
+          decoration: const BoxDecoration(color: Colors.blue),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              const Icon(Icons.currency_bitcoin, size: 40, color: Colors.white),
+              const SizedBox(height: 8),
+              Text(
+                AppLocalizations.of(context).appTitle,
+                style: const TextStyle(color: Colors.white, fontSize: 18),
+              ),
+            ],
+          ),
+        ),
+        ListTile(
+          leading: const Icon(Icons.settings),
+          title: Text(AppLocalizations.of(context).settings),
+          onTap: () async {
+            // Close the drawer before navigating. Pushing on top of an open
+            // drawer leaves its ModalBarrier mounted underneath, and once the
+            // pushed route is popped that barrier swallows every tap on the
+            // home screen.
+            Scaffold.of(context).closeDrawer();
+            context.router.push(const PreferencesRoute());
+          },
+        ),
+      ],
+    ),
+  );
+}

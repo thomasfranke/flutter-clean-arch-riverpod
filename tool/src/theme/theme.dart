@@ -60,7 +60,7 @@ abstract final class Layout {
 
   /// What every screen is headed with.
   ///
-  /// Here rather than in `arch.dart` because a screen is drawn wherever the
+  /// Here rather than in `cli.dart` because a screen is drawn wherever the
   /// work is, and a command that paints its own frame has to be able to put
   /// the same header back. A header that appears on most screens reads as a
   /// bug on the one it is missing from.

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_arch_riverpod/core/l10n/generated/app_localizations.dart';
-import 'package:flutter_clean_arch_riverpod/core/routes/auto_route.dart';
-import 'package:flutter_clean_arch_riverpod/core/routes/routes_di.dart';
+import 'package:flutter_clean_arch_riverpod/core/routes/app_router.dart';
+import 'package:flutter_clean_arch_riverpod/core/routes/app_router_di.dart';
 import 'package:flutter_clean_arch_riverpod/core/theme/app_theme.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/preferences_entity.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/storage/shared_preferences/shared_preferences_impl.dart';

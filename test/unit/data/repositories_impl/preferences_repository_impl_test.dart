@@ -1,5 +1,5 @@
 import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_objects/preferences_dao.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/preferences_datasource.dart';
 import 'package:flutter_clean_arch_riverpod/data/repositories_impl/preferences_repository_impl.dart';

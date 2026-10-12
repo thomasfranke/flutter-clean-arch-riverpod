@@ -78,5 +78,22 @@
     "failureClient": "La solicitud fue rechazada.",
     "failureParse": "No se pudieron leer los datos recibidos.",
     "failureStorage": "No se pudo acceder a los datos guardados en este dispositivo.",
-    "failureUnexpected": "Algo salió mal."
+    "failureUnexpected": "Algo salió mal.",
+    "appTitle": "Crypto Quotes",
+    "@appTitle": {
+        "description": "The name of the app, shown in the bar and the drawer"
+    },
+    "volumeLabel": "Vol: {value}",
+    "@volumeLabel": {
+        "description": "The traded volume of a quote, under its symbol",
+        "placeholders": {
+                "value": {
+                        "type": "String"
+                }
+        }
+    },
+    "range24h": "Rango 24h",
+    "@range24h": {
+        "description": "Heading of the 24 hour high/low range on the detail screen"
+    }
 }

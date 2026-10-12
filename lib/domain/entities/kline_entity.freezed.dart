@@ -12,20 +12,20 @@ part of 'kline_entity.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$Kline {
+mixin _$KlineEntity {
 
  DateTime get openTime; DateTime get closeTime; double get open; double get high; double get low; double get close; double get volume; int get numberOfTrades;
-/// Create a copy of Kline
+/// Create a copy of KlineEntity
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$KlineCopyWith<Kline> get copyWith => _$KlineCopyWithImpl<Kline>(this as Kline, _$identity);
+$KlineEntityCopyWith<KlineEntity> get copyWith => _$KlineEntityCopyWithImpl<KlineEntity>(this as KlineEntity, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Kline&&(identical(other.openTime, openTime) || other.openTime == openTime)&&(identical(other.closeTime, closeTime) || other.closeTime == closeTime)&&(identical(other.open, open) || other.open == open)&&(identical(other.high, high) || other.high == high)&&(identical(other.low, low) || other.low == low)&&(identical(other.close, close) || other.close == close)&&(identical(other.volume, volume) || other.volume == volume)&&(identical(other.numberOfTrades, numberOfTrades) || other.numberOfTrades == numberOfTrades));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is KlineEntity&&(identical(other.openTime, openTime) || other.openTime == openTime)&&(identical(other.closeTime, closeTime) || other.closeTime == closeTime)&&(identical(other.open, open) || other.open == open)&&(identical(other.high, high) || other.high == high)&&(identical(other.low, low) || other.low == low)&&(identical(other.close, close) || other.close == close)&&(identical(other.volume, volume) || other.volume == volume)&&(identical(other.numberOfTrades, numberOfTrades) || other.numberOfTrades == numberOfTrades));
 }
 
 
@@ -34,15 +34,15 @@ int get hashCode => Object.hash(runtimeType,openTime,closeTime,open,high,low,clo
 
 @override
 String toString() {
-  return 'Kline(openTime: $openTime, closeTime: $closeTime, open: $open, high: $high, low: $low, close: $close, volume: $volume, numberOfTrades: $numberOfTrades)';
+  return 'KlineEntity(openTime: $openTime, closeTime: $closeTime, open: $open, high: $high, low: $low, close: $close, volume: $volume, numberOfTrades: $numberOfTrades)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $KlineCopyWith<$Res>  {
-  factory $KlineCopyWith(Kline value, $Res Function(Kline) _then) = _$KlineCopyWithImpl;
+abstract mixin class $KlineEntityCopyWith<$Res>  {
+  factory $KlineEntityCopyWith(KlineEntity value, $Res Function(KlineEntity) _then) = _$KlineEntityCopyWithImpl;
 @useResult
 $Res call({
  DateTime openTime, DateTime closeTime, double open, double high, double low, double close, double volume, int numberOfTrades
@@ -53,14 +53,14 @@ $Res call({
 
 }
 /// @nodoc
-class _$KlineCopyWithImpl<$Res>
-    implements $KlineCopyWith<$Res> {
-  _$KlineCopyWithImpl(this._self, this._then);
+class _$KlineEntityCopyWithImpl<$Res>
+    implements $KlineEntityCopyWith<$Res> {
+  _$KlineEntityCopyWithImpl(this._self, this._then);
 
-  final Kline _self;
-  final $Res Function(Kline) _then;
+  final KlineEntity _self;
+  final $Res Function(KlineEntity) _then;
 
-/// Create a copy of Kline
+/// Create a copy of KlineEntity
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? openTime = null,Object? closeTime = null,Object? open = null,Object? high = null,Object? low = null,Object? close = null,Object? volume = null,Object? numberOfTrades = null,}) {
   return _then(_self.copyWith(
@@ -79,8 +79,8 @@ as int,
 }
 
 
-/// Adds pattern-matching-related methods to [Kline].
-extension KlinePatterns on Kline {
+/// Adds pattern-matching-related methods to [KlineEntity].
+extension KlineEntityPatterns on KlineEntity {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -212,7 +212,7 @@ return $default(_that.openTime,_that.closeTime,_that.open,_that.high,_that.low,_
 /// @nodoc
 
 
-class _Kline implements Kline {
+class _Kline implements KlineEntity {
   const _Kline({required this.openTime, required this.closeTime, required this.open, required this.high, required this.low, required this.close, required this.volume, required this.numberOfTrades});
   
 
@@ -225,7 +225,7 @@ class _Kline implements Kline {
 @override final  double volume;
 @override final  int numberOfTrades;
 
-/// Create a copy of Kline
+/// Create a copy of KlineEntity
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -244,14 +244,14 @@ int get hashCode => Object.hash(runtimeType,openTime,closeTime,open,high,low,clo
 
 @override
 String toString() {
-  return 'Kline(openTime: $openTime, closeTime: $closeTime, open: $open, high: $high, low: $low, close: $close, volume: $volume, numberOfTrades: $numberOfTrades)';
+  return 'KlineEntity(openTime: $openTime, closeTime: $closeTime, open: $open, high: $high, low: $low, close: $close, volume: $volume, numberOfTrades: $numberOfTrades)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$KlineCopyWith<$Res> implements $KlineCopyWith<$Res> {
+abstract mixin class _$KlineCopyWith<$Res> implements $KlineEntityCopyWith<$Res> {
   factory _$KlineCopyWith(_Kline value, $Res Function(_Kline) _then) = __$KlineCopyWithImpl;
 @override @useResult
 $Res call({
@@ -270,7 +270,7 @@ class __$KlineCopyWithImpl<$Res>
   final _Kline _self;
   final $Res Function(_Kline) _then;
 
-/// Create a copy of Kline
+/// Create a copy of KlineEntity
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? openTime = null,Object? closeTime = null,Object? open = null,Object? high = null,Object? low = null,Object? close = null,Object? volume = null,Object? numberOfTrades = null,}) {
   return _then(_Kline(

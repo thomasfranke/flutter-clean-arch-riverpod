@@ -3,16 +3,16 @@ library;
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
 import 'package:flutter_clean_arch_riverpod/core/l10n/generated/app_localizations.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/storage/shared_preferences/shared_preferences_impl.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/storage/storage_di.dart';
 import 'package:flutter_clean_arch_riverpod/main.dart';
-import 'package:flutter_clean_arch_riverpod/presentation/failures/failure_message.dart';
+import 'package:flutter_clean_arch_riverpod/presentation/failures/failure_message_mapper.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/screens/home/tabs/favorites_tab.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/screens/home/tabs/quotes_tab.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/screens/home/widgets/kline_chart_widget.dart';
-import 'package:flutter_clean_arch_riverpod/presentation/screens/home/widgets/quote_list_tile.dart';
+import 'package:flutter_clean_arch_riverpod/presentation/screens/home/widgets/quote_tile_widget.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -85,7 +85,7 @@ final class CryptoRobot {
   /// Waits until the quotes list has arrived from the network.
   Future<void> seesTheQuotes() async {
     await _pumpUntilFound(
-      find.byType(QuoteTile),
+      find.byType(QuoteTileWidget),
       what: 'the quotes to arrive',
       timeout: networkPatience,
     );
@@ -93,8 +93,10 @@ final class CryptoRobot {
   }
 
   /// The symbol of the first quote on screen — whatever Binance listed first.
-  String get firstSymbol =>
-      tester.widget<QuoteTile>(find.byType(QuoteTile).first).quote.symbol;
+  String get firstSymbol => tester
+      .widget<QuoteTileWidget>(find.byType(QuoteTileWidget).first)
+      .quote
+      .symbol;
 
   /// Opens Preferences through the drawer.
   ///
@@ -187,7 +189,10 @@ final class CryptoRobot {
   /// Empties the filter and waits for the whole list to come back.
   Future<void> clearTheFilter() async {
     await filterBy('');
-    await _pumpUntilFound(find.byType(QuoteTile), what: 'the whole list back');
+    await _pumpUntilFound(
+      find.byType(QuoteTileWidget),
+      what: 'the whole list back',
+    );
     await dismissTheKeyboard();
   }
 
@@ -203,28 +208,28 @@ final class CryptoRobot {
 
   /// Asserts every quote on screen matches [filter].
   void seesOnlyQuotesMatching(final String filter) {
-    expect(find.byType(QuoteTile), findsWidgets);
-    for (final Element element in find.byType(QuoteTile).evaluate()) {
-      final QuoteTile tile = element.widget as QuoteTile;
+    expect(find.byType(QuoteTileWidget), findsWidgets);
+    for (final Element element in find.byType(QuoteTileWidget).evaluate()) {
+      final QuoteTileWidget tile = element.widget as QuoteTileWidget;
       expect(tile.quote.symbol.contains(filter), isTrue);
     }
   }
 
   /// Asserts the list is empty.
-  void seesNoQuotes() => expect(find.byType(QuoteTile), findsNothing);
+  void seesNoQuotes() => expect(find.byType(QuoteTileWidget), findsNothing);
 
   /// Favorites the first quote from the list itself, and waits for the star to
   /// fill in.
   Future<void> favoriteTheFirstQuote() async {
     await tester.tap(
       find.descendant(
-        of: find.byType(QuoteTile).first,
+        of: find.byType(QuoteTileWidget).first,
         matching: find.byIcon(Icons.star_outline),
       ),
     );
     await _pumpUntilFound(
       find.descendant(
-        of: find.byType(QuoteTile).first,
+        of: find.byType(QuoteTileWidget).first,
         matching: find.byIcon(Icons.star),
       ),
       what: 'the star to fill in',
@@ -234,14 +239,14 @@ final class CryptoRobot {
 
   /// Opens the first quote's detail screen.
   Future<void> openTheFirstQuote() async {
-    await tester.tap(find.byType(QuoteTile).first);
+    await tester.tap(find.byType(QuoteTileWidget).first);
     await tester.pump();
     await _held();
   }
 
   /// Waits for the price history chart to be drawn.
   Future<void> seesTheChart() async {
-    await _pumpUntilFound(find.byType(KlineChart), what: 'the chart');
+    await _pumpUntilFound(find.byType(KlineChartWidget), what: 'the chart');
     await _pumpUntil(
       () => find.byType(CircularProgressIndicator).evaluate().isEmpty,
       what: 'the chart to stop loading',
@@ -279,7 +284,7 @@ final class CryptoRobot {
     expect(
       find.descendant(
         of: find.byType(QuotesTab),
-        matching: find.byType(QuoteTile),
+        matching: find.byType(QuoteTileWidget),
       ),
       findsWidgets,
     );
@@ -309,7 +314,7 @@ final class CryptoRobot {
   /// was.
   Future<void> seesAFavorite() async {
     await _pumpUntilFound(
-      _inFavorites(find.byType(QuoteTile)),
+      _inFavorites(find.byType(QuoteTileWidget)),
       what: 'a favorite to still be there',
     );
     await _held();
@@ -320,7 +325,7 @@ final class CryptoRobot {
   Future<void> unfavoriteFromTheFavoritesTab() async {
     await tester.tap(_inFavorites(find.byIcon(Icons.star)));
     await _pumpUntil(
-      () => _inFavorites(find.byType(QuoteTile)).evaluate().isEmpty,
+      () => _inFavorites(find.byType(QuoteTileWidget)).evaluate().isEmpty,
       what: 'Favorites to empty',
     );
     await _held();

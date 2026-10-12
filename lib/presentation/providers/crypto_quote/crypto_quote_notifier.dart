@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter_clean_arch_riverpod/application/quotes/get_crypto_quotes_usecase.dart';
 import 'package:flutter_clean_arch_riverpod/application/quotes/get_crypto_quotes_usecase_di.dart';
 import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/crypto_quote_entity.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/crypto_quote/crypto_quote_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

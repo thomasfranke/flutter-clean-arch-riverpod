@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
 import 'package:flutter_clean_arch_riverpod/core/theme/app_theme.dart';
 import 'package:flutter_clean_arch_riverpod/data/repositories_impl/crypto_quotes_repository_impl_di.dart';
 import 'package:flutter_clean_arch_riverpod/data/repositories_impl/favorites_repository_impl_di.dart';
@@ -25,14 +25,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class _MockCryptoQuoteRepository extends Mock
-    implements CryptoQuoteRepository {}
+    implements CryptoQuotesRepositoryInterface {}
 
-class _MockFavoritesRepository extends Mock implements FavoritesRepository {}
+class _MockFavoritesRepository extends Mock
+    implements FavoritesRepositoryInterface {}
 
-class _MockKlineRepository extends Mock implements KlineRepository {}
+class _MockKlineRepository extends Mock implements KlineRepositoryInterface {}
 
 class _MockPreferencesRepository extends Mock
-    implements PreferencesRepository {}
+    implements PreferencesRepositoryInterface {}
 
 void main() {
   late _MockCryptoQuoteRepository cryptoQuoteRepository;

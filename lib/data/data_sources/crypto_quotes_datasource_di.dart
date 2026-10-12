@@ -4,7 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'crypto_quotes_datasource_di.g.dart';
 
-/// Riverpod provider for the [CryptoQuoteDatasource].
+/// Riverpod provider for the [CryptoQuotesDatasource].
 @riverpod
-CryptoQuoteDatasource cryptoQuoteDatasource(final Ref ref) =>
-    CryptoQuoteDatasource(httpClient: ref.watch(httpClientProvider));
+CryptoQuotesDatasource cryptoQuoteDatasource(final Ref ref) =>
+    CryptoQuotesDatasource(httpClient: ref.watch(httpClientProvider));

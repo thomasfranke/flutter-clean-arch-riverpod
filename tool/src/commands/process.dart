@@ -91,7 +91,7 @@ void announce(String what) {
 }
 
 /// The layers, in dependency order: each may be imported by the ones after
-/// it, and `test/integrity/architecture_test.dart` is what proves it.
+/// it, and `$rulesDirectory/layer_graph_test.dart` is what proves it.
 ///
 /// Folders under `lib/`, not packages. That is the one structural difference
 /// from a workspace that splits its layers into published packages, and it is
@@ -113,6 +113,16 @@ const layers = [
 /// `integration_test/`, it needs a device, and it is [e2eKind] below.
 const testKinds = ['unit', 'widget', 'integration'];
 
+/// The code rules, as an argument and as the folder they live in.
+///
+/// One word for both, like the kinds above: the argument is the path, which
+/// is what stops the menu and the filesystem drifting apart. A second word
+/// after it narrows to one rule — `arch test code_rules graph`.
+const codeRules = 'code_rules';
+
+/// The CLI's own tests, as an argument and as the folder they live in.
+const cli = 'cli';
+
 /// The end-to-end suite — the real app, on a real device.
 ///
 /// A kind by name and a different thing by nature: everything else here runs
@@ -125,13 +135,85 @@ const e2eKind = 'e2e';
 /// requires.
 const e2eDirectory = 'integration_test';
 
-/// Tests that assert something about the repository rather than about the
-/// product: the layer graph, and this CLI.
+/// Where the code rules live, one file per rule.
 ///
-/// Their own folder because they answer their own kind of question, and
-/// because both of them read the tree as text — no widget is pumped and no
-/// use case is called.
-const integrityDirectory = 'test/integrity';
+/// The rules this repository holds its own source to — the layer graph, the
+/// Flutter-free layers, the wrapped packages, where a `Failure` is minted,
+/// how one travels, the shape of a wrapper, how files and classes are named,
+/// what `tool/` may import, how an end-to-end flow is declared. The same
+/// list `AGENTS.md` calls its hard rules, one file each.
+///
+/// `code_rules` rather than `rules`: this repository already has rules in the
+/// other sense — `domain/` is where the business rules live, and
+/// `test/unit/domain/` is where they are tested. These are rules about the
+/// code itself.
+///
+/// Named for what they are rather than for how they work, but they do share
+/// a method: every one reads the tree as text. Nothing here pumps a widget,
+/// calls a use case or starts a process, which is why the folder runs in
+/// seconds — and why `cli_test.dart` is not in it.
+const rulesDirectory = 'test/code_rules';
+
+/// Where the walker every rule reads the tree with lives.
+///
+/// Its own folder, and not a rule: a change to it can break any of them, so
+/// the diff-driven run maps it to the whole of [rulesDirectory].
+const supportDirectory = '$rulesDirectory/support';
+
+/// Where the CLI's own tests live.
+///
+/// Beside the rules rather than among them, because they answer the same kind
+/// of question by the opposite method: they spawn `arch` as a process and
+/// read its exit codes, which is the only contract a script depends on.
+const cliTestDirectory = 'test/cli';
+
+/// The code rules, each the name of a file under [rulesDirectory].
+///
+/// One rule, one file, one row in the menu. The name is the CLI's word for
+/// it, the file is `<name>_test.dart`, and the menu labels the row with the
+/// same word — so there is no table mapping any of them and nothing to
+/// drift. `test/cli/cli_test.dart` asserts the correspondence both ways.
+///
+/// Alphabetical, for the reason the command list is: this is read by someone
+/// looking for a name they already have in mind, and any other order makes
+/// them scan the whole thing. The kinds of test are ordered by cost instead,
+/// because there the reader is choosing rather than looking something up.
+const ruleNames = [
+  'class_names',
+  'complete_wiring',
+  'complete_wrappers',
+  'const_widgets',
+  'e2e_scenarios',
+  'every_message_is_read',
+  'every_test_asserts',
+  'failure_origin',
+  'file_names',
+  'framework_independence',
+  'immutable_domain',
+  'impls_declare_contracts',
+  'l10n',
+  'layer_graph',
+  'mocks_use_contracts',
+  'no_coverage_ignore',
+  'no_dynamic',
+  'no_exports',
+  'no_json_in_domain',
+  'no_print',
+  'no_skipped_tests',
+  'no_throw',
+  'no_todo',
+  'number_agreement',
+  'one_method_per_usecase',
+  'one_public_type',
+  'one_source_per_datasource',
+  'result_pattern',
+  'riverpod_feature',
+  'screens_are_consumers',
+  'test_per_source',
+  'tool_imports',
+  'usecases_only',
+  'wrapped_packages',
+];
 
 /// `lib/`, where every layer is a folder.
 Directory get libDirectory => Directory('${repoRoot().path}/lib');

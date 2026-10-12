@@ -1,10 +1,10 @@
 import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/crypto_quote_entity.dart';
 
 /// Repository interface for fetching cryptocurrency quotes, defining the
 /// contract for the repository implementation.
-abstract interface class CryptoQuoteRepository {
+abstract interface class CryptoQuotesRepositoryInterface {
   /// Fetches a list of cryptocurrency quotes.
   Future<Either<Failure, List<CryptoQuoteEntity>>> getQuotes();
 

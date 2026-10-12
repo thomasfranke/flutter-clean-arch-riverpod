@@ -99,5 +99,22 @@
     "failureUnexpected": "Something went wrong.",
     "@failureUnexpected": {
         "description": "Shown for a failure with no more specific message"
+    },
+    "appTitle": "Crypto Quotes",
+    "@appTitle": {
+        "description": "The name of the app, shown in the bar and the drawer"
+    },
+    "volumeLabel": "Vol: {value}",
+    "@volumeLabel": {
+        "description": "The traded volume of a quote, under its symbol",
+        "placeholders": {
+                "value": {
+                        "type": "String"
+                }
+        }
+    },
+    "range24h": "Range 24h",
+    "@range24h": {
+        "description": "Heading of the 24 hour high/low range on the detail screen"
     }
 }

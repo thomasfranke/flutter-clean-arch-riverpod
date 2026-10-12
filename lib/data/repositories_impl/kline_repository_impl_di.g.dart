@@ -8,18 +8,22 @@ part of 'kline_repository_impl_di.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
-/// Provides the [KlineRepository] implementation.
+/// Provides the [KlineRepositoryInterface] implementation.
 
 @ProviderFor(klineRepository)
 final klineRepositoryProvider = KlineRepositoryProvider._();
 
-/// Provides the [KlineRepository] implementation.
+/// Provides the [KlineRepositoryInterface] implementation.
 
 final class KlineRepositoryProvider
     extends
-        $FunctionalProvider<KlineRepository, KlineRepository, KlineRepository>
-    with $Provider<KlineRepository> {
-  /// Provides the [KlineRepository] implementation.
+        $FunctionalProvider<
+          KlineRepositoryInterface,
+          KlineRepositoryInterface,
+          KlineRepositoryInterface
+        >
+    with $Provider<KlineRepositoryInterface> {
+  /// Provides the [KlineRepositoryInterface] implementation.
   KlineRepositoryProvider._()
     : super(
         from: null,
@@ -36,21 +40,22 @@ final class KlineRepositoryProvider
 
   @$internal
   @override
-  $ProviderElement<KlineRepository> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+  $ProviderElement<KlineRepositoryInterface> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
 
   @override
-  KlineRepository create(Ref ref) {
+  KlineRepositoryInterface create(Ref ref) {
     return klineRepository(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(KlineRepository value) {
+  Override overrideWithValue(KlineRepositoryInterface value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<KlineRepository>(value),
+      providerOverride: $SyncValueProvider<KlineRepositoryInterface>(value),
     );
   }
 }
 
-String _$klineRepositoryHash() => r'a9e189529fffdc30de7ce4cb17518828f01af9c5';
+String _$klineRepositoryHash() => r'e088dbbdc9a75197b10be3bda6a12379444a2aec';

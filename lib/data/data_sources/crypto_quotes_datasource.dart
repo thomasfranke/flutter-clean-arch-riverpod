@@ -4,9 +4,9 @@ import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_objects/crypto_quote_dto.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_failure.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_interface.dart';
-import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/api_route.dart';
-import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/http_client_response.dart';
-import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/http_methods.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/api_route_value_object.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/http_client_response_value_object.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/http_method_enum.dart';
 
 /// Data source for fetching cryptocurrency quotes from an API.
 ///
@@ -15,9 +15,9 @@ import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/models/ht
 /// [HttpClientFailure] — translating that into a domain failure belongs to
 /// the repository, which is the only place that knows what the failure means
 /// for the call being composed.
-class CryptoQuoteDatasource {
-  /// Creates a [CryptoQuoteDatasource] with the required [HttpClientInterface].
-  const CryptoQuoteDatasource({required this.httpClient});
+class CryptoQuotesDatasource {
+  /// Creates a [CryptoQuotesDatasource] with the required HTTP client.
+  const CryptoQuotesDatasource({required this.httpClient});
 
   /// The API client used to perform HTTP requests.
   final HttpClientInterface httpClient;
@@ -43,7 +43,7 @@ class CryptoQuoteDatasource {
       } on Object catch (e, st) {
         log(
           'Error: $e',
-          name: 'CryptoQuoteDatasource',
+          name: 'CryptoQuotesDatasource',
           error: e,
           stackTrace: st,
         );
@@ -75,7 +75,7 @@ class CryptoQuoteDatasource {
       } on Object catch (e, st) {
         log(
           'Error: $e',
-          name: 'CryptoQuoteDatasource',
+          name: 'CryptoQuotesDatasource',
           error: e,
           stackTrace: st,
         );

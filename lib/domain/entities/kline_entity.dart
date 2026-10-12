@@ -5,9 +5,9 @@ part 'kline_entity.freezed.dart';
 /// Domain entity representing a single candlestick (kline) data point,
 /// containing OHLC price data, volume, and trade count for a given time period.
 @freezed
-abstract class Kline with _$Kline {
-  /// Creates a [Kline] instance with the given parameters.
-  const factory Kline({
+abstract class KlineEntity with _$KlineEntity {
+  /// Creates a [KlineEntity] instance with the given parameters.
+  const factory KlineEntity({
     required final DateTime openTime,
     required final DateTime closeTime,
     required final double open,

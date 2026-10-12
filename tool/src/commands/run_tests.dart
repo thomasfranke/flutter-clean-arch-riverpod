@@ -33,11 +33,8 @@ import '../theme/theme.dart';
 import '../tty.dart';
 import 'process.dart';
 
-/// The row an architecture assertion belongs to.
-const architectureRow = 'architecture';
-
 /// The row this CLI's own tests belong to.
-const cliRow = 'cli';
+const cliRow = cli;
 
 void main(List<String> rawArgs) async {
   final coverage = rawArgs.contains('--coverage');
@@ -134,7 +131,7 @@ Future<bool> _run(
   final suiteComplete = <int>{};
   final testSuite = <int, int>{};
   final testName = <int, String>{};
-  final testError = <int, String>{};
+  final testError = <int, List<String>>{};
 
   await process.stdout
       .transform(utf8.decoder)
@@ -185,9 +182,7 @@ Future<bool> _run(
           case 'error':
             final id = event['testID'] as int?;
             if (id != null) {
-              testError[id] = (event['error'] as String? ?? '')
-                  .split('\n')
-                  .first;
+              testError[id] = _explain(event['error'] as String? ?? '');
             }
           case 'testDone':
             final id = event['testID'] as int;
@@ -231,6 +226,39 @@ Future<bool> _run(
   }
   return code != 0;
 }
+
+/// The part of a failure worth printing, stack trace left off.
+///
+/// A matcher says `Expected:` on its first line and `Actual:` on the next —
+/// and `Actual:` is the answer, which is why keeping the first line alone
+/// reported every assertion as "Expected: empty" and never which files made
+/// it non-empty. The stack is dropped because the frame that matters is the
+/// test's own, and the test is already named on the line above.
+///
+/// Capped, because a rule can fail over fifty files and the terminal has a
+/// scrollback somebody still has to read.
+List<String> _explain(String error) {
+  final kept = <String>[];
+  for (final line in error.split('\n')) {
+    if (line.trimLeft().startsWith('package:') ||
+        line.trimLeft().startsWith('dart:')) {
+      break;
+    }
+    if (line.trim().isEmpty && kept.isEmpty) continue;
+    kept.add(line.trimRight());
+    if (kept.length >= _explainLimit) {
+      kept.add('… and more — run this rule alone to read all of it');
+      break;
+    }
+  }
+  while (kept.isNotEmpty && kept.last.trim().isEmpty) {
+    kept.removeLast();
+  }
+  return kept;
+}
+
+/// How many lines of one failure the dashboard prints.
+const _explainLimit = 24;
 
 /// The totals, and the coverage the run measured.
 ///
@@ -309,45 +337,50 @@ List<String> _testFilesUnder(Directory root, List<String> targets) {
 ///
 /// Read out of the path, because the path is where this repository already
 /// says it: `test/unit/<layer>` is that layer's unit tests, `test/widget` is
-/// the widget tests, `test/integrity` holds the two suites that are about the
-/// repository rather than the product. A file that fits none of it lands in
-/// `test`, which is visible rather than silently dropped.
+/// the widget tests, `test/code_rules` the code rules and `test/cli` the
+/// CLI's own. A file that fits none of it lands in `test`, which is visible
+/// rather than silently dropped.
 String _groupOf(String relativePath) {
   final parts = _normalize(relativePath).split('/');
   if (parts.first == e2eDirectory) return e2eKind;
   if (parts.length < 2 || parts.first != 'test') return 'test';
 
   final kind = parts[1];
-  if (kind == 'integrity') {
-    return switch (parts.last) {
-      'architecture_test.dart' => architectureRow,
-      'cli_test.dart' => cliRow,
-      _ => 'integrity',
-    };
+  // A code rule is its own row. There is nothing to aggregate: one rule is
+  // one file asserting one thing, so a row per rule is a checklist of the
+  // rules themselves rather than a bar counting files nobody named.
+  if (kind == codeRules) {
+    final rule = parts.last.replaceAll('_test.dart', '');
+    return ruleNames.contains(rule) ? rule : codeRules;
   }
+  if (kind == cli) return cliRow;
   if (kind == 'unit' && parts.length > 3 && layers.contains(parts[2])) {
     return parts[2];
   }
   return testKinds.contains(kind) ? kind : 'test';
 }
 
-/// Rows in the order the repository is read in: what is asserted about the
-/// tree first, then the layers bottom-up, then the kinds that cross them.
+/// Rows in the order the repository is read in: the code rules first, then
+/// the CLI's own tests, then the layers bottom-up, then the kinds that cross
+/// them.
 ///
 /// Alphabetical would put `application` above `core` and `widget` above
 /// `unit`, which is a list ordered for no reader. This one matches the
-/// dependency order in [layers] and the cost order of the kinds.
+/// dependency order in [layers] and the cost order of the kinds. The rules
+/// keep the order [ruleNames] declares, which *is* alphabetical — there they
+/// are looked up by name rather than read as a sequence.
 int _byRowOrder(String a, String b) => _rank(a).compareTo(_rank(b));
 
 int _rank(String row) => switch (row) {
-  architectureRow => 0,
-  cliRow => 1,
-  _ when layers.contains(row) => 2 + layers.indexOf(row),
-  'unit' => 20,
-  'widget' => 21,
-  'integration' => 22,
-  e2eKind => 23,
-  _ => 24,
+  _ when ruleNames.contains(row) => ruleNames.indexOf(row),
+  codeRules => ruleNames.length,
+  cliRow => 20,
+  _ when layers.contains(row) => 21 + layers.indexOf(row),
+  'unit' => 40,
+  'widget' => 41,
+  'integration' => 42,
+  e2eKind => 43,
+  _ => 44,
 };
 
 /// [path] relative to [root], with forward slashes on every platform.
@@ -483,12 +516,14 @@ class _Dashboard extends Dashboard<_Row> {
       .map((row) => _testCounts(row).length)
       .fold(0, (a, b) => a > b ? a : b);
 
-  void logFailure(String path, String name, String? error) {
+  void logFailure(String path, String name, List<String>? error) {
     failures.add(path);
     final buffer = StringBuffer()
       ..writeln('  ${palette.fail}${Status.fail}${Ansi.reset}  $path')
       ..writeln('     $name');
-    if (error != null && error.isNotEmpty) buffer.writeln('     $error');
+    for (final line in error ?? const <String>[]) {
+      buffer.writeln('     $line');
+    }
     log(buffer.toString().trimRight());
   }
 
@@ -503,17 +538,32 @@ class _Dashboard extends Dashboard<_Row> {
         '$files/$fileTotal files:';
   }
 
+  /// Whether the row is one code rule rather than a folder of files.
+  ///
+  /// A bar divides work done by work to do, and a rule has one file: the bar
+  /// would be empty or full and never anything else. So a rule reports as a
+  /// checklist entry — the mark, the name, what it asserted — and the bar is
+  /// left to the rows that have something to count.
+  bool _isRule(_Row row) => ruleNames.contains(row.label);
+
   @override
   String renderRow(_Row row) {
     final label = row.label.padRight(labelWidth);
     switch (row.state) {
       case _RowState.queued:
+        if (_isRule(row)) {
+          return '${statusMark(Status.queued, palette.queued)}$label';
+        }
         return '${statusMark(Status.queued, palette.queued)}$label  '
             '${progressBar(0, 0)} ${row.fileTotal} files';
       case _RowState.running:
         final elapsed = formatDuration(
           DateTime.now().difference(row.startedAt!),
         );
+        if (_isRule(row)) {
+          return '${statusMark(Status.running, palette.running)}$label  '
+              '+${row.passed} ✗${row.failed}  •  ⏱ $elapsed';
+        }
         return '${statusMark(Status.running, palette.running)}$label  '
             '${progressBar(row.filesDone, row.fileTotal)} '
             '${_fileCounts(row)} files  •  +${row.passed} ✗${row.failed}  '
@@ -530,6 +580,9 @@ class _Dashboard extends Dashboard<_Row> {
         final mark = row.failed == 0 && row.filesDone == row.fileTotal
             ? statusMark(Status.ok, palette.ok)
             : statusMark(Status.fail, palette.fail);
+        if (_isRule(row)) {
+          return '$mark$label  $tests tests  ⏱ $elapsed';
+        }
         return '$mark$label  ${progressBar(row.filesDone, row.fileTotal)} '
             '$files files  •  $tests tests  ⏱ $elapsed';
     }

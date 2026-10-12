@@ -18,11 +18,11 @@ final favoritesRepositoryProvider = FavoritesRepositoryProvider._();
 final class FavoritesRepositoryProvider
     extends
         $FunctionalProvider<
-          FavoritesRepository,
-          FavoritesRepository,
-          FavoritesRepository
+          FavoritesRepositoryInterface,
+          FavoritesRepositoryInterface,
+          FavoritesRepositoryInterface
         >
-    with $Provider<FavoritesRepository> {
+    with $Provider<FavoritesRepositoryInterface> {
   /// Riverpod provider for the [FavoritesRepositoryImpl].
   FavoritesRepositoryProvider._()
     : super(
@@ -40,23 +40,23 @@ final class FavoritesRepositoryProvider
 
   @$internal
   @override
-  $ProviderElement<FavoritesRepository> $createElement(
+  $ProviderElement<FavoritesRepositoryInterface> $createElement(
     $ProviderPointer pointer,
   ) => $ProviderElement(pointer);
 
   @override
-  FavoritesRepository create(Ref ref) {
+  FavoritesRepositoryInterface create(Ref ref) {
     return favoritesRepository(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(FavoritesRepository value) {
+  Override overrideWithValue(FavoritesRepositoryInterface value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<FavoritesRepository>(value),
+      providerOverride: $SyncValueProvider<FavoritesRepositoryInterface>(value),
     );
   }
 }
 
 String _$favoritesRepositoryHash() =>
-    r'6685119515d61cb0ed5cabb7b5f4f23ec0b3567f';
+    r'f85c9dbfb1cbe26c786c97a4e751185343e9efe1';

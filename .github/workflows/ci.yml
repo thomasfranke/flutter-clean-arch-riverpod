@@ -10,7 +10,7 @@ concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-# Every step below is one call into `tool/arch.dart`, the same CLI a person
+# Every step below is one call into `tool/cli.dart`, the same CLI a person
 # runs locally — `make verify` runs this list, in this order, on a laptop.
 # The steps are kept separate rather than folded into one `verify` call so
 # that GitHub's UI names the one that failed; the logic is still in one place,
@@ -51,7 +51,7 @@ jobs:
       # out by hand: generated files out of date, ARB files edited without a
       # regenerate, and a message left untranslated in some locale.
       - name: Codegen gate
-        run: dart run tool/arch.dart codegen-gate
+        run: dart run tool/cli.dart codegen-gate
 
       # The whole suite: the architecture assertions and the CLI's own tests
       # first, then the unit tests layer by layer, then widget and

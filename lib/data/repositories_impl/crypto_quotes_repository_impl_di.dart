@@ -8,7 +8,7 @@ part 'crypto_quotes_repository_impl_di.g.dart';
 /// Riverpod provider for the [CryptoQuotesRepositoryImpl], allowing it to be
 /// easily injected and used throughout the application.
 @riverpod
-CryptoQuoteRepository cryptoQuotesRepository(final Ref ref) =>
+CryptoQuotesRepositoryInterface cryptoQuotesRepository(final Ref ref) =>
     CryptoQuotesRepositoryImpl(
       datasource: ref.watch(cryptoQuoteDatasourceProvider),
     );

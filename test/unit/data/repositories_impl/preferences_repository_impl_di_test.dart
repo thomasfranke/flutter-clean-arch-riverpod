@@ -19,7 +19,7 @@ void main() {
     );
     addTearDown(container.dispose);
 
-    final PreferencesRepository repository = container.read(
+    final PreferencesRepositoryInterface repository = container.read(
       preferencesRepositoryProvider,
     );
 

@@ -18,11 +18,11 @@ final preferencesRepositoryProvider = PreferencesRepositoryProvider._();
 final class PreferencesRepositoryProvider
     extends
         $FunctionalProvider<
-          PreferencesRepository,
-          PreferencesRepository,
-          PreferencesRepository
+          PreferencesRepositoryInterface,
+          PreferencesRepositoryInterface,
+          PreferencesRepositoryInterface
         >
-    with $Provider<PreferencesRepository> {
+    with $Provider<PreferencesRepositoryInterface> {
   /// Riverpod provider for the [PreferencesRepositoryImpl].
   PreferencesRepositoryProvider._()
     : super(
@@ -40,23 +40,25 @@ final class PreferencesRepositoryProvider
 
   @$internal
   @override
-  $ProviderElement<PreferencesRepository> $createElement(
+  $ProviderElement<PreferencesRepositoryInterface> $createElement(
     $ProviderPointer pointer,
   ) => $ProviderElement(pointer);
 
   @override
-  PreferencesRepository create(Ref ref) {
+  PreferencesRepositoryInterface create(Ref ref) {
     return preferencesRepository(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(PreferencesRepository value) {
+  Override overrideWithValue(PreferencesRepositoryInterface value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<PreferencesRepository>(value),
+      providerOverride: $SyncValueProvider<PreferencesRepositoryInterface>(
+        value,
+      ),
     );
   }
 }
 
 String _$preferencesRepositoryHash() =>
-    r'd1f661f85f4e21088d014ba146f5e67837c429e2';
+    r'95c2e5c451eef0c8dc1b97c9a9e14e280a15bb06';

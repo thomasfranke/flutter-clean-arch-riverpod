@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_clean_arch_riverpod/core/l10n/generated/app_localizations.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/crypto_quote_entity.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/crypto_quote/crypto_quote_notifier.dart';
-import 'package:flutter_clean_arch_riverpod/presentation/screens/home/widgets/quote_list.dart';
+import 'package:flutter_clean_arch_riverpod/presentation/screens/home/widgets/quote_list_widget.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Tab that displays a list of crypto quotes with a search bar for filtering by
@@ -70,7 +70,7 @@ class _QuotesTabState extends ConsumerState<QuotesTab> {
         ),
       ),
       Expanded(
-        child: QuoteList(
+        child: QuoteListWidget(
           quotes: _filtered,
           onRefresh: () => ref.read(cryptoQuoteProvider.notifier).fetchQuotes(),
         ),

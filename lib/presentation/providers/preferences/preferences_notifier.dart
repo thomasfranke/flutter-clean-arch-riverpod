@@ -6,7 +6,7 @@ import 'package:flutter_clean_arch_riverpod/application/preferences/update_darkm
 import 'package:flutter_clean_arch_riverpod/application/preferences/update_fontscale_usecase_di.dart';
 import 'package:flutter_clean_arch_riverpod/application/preferences/update_locale_usecase_di.dart';
 import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/preferences_entity.dart';
 import 'package:flutter_clean_arch_riverpod/presentation/providers/preferences/preferences_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

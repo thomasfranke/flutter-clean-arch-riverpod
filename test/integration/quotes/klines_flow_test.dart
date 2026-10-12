@@ -1,6 +1,6 @@
 import 'package:flutter_clean_arch_riverpod/application/quotes/get_klines_usecase.dart';
 import 'package:flutter_clean_arch_riverpod/core/either/either.dart';
-import 'package:flutter_clean_arch_riverpod/core/failures/failures.dart';
+import 'package:flutter_clean_arch_riverpod/core/failures/failure.dart';
 import 'package:flutter_clean_arch_riverpod/data/data_sources/kline_datasource.dart';
 import 'package:flutter_clean_arch_riverpod/data/repositories_impl/kline_repository_impl.dart';
 import 'package:flutter_clean_arch_riverpod/domain/entities/kline_entity.dart';
@@ -42,19 +42,21 @@ GetKlinesUseCase _buildStack(final FakeHttpClientInterface httpClient) {
 void main() {
   group('Klines integration flow', () {
     test(
-      'getKlines maps a successful HTTP response into Kline entities',
+      'getKlines maps a successful HTTP response into KlineEntity entities',
       () async {
         final FakeHttpClientInterface httpClient = FakeHttpClientInterface()
           ..enqueueSuccess(<List<dynamic>>[_candle()]);
         final GetKlinesUseCase getKlines = _buildStack(httpClient);
 
-        final Either<Failure, List<Kline>> result = await getKlines(
+        final Either<Failure, List<KlineEntity>> result = await getKlines(
           symbol: 'BTCUSDT',
           interval: '1h',
         );
 
         expect(result.isRight(), isTrue);
-        final List<Kline> klines = result.getOrElse(() => <Kline>[]);
+        final List<KlineEntity> klines = result.getOrElse(
+          () => <KlineEntity>[],
+        );
         expect(klines, hasLength(1));
         expect(klines.single.open, 48000.0);
         expect(klines.single.close, 48020.5);
@@ -71,12 +73,15 @@ void main() {
         ..enqueueFailure(const HttpClientFailure.network());
       final GetKlinesUseCase getKlines = _buildStack(httpClient);
 
-      final Either<Failure, List<Kline>> result = await getKlines(
+      final Either<Failure, List<KlineEntity>> result = await getKlines(
         symbol: 'BTCUSDT',
         interval: '1h',
       );
 
-      expect(result, const Left<Failure, List<Kline>>(Failure.apiNetwork()));
+      expect(
+        result,
+        const Left<Failure, List<KlineEntity>>(Failure.apiNetwork()),
+      );
     });
 
     test('getKlines maps a malformed payload to Failure.parse() instead of '
@@ -85,12 +90,12 @@ void main() {
         ..enqueueSuccess(<String, dynamic>{'not': 'a list'});
       final GetKlinesUseCase getKlines = _buildStack(httpClient);
 
-      final Either<Failure, List<Kline>> result = await getKlines(
+      final Either<Failure, List<KlineEntity>> result = await getKlines(
         symbol: 'BTCUSDT',
         interval: '1h',
       );
 
-      expect(result, const Left<Failure, List<Kline>>(Failure.parse()));
+      expect(result, const Left<Failure, List<KlineEntity>>(Failure.parse()));
     });
 
     test('symbol, interval and the default limit reach the HTTP request as '

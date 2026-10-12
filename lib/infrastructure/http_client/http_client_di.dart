@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_clean_arch_riverpod/core/constants/app_config.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/dio/dio_impl.dart';
-import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/dio/dio_interceptor_retry.dart';
+import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/dio/dio_retry_interceptor.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_constants.dart';
 import 'package:flutter_clean_arch_riverpod/infrastructure/http_client/http_client_interface.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

@@ -10,7 +10,7 @@ void main() {
     final ProviderContainer container = ProviderContainer();
     addTearDown(container.dispose);
 
-    final CryptoQuoteRepository repository = container.read(
+    final CryptoQuotesRepositoryInterface repository = container.read(
       cryptoQuotesRepositoryProvider,
     );
 

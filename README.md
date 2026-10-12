@@ -186,7 +186,7 @@ make flutter-test-widget       # test/widget only — screens and widgets, mocke
 make flutter-test-integration  # test/integration only — real cross-layer flows
 make flutter-test-e2e          # the e2e scenarios, and what each one did last
 make flutter-test-e2e SCENARIO="Scales the font"   # run one, recorded
-make flutter-test-arch         # the layer graph, asserted against the imports
+make flutter-test-code-rules   # every rule, asserted against the tree
 ```
 
 ## The `arch` CLI
@@ -239,7 +239,7 @@ Tests across five levels, in four directories. 100% coverage.
 | Widget | ✅ Implemented | Screens and widgets rendered in a real widget tree, driven by `WidgetTester` (tap, drag, pump) against mocked repositories | `make flutter-test-widget` |
 | Integration | ✅ Implemented | Cross-layer flows with the **real** classes wired together (use case → repository → data source); only the true external boundary — network or platform channel — is faked | `make flutter-test-integration` |
 | E2E | ✅ Implemented | The real app on a device/emulator against the live Binance API, driven through the UI with the [`integration_test`](https://pub.dev/packages/integration_test) package. One named flow at a time, each run photographed step by step and filmed — see [`docs/technical/cli.md`](docs/technical/cli.md#end-to-end) | `make flutter-test-e2e` |
-| Integrity | ✅ Implemented | The repository rather than the product: `test/integrity/architecture_test.dart` reads every import under `lib/` and asserts the layer graph, the layers that must stay Flutter-free, and that Dio and SharedPreferences stay behind their contracts; `cli_test.dart` drives the `arch` CLI as a process | `make flutter-test-arch` |
+| Code rules | ✅ Implemented | The repository rather than the product. `test/code_rules/` holds one file per rule, thirty-four of them, each reading the tree as text and grouped in the menu by what they are about: **Application** (one operation per use case, and a use case as the only way in), **Domain** (entities that cannot change and do not parse themselves, where a `Failure` is minted, the `Either` on everything that can fail, no `throw` around it), **Infrastructure** (packages reached only through a contract, wrapped completely), **Naming** (the kind of file, the class that matches, the number they agree on, one public type per file), **Presentation** (one Riverpod feature per folder, a provider for everything constructed, screens that can watch, widgets that can be built `const`, every sentence read from the ARB files), **Source** (the layer graph, pure Dart below `presentation`, implementations that name their contract, no re-exports, no `dynamic` past the decoding seam, no `print`, no notes to self, one source per datasource, `tool/` depending on nothing) and **Tests** (a test named after every source, every one asserting something, none skipped, none excluded from coverage, mocks standing in for contracts, every end-to-end flow declared) | `make flutter-test-code-rules` (`RULE=graph` for one) |
 
 <p align="center">
   <img src="docs/coverage.png" width="800">
