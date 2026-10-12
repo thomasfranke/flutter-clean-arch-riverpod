@@ -29,7 +29,7 @@ exists: nothing but that test stops `domain/` importing `presentation/`.
 
 ## Hard rules
 
-1. **Run everything through the CLI.** `dart run tool/arch.dart <command>`, or
+1. **Run everything through the CLI.** `dart run tool/cli.dart <command>`, or
    `make <target>`, which is a one-line face over the same thing. Do not
    invent a `flutter test …` invocation when a command already exists; if the
    command is missing, add it to `tool/` rather than working around it.
@@ -38,15 +38,16 @@ exists: nothing but that test stops `domain/` importing `presentation/`.
    own layer and the layers listed in `allowed` in the architecture test.
    Crossing that needs either a `*_di.dart` (composition wiring, which has its
    own declared reach) or a named exception in `wiringExceptions`, with a
-   reason.
+   reason. `core/either/either.dart` is the one file every layer may import
+   (`kernel` in the test): `infrastructure` imports nothing else from `lib/`.
 3. **`domain`, `application` and `infrastructure` stay Flutter-free.** No
    `package:flutter`, no `flutter_riverpod`, no `auto_route`, no `fl_chart`.
    That is what keeps their tests running without a widget binding.
 4. **Dio and SharedPreferences are reached through contracts.**
-   `HttpClientInterface` and `StorageInterface`. Two files in `data/` still
-   import `shared_preferences` directly; they are listed in
-   `wrappedPackageExceptions` in the architecture test. **Do not add a third.**
-   Fixing the two is welcome, and means removing them from that list.
+   `HttpClientInterface` and `StorageInterface`. Nothing outside
+   `infrastructure/` imports either package, and
+   `wrappedPackageExceptions` in the architecture test is empty. **Keep it
+   empty**; an entry needs its reason written beside it.
 5. **A domain `Failure` is minted in `repositories_impl/`, never in a
    datasource.** A datasource resolves data: it returns the
    `HttpClientFailure` or `StorageFailure` it was handed, untouched. The
@@ -73,7 +74,7 @@ exists: nothing but that test stops `domain/` importing `presentation/`.
 
 ## The commands
 
-`make help` lists them all. `dart run tool/arch.dart` with no arguments opens
+`make help` lists them all. `dart run tool/cli.dart` with no arguments opens
 a navigable menu; with a subcommand it runs the same code path
 non-interactively, which is what CI and agents use. The ones worth knowing:
 

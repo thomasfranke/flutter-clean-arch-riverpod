@@ -34,7 +34,7 @@ Based on Evans' DDD layers, Uncle Bob's Clean Architecture rings, Flutter/Androi
 | `application/` | Rule orchestration — use cases |
 | `presentation/` | UI and state management |
 | `data/` | Repository implementations and data sources — satisfies the contracts declared in `domain/`, and is where an infrastructure failure becomes a domain `Failure` |
-| `infrastructure/` | Raw external dependencies (Dio, SharedPreferences), reached only through contracts (`HttpClientInterface`, `StorageInterface`) so they can be swapped without touching repository logic |
+| `infrastructure/` | Raw external dependencies (Dio, SharedPreferences), reached only through contracts (`HttpClientInterface`, `StorageInterface`) so they can be swapped without touching repository logic. Imports no other layer, and no Dio type crosses its contracts |
 | `core/` | Cross-cutting utilities (config, failures, l10n, theme, routing) |
 
 ### What crosses the `data` boundary
@@ -49,7 +49,9 @@ Based on Evans' DDD layers, Uncle Bob's Clean Architecture rings, Flutter/Androi
   the DTO/DAO to an entity *and* the infrastructure failure to a domain
   `Failure`, because it is the class that implements a contract `domain/`
   declared. Nothing below it is obliged to know the domain's vocabulary, and
-  nothing above it may see infrastructure's.
+  nothing above it may see infrastructure's. The mapping itself lives in
+  `repositories_impl/failure_mappers.dart`, so `infrastructure/` imports no
+  other layer at all — the architecture test holds it to that.
 
 Translating in the datasource is easier to write and worse to live with: an
 infrastructure failure is not only something to report, it is an input to a
@@ -73,6 +75,7 @@ tell them apart.
 │   └── quotes/                               ## Crypto quotes & klines use cases
 ├── core/                                  # Cross-cutting utilities shared across layers
 │   ├── constants/                            ## Global constants (app config)
+│   ├── either/                               ## Either: a sealed Left/Right result type, importable from any layer
 │   ├── failures/                             ## Domain failures, following a Result pattern
 │   ├── l10n/                                 ## Internationalization (generated ARB output)
 │   ├── routes/                               ## Routing (AutoRoute) and its DI
@@ -84,6 +87,7 @@ tell them apart.
 │   ├── data_sources/                         ## Data sources: resolve data, infra failures pass through
 │   │   └── *_datasource.dart
 │   └── repositories_impl/                    ## The contracts, implemented: DTO/DAO to entity, infra failure to Failure
+│       ├── failure_mappers.dart                  ### HttpClientFailure / StorageFailure → Failure
 │       └── *_repository_impl.dart
 ├── domain/                                # Domain layer: business rules and contracts
 │   ├── entities/                             ## Domain entities
@@ -103,9 +107,31 @@ tell them apart.
     ├── providers/                             ## State management (Riverpod)
     │   ├── */*_notifier.dart                     ### Notifiers: state logic
     │   └── */*_state.dart                        ### Possible UI states
+    ├── failures/                              ## Failure → localized message, and the SnackBar for a failed command
     ├── screens/                               ## Screens
     └── widgets/                               ## Reusable widgets
 ```
+
+## Failures, end to end
+
+Every operation that can fail returns an `Either<Failure, T>` — the
+project's own sealed type in `core/either/`, not a package, so a `switch`
+over it must handle both sides. A failure travels as a value from the
+adapter that caught the exception to the screen that shows it:
+
+- **Infrastructure** catches the exception and returns its own failure
+  (`HttpClientFailure`, `StorageFailure`), carrying primitives only.
+- **Repositories** translate it into a domain `Failure`
+  (`repositories_impl/failure_mappers.dart`), and refuse a malformed row
+  rather than fill it with zeros: a row that does not convert is dropped and
+  logged, and a payload where none converts is `Failure.parse()`.
+- **Notifiers** keep the last good value. A failed first load is a `failure`
+  state; a failed save, toggle or reload is returned to the caller and the
+  state stays as it was — the app is themed from the preferences state, so
+  losing it would repaint the app with the defaults.
+- **Screens** say it in the user's language (`presentation/failures/`): a
+  failed load is drawn in place of the content, a failed command is a
+  SnackBar over content that is still there.
 
 ## Dependencies
 
@@ -116,7 +142,6 @@ tell them apart.
 | [`dio`](https://pub.dev/packages/dio) | HTTP client, wrapped behind `HttpClientInterface` |
 | [`shared_preferences`](https://pub.dev/packages/shared_preferences) | Local key-value persistence, wrapped behind `StorageInterface` |
 | [`freezed`](https://pub.dev/packages/freezed) / [`json_annotation`](https://pub.dev/packages/json_annotation) / [`json_serializable`](https://pub.dev/packages/json_serializable) | Immutable entities/DTOs, union-type UI states, and JSON (de)serialization |
-| [`dartz`](https://pub.dev/packages/dartz) | Functional `Either` for the `Result`-style failure pattern used across `core/failures` |
 | [`intl`](https://pub.dev/packages/intl) / [`intl_utils`](https://pub.dev/packages/intl_utils) / `flutter_localizations` | Internationalization (`core/l10n`) |
 | [`fl_chart`](https://pub.dev/packages/fl_chart) | Kline (candlestick) chart rendering |
 | [`mocktail`](https://pub.dev/packages/mocktail) | Mocking for unit tests |
@@ -167,7 +192,7 @@ make flutter-test-arch         # the layer graph, asserted against the imports
 ## The `arch` CLI
 
 Every task in this repository is one command, and they all live in one place:
-[`tool/arch.dart`](tool/arch.dart). Run it with no arguments and it opens a
+[`tool/cli.dart`](tool/cli.dart). Run it with no arguments and it opens a
 navigable menu; run it with a subcommand and it does the same work
 non-interactively, which is what CI uses. `make` is a one-line face over the
 same thing — nothing in `tool/` ever calls back into `make`.
